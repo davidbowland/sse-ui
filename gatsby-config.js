@@ -14,9 +14,9 @@ module.exports = {
     {
       options: {
         alias: {
-          '@assets': 'src/assets',
           '@components': 'src/components',
           '@config': 'src/config',
+          '@hooks': 'src/hooks',
           '@pages': 'src/pages',
           '@services': 'src/services',
           '@test': 'test',
@@ -30,14 +30,6 @@ module.exports = {
     'gatsby-plugin-sitemap',
     'gatsby-plugin-sharp',
     'gatsby-transformer-sharp',
-    {
-      __key: 'images',
-      options: {
-        name: 'images',
-        path: 'src/assets/images/',
-      },
-      resolve: 'gatsby-source-filesystem',
-    },
     {
       __key: 'pages',
       options: {

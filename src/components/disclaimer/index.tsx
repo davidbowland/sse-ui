@@ -7,7 +7,7 @@ import { Link } from 'gatsby'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
-const Disclaimer = (): JSX.Element => {
+const Disclaimer = (): React.ReactNode => {
   const cookies = new Cookies()
 
   const [open, setOpen] = useState(cookies.get('disclaimer_accept') !== 'true')

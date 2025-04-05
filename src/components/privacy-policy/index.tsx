@@ -3,7 +3,7 @@ import React from 'react'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
-const PrivacyPolicy = (): JSX.Element => {
+const PrivacyPolicy = (): React.ReactNode => {
   return (
     <Stack padding={4} spacing={2}>
       <Typography variant="h5">StreetLogic AI Privacy Policy</Typography>

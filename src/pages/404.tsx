@@ -2,7 +2,7 @@ import React from 'react'
 
 import ServerErrorMessage from '@components/server-error-message'
 
-const NotFound = (): JSX.Element => {
+const NotFound = (): React.ReactNode => {
   const display404 = typeof window !== 'undefined' && window.location.pathname.match(/^\/s\/[^/]+$/) === null
 
   if (display404) {

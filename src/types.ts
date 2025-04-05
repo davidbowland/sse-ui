@@ -13,9 +13,11 @@ export type ConfidenceLevel =
   | 'strongly agree'
   | 'absolutely agree'
 
+export type ChatRole = 'assistant' | 'user'
+
 export interface ChatMessage {
   content: string
-  role: 'assistant' | 'user'
+  role: ChatRole
 }
 
 export type ChatStep = 'start' | 'probe-confidence' | 'probe-reasons' | 'guess-reasons' | 'end'

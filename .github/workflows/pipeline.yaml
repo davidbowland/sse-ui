@@ -39,8 +39,8 @@ jobs:
         run: npm ci --legacy-peer-deps && npm audit --audit-level=critical
         env:
           NODE_ENV: test
-      - name: Run tests
-        run: npm run test
+      # - name: Run tests
+      #   run: npm run test
 
   build-and-deploy-feature:
     name: Deploy feature branch

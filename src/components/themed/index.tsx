@@ -9,10 +9,10 @@ import Disclaimer from '@components/disclaimer'
 import '@fontsource/roboto'
 
 export interface ThemedProps {
-  children: JSX.Element | JSX.Element[]
+  children: React.ReactNode | React.ReactNode[]
 }
 
-const Themed = ({ children }: ThemedProps): JSX.Element => {
+const Themed = ({ children }: ThemedProps): React.ReactNode => {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
   const theme = useMemo(
     () =>

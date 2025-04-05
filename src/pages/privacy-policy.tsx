@@ -4,7 +4,7 @@ import React from 'react'
 import '@config/amplify'
 import PrivacyPolicy from '@components/privacy-policy'
 
-const PrivacyPage = (): JSX.Element => {
+const PrivacyPage = (): React.ReactNode => {
   return (
     <main>
       <Paper elevation={3} sx={{ margin: 'auto', maxWidth: '900px' }}>

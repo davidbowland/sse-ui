@@ -30,7 +30,7 @@ export const fetchSession = async (sessionId: SessionId): Promise<Session> => {
 // Suggest claims
 
 export const suggestClaims = async (): Promise<SuggestedClaims> => {
-  const response = await api.get('/suggest-claims')
+  const response = await api.post('/suggest-claims')
   return response.data
 }
 

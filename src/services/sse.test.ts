@@ -52,10 +52,10 @@ describe('sse', () => {
 
   describe('suggestClaims', () => {
     it('suggests claims', async () => {
-      mockGet.mockResolvedValueOnce({ data: { claims: suggestedClaims } })
+      mockPost.mockResolvedValueOnce({ data: { claims: suggestedClaims } })
       const result = await suggestClaims()
 
-      expect(mockGet).toHaveBeenCalledWith('/suggest-claims')
+      expect(mockPost).toHaveBeenCalledWith('/suggest-claims')
       expect(result).toEqual({ claims: suggestedClaims })
     })
   })

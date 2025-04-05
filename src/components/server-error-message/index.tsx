@@ -9,7 +9,7 @@ export interface ServerErrorProps {
   title: string
 }
 
-const ServerErrorMessage = ({ children, title }: ServerErrorProps): JSX.Element => {
+const ServerErrorMessage = ({ children, title }: ServerErrorProps): React.ReactNode => {
   return (
     <Grid container justifyContent="center">
       <Grid container direction="column" item padding={4} spacing={2} sx={{ maxWidth: '900px' }}>
