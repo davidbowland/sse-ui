@@ -5,6 +5,7 @@ import {
   CreateSessionResult,
   LLMRequest,
   LLMResponse,
+  Session,
   SessionId,
   SuggestedClaims,
   ValidationResult,
@@ -18,6 +19,11 @@ const api = axios.create({
 
 export const createSession = async (claim: string, confidence: ConfidenceLevel): Promise<CreateSessionResult> => {
   const response = await api.post('/sessions', { claim, confidence })
+  return response.data
+}
+
+export const fetchSession = async (sessionId: SessionId): Promise<Session> => {
+  const response = await api.get(`/sessions/${encodeURIComponent(sessionId)}`)
   return response.data
 }
 

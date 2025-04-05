@@ -1,12 +1,21 @@
 import {
   createSession,
+  fetchSession,
   sendGuessReasonsMessage,
   sendProbeConfidenceMessage,
   sendProbeReasonsMessage,
   suggestClaims,
   validateClaim,
 } from './sse'
-import { llmRequest, llmResponse, sessionContext, sessionId, suggestedClaims, validationResult } from '@test/__mocks__'
+import {
+  llmRequest,
+  llmResponse,
+  session,
+  sessionContext,
+  sessionId,
+  suggestedClaims,
+  validationResult,
+} from '@test/__mocks__'
 
 const mockGet = jest.fn()
 const mockPost = jest.fn()
@@ -22,7 +31,7 @@ describe('sse', () => {
   const confidence = sessionContext.confidence
 
   describe('createSession', () => {
-    it('should create a session', async () => {
+    it('creates a session', async () => {
       mockPost.mockResolvedValueOnce({ data: { sessionId } })
       const result = await createSession(claim, confidence)
 
@@ -31,8 +40,18 @@ describe('sse', () => {
     })
   })
 
+  describe('fetchSession', () => {
+    it('fetches a session', async () => {
+      mockGet.mockResolvedValueOnce({ data: session })
+      const result = await fetchSession(sessionId)
+
+      expect(mockGet).toHaveBeenCalledWith(`/sessions/${sessionId}`)
+      expect(result).toEqual(session)
+    })
+  })
+
   describe('suggestClaims', () => {
-    it('should suggest claims', async () => {
+    it('suggests claims', async () => {
       mockGet.mockResolvedValueOnce({ data: { claims: suggestedClaims } })
       const result = await suggestClaims()
 
@@ -42,7 +61,7 @@ describe('sse', () => {
   })
 
   describe('validateClaim', () => {
-    it('should validate a claim', async () => {
+    it('validates a claim', async () => {
       mockPost.mockResolvedValueOnce({ data: validationResult })
       const result = await validateClaim(claim)
 
@@ -52,7 +71,7 @@ describe('sse', () => {
   })
 
   describe('sendGuessReasonsMessage', () => {
-    it('should send a guess reasons message', async () => {
+    it('sends a guess reasons message', async () => {
       mockPost.mockResolvedValueOnce({ data: llmResponse })
       const result = await sendGuessReasonsMessage(sessionId, llmRequest)
 
@@ -62,7 +81,7 @@ describe('sse', () => {
   })
 
   describe('sendProbeConfidenceMessage', () => {
-    it('should send a guess reasons message', async () => {
+    it('sends a guess reasons message', async () => {
       mockPost.mockResolvedValueOnce({ data: llmResponse })
       const result = await sendProbeConfidenceMessage(sessionId, llmRequest)
 
@@ -72,7 +91,7 @@ describe('sse', () => {
   })
 
   describe('sendProbeReasonsMessage', () => {
-    it('should send a guess reasons message', async () => {
+    it('sends a guess reasons message', async () => {
       mockPost.mockResolvedValueOnce({ data: llmResponse })
       const result = await sendProbeReasonsMessage(sessionId, llmRequest)
 

@@ -18,6 +18,8 @@ export interface ChatMessage {
   role: 'assistant' | 'user'
 }
 
+export type ChatStep = 'start' | 'probe-confidence' | 'probe-reasons' | 'guess-reasons' | 'end'
+
 // Claims
 
 export interface SuggestedClaims {
