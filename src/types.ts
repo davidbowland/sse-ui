@@ -32,6 +32,11 @@ export interface ValidationResult {
   suggestions: string[]
 }
 
+export interface ValidatedClaim {
+  inappropriate: boolean
+  isTruthClaim: boolean
+}
+
 // LLM prompts
 
 export interface LLMRequest {
