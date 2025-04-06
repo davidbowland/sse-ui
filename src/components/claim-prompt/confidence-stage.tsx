@@ -17,7 +17,6 @@ import { ConfidenceLevel } from '@types'
 import TwoButtons from './two-buttons'
 
 const claimSx = { color: 'text.secondary', fontStyle: 'italic', fontWeight: 700 }
-const reversedConfidenceLevels = [...confidenceLevels].reverse()
 
 export interface ConfidenceStageProps {
   claim: string
@@ -29,7 +28,7 @@ const ConfidenceStage = ({ claim, onAcceptConfidence, onBack }: ConfidenceStageP
   const [selectedIndex, setSelectedIndex] = useState<number>(-1)
 
   return (
-    <Stack margin="auto" maxWidth="m" spacing={4} textAlign="center" width="100%">
+    <Stack spacing={4} sx={{ margin: 'auto', maxWidth: 'm', textAlign: 'center', width: '100%"' }}>
       <Box>
         <Alert severity="success" sx={{ margin: 'auto', maxWidth: 600 }}>
           <Typography component="span" sx={{ fontWeight: 700, marginRight: 1 }}>
@@ -42,7 +41,7 @@ const ConfidenceStage = ({ claim, onAcceptConfidence, onBack }: ConfidenceStageP
       </Box>
       <Box>
         <List sx={{ bgcolor: 'background.paper', margin: 'auto', maxWidth: 300 }}>
-          {reversedConfidenceLevels.map((confidence, index) => (
+          {confidenceLevels.map((confidence, index) => (
             <ListItem disablePadding key={index}>
               <ListItemButton onClick={() => setSelectedIndex(index)} selected={selectedIndex === index}>
                 <ListItemIcon>

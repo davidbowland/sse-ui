@@ -18,14 +18,16 @@ const unselectedSx = {}
 
 export interface ClaimPromptProps {
   onClaimSelect: (claim: string, confidence: ConfidenceLevel) => void
+  skipFirstScroll?: boolean
 }
 
 type ClaimPromptStage = 'input' | 'generating' | 'selecting' | 'confidence' | 'submitted'
 
-const ClaimPrompt = ({ onClaimSelect }: ClaimPromptProps): React.ReactNode => {
+const ClaimPrompt = ({ onClaimSelect, skipFirstScroll }: ClaimPromptProps): React.ReactNode => {
   const [claimInput, setClaimInput] = useState<string>('')
   const [inputErrorMessage, setInputErrorMessage] = useState<string | undefined>(undefined)
   const [promptStage, setPromptStage] = useState<ClaimPromptStage>('input')
+  const [skipScroll, setSkipScroll] = useState<boolean>(skipFirstScroll ?? false)
   const stageRef = useRef<HTMLDivElement>(null)
 
   const { fetchSuggestedClaims, suggestedClaims, validateClaim } = useSuggestedClaims()
@@ -78,7 +80,11 @@ const ClaimPrompt = ({ onClaimSelect }: ClaimPromptProps): React.ReactNode => {
 
   const scrollIntoView = () => {
     if (stageRef.current) {
-      stageRef.current.scrollIntoView({ behavior: 'smooth', inline: 'center' })
+      if (skipScroll) {
+        setSkipScroll(false)
+      } else {
+        stageRef.current.scrollIntoView({ behavior: 'smooth', inline: 'center' })
+      }
     }
   }
 

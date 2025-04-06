@@ -32,7 +32,7 @@ const SelectingStage = ({
   }, [suggestedClaims])
 
   return (
-    <Stack margin="auto" maxWidth="m" spacing={1} textAlign="center" width="100%">
+    <Stack spacing={1} sx={{ margin: 'auto', maxWidth: 'm', textAlign: 'center', width: '100%"' }}>
       <Box>
         <List sx={{ bgcolor: 'background.paper', margin: 'auto', maxWidth: 800 }}>
           {suggestedClaims.map((claim, index) => (

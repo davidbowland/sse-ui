@@ -22,7 +22,7 @@ const InputStage = ({
   const [claimInput, setClaimInput] = useState<string>(initialClaim)
 
   return (
-    <Stack margin="auto" maxWidth="l" padding={2} spacing={1} textAlign="center" width="100%">
+    <Stack padding={2} spacing={1} sx={{ margin: 'auto', maxWidth: 'l', textAlign: 'center', width: '100%"' }}>
       <TextField
         error={errorMessage !== undefined}
         helperText={errorMessage}

@@ -2,27 +2,27 @@
 import { ConfidenceLevel } from '@types'
 
 export const confidenceLevels: ConfidenceLevel[] = [
-  'absolutely disagree',
-  'strongly disagree',
-  'disagree',
-  'slightly disagree',
-  'neutral',
-  'slightly agree',
-  'agree',
-  'strongly agree',
   'absolutely agree',
+  'strongly agree',
+  'agree',
+  'slightly agree',
+  'neutral',
+  'slightly disagree',
+  'disagree',
+  'strongly disagree',
+  'absolutely disagree',
 ]
 
 export const confidenceLabels = {
-  'absolutely disagree': 'Absolutely disagree',
-  'strongly disagree': 'Strongly disagree',
-  disagree: 'Disagree',
-  'slightly disagree': 'Slightly disagree',
-  neutral: 'Neutral',
-  'slightly agree': 'Slightly agree',
-  agree: 'Agree',
-  'strongly agree': 'Strongly agree',
   'absolutely agree': 'Absolutely agree',
+  'strongly agree': 'Strongly agree',
+  agree: 'Agree',
+  'slightly agree': 'Slightly agree',
+  neutral: 'Neutral',
+  'slightly disagree': 'Slightly disagree',
+  disagree: 'Disagree',
+  'strongly disagree': 'Strongly disagree',
+  'absolutely disagree': 'Absolutely disagree',
 } as { [key in ConfidenceLevel]: string }
 
 export const getLabelFromConfidence = (confidence: ConfidenceLevel): string => {
