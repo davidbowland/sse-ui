@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
@@ -23,6 +24,9 @@ const InputStage = ({
 
   return (
     <Stack padding={2} spacing={1} sx={{ margin: 'auto', maxWidth: 'l', textAlign: 'center', width: '100%"' }}>
+      <Box>
+        <Typography variant="h4">Submit claim</Typography>
+      </Box>
       <TextField
         error={errorMessage !== undefined}
         helperText={errorMessage}

@@ -9,6 +9,7 @@ import ListItemText from '@mui/material/ListItemText'
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked'
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
 import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 
 import TwoButtons from './two-buttons'
 
@@ -33,6 +34,9 @@ const SelectingStage = ({
 
   return (
     <Stack spacing={1} sx={{ margin: 'auto', maxWidth: 'm', textAlign: 'center', width: '100%"' }}>
+      <Box>
+        <Typography variant="h4">Select a claim</Typography>
+      </Box>
       <Box>
         <List sx={{ bgcolor: 'background.paper', margin: 'auto', maxWidth: 800 }}>
           {suggestedClaims.map((claim, index) => (

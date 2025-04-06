@@ -2,17 +2,6 @@ export { Theme } from '@mui/material/styles'
 
 // Chatting
 
-export type ConfidenceLevel =
-  | 'absolutely disagree'
-  | 'strongly disagree'
-  | 'disagree'
-  | 'slightly disagree'
-  | 'neutral'
-  | 'slightly agree'
-  | 'agree'
-  | 'strongly agree'
-  | 'absolutely agree'
-
 export type ChatRole = 'assistant' | 'user'
 
 export interface ChatMessage {
@@ -39,6 +28,14 @@ export interface ValidatedClaim {
   isTruthClaim: boolean
 }
 
+// Confidence levels
+
+export interface ConfidenceLevel {
+  label: string
+  text: string
+  value: string
+}
+
 // LLM prompts
 
 export interface LLMRequest {
@@ -61,8 +58,9 @@ export interface CreateSessionResult {
 
 export interface SessionContext {
   claim: string
-  confidence: ConfidenceLevel
-  reasons: string[]
+  confidence: string
+  generatedReasons: string[]
+  possibleConfidenceLevels: ConfidenceLevel[]
 }
 
 export interface Session {

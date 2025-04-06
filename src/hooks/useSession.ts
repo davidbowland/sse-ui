@@ -19,7 +19,8 @@ const CHAT_STEP_HANDLERS = {
 export interface UseSessionResults {
   chatStep: ChatStep
   claim?: string
-  confidence?: ConfidenceLevel
+  confidence?: string
+  confidenceLevels: ConfidenceLevel[]
   history: ChatMessage[]
   isLoading: boolean
   sendChatMessage: (message: string) => void
@@ -91,6 +92,8 @@ export const useSession = (sessionId: string): UseSessionResults => {
     fetchSession(sessionId).then((session) => {
       setSession(session)
       setChatStep('start')
+    }).catch((error) => {
+      console.error('Error fetching session', { error })
     })
   }, [sessionId])
 
@@ -99,6 +102,7 @@ export const useSession = (sessionId: string): UseSessionResults => {
       chatStep,
       claim: undefined,
       confidence: undefined,
+      confidenceLevels: [],
       history: [],
       isLoading,
       sendChatMessage,
@@ -109,6 +113,7 @@ export const useSession = (sessionId: string): UseSessionResults => {
     chatStep,
     claim: session.context.claim,
     confidence: session.context.confidence,
+    confidenceLevels: session.context.possibleConfidenceLevels,
     history: session.history,
     isLoading,
     sendChatMessage,

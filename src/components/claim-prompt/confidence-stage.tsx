@@ -12,7 +12,6 @@ import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
-import { confidenceLevels, getLabelFromConfidence } from '@config/confidence-levels'
 import { ConfidenceLevel } from '@types'
 import TwoButtons from './two-buttons'
 
@@ -20,15 +19,19 @@ const claimSx = { color: 'text.secondary', fontStyle: 'italic', fontWeight: 700 
 
 export interface ConfidenceStageProps {
   claim: string
-  onAcceptConfidence: (confidence: ConfidenceLevel) => void
+  confidenceLevels: ConfidenceLevel[]
+  onAcceptConfidence: (confidence: string) => void
   onBack: () => void
 }
 
-const ConfidenceStage = ({ claim, onAcceptConfidence, onBack }: ConfidenceStageProps): React.ReactNode => {
+const ConfidenceStage = ({ claim, confidenceLevels, onAcceptConfidence, onBack }: ConfidenceStageProps): React.ReactNode => {
   const [selectedIndex, setSelectedIndex] = useState<number>(-1)
 
   return (
     <Stack spacing={4} sx={{ margin: 'auto', maxWidth: 'm', textAlign: 'center', width: '100%"' }}>
+      <Box>
+        <Typography variant="h4">What is your stance?</Typography>
+      </Box>
       <Box>
         <Alert severity="success" sx={{ margin: 'auto', maxWidth: 600 }}>
           <Typography component="span" sx={{ fontWeight: 700, marginRight: 1 }}>
@@ -40,18 +43,19 @@ const ConfidenceStage = ({ claim, onAcceptConfidence, onBack }: ConfidenceStageP
         </Alert>
       </Box>
       <Box>
-        <List sx={{ bgcolor: 'background.paper', margin: 'auto', maxWidth: 300 }}>
-          {confidenceLevels.map((confidence, index) => (
-            <ListItem disablePadding key={index}>
-              <ListItemButton onClick={() => setSelectedIndex(index)} selected={selectedIndex === index}>
-                <ListItemIcon>
-                  {selectedIndex === index ? <RadioButtonCheckedIcon /> : <RadioButtonUncheckedIcon />}
-                </ListItemIcon>
-                <ListItemText primary={getLabelFromConfidence(confidence)} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
+        {confidenceLevels.length === 0 ? <Typography variant="body1">Error loading confidence levels. Please refresh to try again.</Typography> :
+          <List sx={{ bgcolor: 'background.paper', margin: 'auto', maxWidth: 300 }}>
+            {confidenceLevels.map((level, index) => (
+              <ListItem disablePadding key={index}>
+                <ListItemButton onClick={() => setSelectedIndex(index)} selected={selectedIndex === index}>
+                  <ListItemIcon>
+                    {selectedIndex === index ? <RadioButtonCheckedIcon /> : <RadioButtonUncheckedIcon />}
+                  </ListItemIcon>
+                  <ListItemText primary={level.label} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>}
       </Box>
       <TwoButtons
         button1={
@@ -61,7 +65,7 @@ const ConfidenceStage = ({ claim, onAcceptConfidence, onBack }: ConfidenceStageP
         }
         button2={
           <Button
-            onClick={() => onAcceptConfidence(confidenceLevels[selectedIndex])}
+            onClick={() => onAcceptConfidence(confidenceLevels[selectedIndex].value)}
             sx={{ width: '100%' }}
             variant="contained"
           >

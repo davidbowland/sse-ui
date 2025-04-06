@@ -32,14 +32,14 @@ const ChatWindow = ({ history, isTyping, sendChatMessage }: ChatWindowProps): Re
 
   useEffect(() => {
     if (messageRef.current) {
-      messageRef.current.scrollIntoView({ behavior: 'smooth', inline: 'center' })
+      messageRef.current.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
     }
   }, [history])
 
   return (
     <Stack spacing={2}>
       <Paper elevation={3} sx={{ flexGrow: 1 }}>
-        <Stack padding={2} spacing={2} sx={{ maxHeight: '80vh', overflowY: 'scroll' }}>
+        <Stack padding={2} spacing={2} sx={{ maxHeight: '80vh', minHeight: '60vh', overflowY: 'scroll' }}>
           {history.map((message: ChatMessage, index: number) => (
             <MessageDisplay key={index} role={message.role}>
               <Typography ref={messageRef} variant='body1'>

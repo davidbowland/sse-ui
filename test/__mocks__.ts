@@ -23,6 +23,18 @@ export const validationResult = {
   suggestions: suggestedClaims,
 }
 
+// Confidence levels
+
+export const confidenceLevels = [
+  { label: 'Strongly agree', text: 'strongly agree', value: 'strongly agree' },
+  { label: 'Agree', text: 'agree', value: 'agree' },
+  { label: 'Slightly agree', text: 'slightly agree', value: 'slightly agree' },
+  { label: 'Neutral', text: 'neither agree nor disagree', value: 'neutral' },
+  { label: 'Slightly disagree', text: 'slightly disagree', value: 'slightly disagree' },
+  { label: 'Disagree', text: 'disagree', value: 'disagree' },
+  { label: 'Strongly disagree', text: 'strongly disagree', value: 'strongly disagree' },
+]
+
 // LLM prompts
 
 export const llmRequest: LLMRequest = {
@@ -41,7 +53,8 @@ export const sessionId: SessionId = '8675309'
 export const sessionContext: SessionContext = {
   claim: 'The Holy Roman Empire was neither Holy nor Roman nor an Empire.',
   confidence: 'strongly agree',
-  reasons: ["They're animatronic"],
+  generatedReasons: ["They're animatronic"],
+  possibleConfidenceLevels: confidenceLevels,
 }
 
 export const session: Session = {

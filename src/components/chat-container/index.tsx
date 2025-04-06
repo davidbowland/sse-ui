@@ -14,19 +14,19 @@ import Select from '@mui/material/Select'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 
-import { confidenceLevels, getLabelFromConfidence } from '@config/confidence-levels'
 import { ConfidenceLevel } from '@types'
 
 export interface ChatContainerProps {
   children: React.ReactNode
-  initialConfidence?: ConfidenceLevel
-  onConfidenceChange: (confidence: ConfidenceLevel) => void
+  confidenceLevels: ConfidenceLevel[]
+  initialConfidence?: string
+  onConfidenceChange: (confidence: string) => void
 }
 
-const ChatContainer = ({ children, initialConfidence, onConfidenceChange }: ChatContainerProps): React.ReactNode => {
-  const [confidence, setConfidence] = useState<ConfidenceLevel | undefined>(initialConfidence)
+const ChatContainer = ({ children, confidenceLevels, initialConfidence, onConfidenceChange }: ChatContainerProps): React.ReactNode => {
+  const [confidence, setConfidence] = useState<string | undefined>(initialConfidence)
 
-  const onChatConfidenceChange = (value: ConfidenceLevel) => {
+  const onChatConfidenceChange = (value: string) => {
     setConfidence(value)
     onConfidenceChange(value)
   }
@@ -58,11 +58,11 @@ const ChatContainer = ({ children, initialConfidence, onConfidenceChange }: Chat
                   id="confidence-select"
                   label="Confidence"
                   labelId='confidence-select-label'
-                  onChange={(e) => onChatConfidenceChange(e.target.value as ConfidenceLevel)}
+                  onChange={(e) => onChatConfidenceChange(e.target.value)}
                   value={confidence}
                 >
                   {confidenceLevels.map((level, index) => (
-                    <MenuItem key={index} value={level}>{getLabelFromConfidence(level)}</MenuItem>
+                    <MenuItem key={index} value={level.value}>{level.label}</MenuItem>
                   ))}
                 </Select>
               </FormControl>

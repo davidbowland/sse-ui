@@ -20,6 +20,8 @@ describe('useSession', () => {
     jest.mocked(sse).sendGuessReasonsMessage.mockResolvedValue(llmResponse)
     jest.mocked(sse).sendProbeConfidenceMessage.mockResolvedValue(llmResponse)
     jest.mocked(sse).sendProbeReasonsMessage.mockResolvedValue(llmResponse)
+
+    console.error = jest.fn()
   })
 
   it('fetches a session by ID and returns it', async () => {

@@ -1,13 +1,5 @@
 import {
-  createSession,
-  fetchSession,
-  sendGuessReasonsMessage,
-  sendProbeConfidenceMessage,
-  sendProbeReasonsMessage,
-  suggestClaims,
-  validateClaim,
-} from './sse'
-import {
+  confidenceLevels,
   llmRequest,
   llmResponse,
   session,
@@ -16,6 +8,16 @@ import {
   suggestedClaims,
   validationResult,
 } from '@test/__mocks__'
+import {
+  createSession,
+  fetchConfidenceLevels,
+  fetchSession,
+  sendGuessReasonsMessage,
+  sendProbeConfidenceMessage,
+  sendProbeReasonsMessage,
+  suggestClaims,
+  validateClaim,
+} from './sse'
 
 const mockGet = jest.fn()
 const mockPost = jest.fn()
@@ -29,6 +31,16 @@ jest.mock('axios', () => ({
 describe('sse', () => {
   const claim = sessionContext.claim
   const confidence = sessionContext.confidence
+
+  describe('fetchConfidenceLevels', () => {
+    it('fetches confidence levels', async () => {
+      mockGet.mockResolvedValueOnce({ data: { confidenceLevels } })
+      const result = await fetchConfidenceLevels()
+
+      expect(mockGet).toHaveBeenCalledWith('/confidence-levels')
+      expect(result).toEqual(confidenceLevels)
+    })
+  })
 
   describe('createSession', () => {
     it('creates a session', async () => {

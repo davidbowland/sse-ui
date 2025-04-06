@@ -17,9 +17,13 @@ export const useSuggestedClaims = () => {
     if (aiClaims) {
       setSuggestedClaims(aiClaims)
     } else {
-      const { claims } = await suggestClaims()
-      setSuggestedClaims(claims)
-      setAiClaims(claims)
+      try {
+        const { claims } = await suggestClaims()
+        setSuggestedClaims(claims)
+        setAiClaims(claims)
+      } catch (error) {
+        console.error('Error fetching suggested claims', { error })
+      }
     }
   }
 
@@ -29,11 +33,17 @@ export const useSuggestedClaims = () => {
       setSuggestedClaims(cachedClaim.suggestions)
       return { inappropriate: cachedClaim.inappropriate, isTruthClaim: cachedClaim.isTruthClaim }
     }
-    const { inappropriate, isTruthClaim, suggestions } = await postValidateClaim(claim)
-    const newSuggestions = !inappropriate && isTruthClaim ? [claim, ...suggestions] : suggestions
-    setSuggestedClaims(newSuggestions)
-    setValidatedClaims((prevValue: any) => ({ ...prevValue, [claim]: { inappropriate, isTruthClaim, suggestions: newSuggestions } }))
-    return { inappropriate, isTruthClaim }
+
+    try {
+      const { inappropriate, isTruthClaim, suggestions } = await postValidateClaim(claim)
+      const newSuggestions = !inappropriate && isTruthClaim ? [claim, ...suggestions] : suggestions
+      setSuggestedClaims(newSuggestions)
+      setValidatedClaims((prevValue: any) => ({ ...prevValue, [claim]: { inappropriate, isTruthClaim, suggestions: newSuggestions } }))
+      return { inappropriate, isTruthClaim }
+    } catch (error) {
+      console.error('Error validating claim', { error })
+      return { inappropriate: true, isTruthClaim: false }
+    }
   }
 
   return {

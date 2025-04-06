@@ -7,7 +7,6 @@ import Typography from '@mui/material/Typography'
 
 import ChatContainer from '@components/chat-container'
 import ChatWindow from '@components/chat-window'
-import { ConfidenceLevel } from '@types'
 import { useSession } from '@hooks/useSession'
 
 const selectedSx = { color: 'text.primary', fontStyle: 'italic', fontWeight: 700 }
@@ -20,9 +19,9 @@ export interface SessionPageProps {
 }
 
 const SessionPage = ({ params }: SessionPageProps): React.ReactNode => {
-  const { chatStep, claim, confidence, history, isLoading, sendChatMessage } = useSession(params.sessionId)
+  const { chatStep, claim, confidence, confidenceLevels, history, isLoading, sendChatMessage } = useSession(params.sessionId)
 
-  const onConfidenceChange = (confidence: ConfidenceLevel) => {
+  const onConfidenceChange = (confidence: string) => {
     if (confidence === undefined) {
       return
     }
@@ -30,7 +29,7 @@ const SessionPage = ({ params }: SessionPageProps): React.ReactNode => {
 
   return (
     <main style={{ minHeight: '90vh' }}>
-      <ChatContainer initialConfidence={confidence} key={claim} onConfidenceChange={onConfidenceChange}>
+      <ChatContainer confidenceLevels={confidenceLevels} initialConfidence={confidence} key={claim} onConfidenceChange={onConfidenceChange}>
         <Grid container sx={{ padding: { sm: '50px', xs: '25px 10px' } }}>
           <Grid item sx={{ m: 'auto', maxWidth: 1200, width: '100%' }}>
             <Stack spacing={1}>

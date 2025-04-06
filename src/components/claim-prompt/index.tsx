@@ -5,19 +5,19 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
-import { ConfidenceLevel } from '@types'
 import ConfidenceStage from './confidence-stage'
 import GeneratingStage from './generating-stage'
 import InputStage from './input-stage'
 import SelectingStage from './selecting-stage'
 import SubmittedStage from './submitted-stage'
+import { useConfidenceLevels } from '@hooks/useConfidenceLevels'
 import { useSuggestedClaims } from '@hooks/useSuggestedClaims'
 
 const selectedSx = { color: 'text.primary', fontStyle: 'italic', fontWeight: 700 }
 const unselectedSx = {}
 
 export interface ClaimPromptProps {
-  onClaimSelect: (claim: string, confidence: ConfidenceLevel) => void
+  onClaimSelect: (claim: string, confidence: string) => void
   skipFirstScroll?: boolean
 }
 
@@ -30,6 +30,7 @@ const ClaimPrompt = ({ onClaimSelect, skipFirstScroll }: ClaimPromptProps): Reac
   const [skipScroll, setSkipScroll] = useState<boolean>(skipFirstScroll ?? false)
   const stageRef = useRef<HTMLDivElement>(null)
 
+  const { confidenceLevels } = useConfidenceLevels()
   const { fetchSuggestedClaims, suggestedClaims, validateClaim } = useSuggestedClaims()
 
   /* Input */
@@ -67,7 +68,7 @@ const ClaimPrompt = ({ onClaimSelect, skipFirstScroll }: ClaimPromptProps): Reac
 
   /* Confidence */
 
-  const onAcceptConfidence = (confidence: ConfidenceLevel) => {
+  const onAcceptConfidence = (confidence: string) => {
     onClaimSelect(claimInput, confidence)
     setPromptStage('submitted')
   }
@@ -117,7 +118,7 @@ const ClaimPrompt = ({ onClaimSelect, skipFirstScroll }: ClaimPromptProps): Reac
             Select claim
           </Typography>
           <Typography sx={promptStage === 'confidence' ? selectedSx : unselectedSx} variant="body1">
-            Gauge confidence
+            Select your stance
           </Typography>
           <Typography sx={promptStage === 'submitted' ? selectedSx : unselectedSx} variant="body1">
             Chat begins
@@ -144,6 +145,7 @@ const ClaimPrompt = ({ onClaimSelect, skipFirstScroll }: ClaimPromptProps): Reac
       {promptStage === 'confidence' && (
         <ConfidenceStage
           claim={claimInput}
+          confidenceLevels={confidenceLevels}
           key={claimInput}
           onAcceptConfidence={onAcceptConfidence}
           onBack={onConfidenceBack}

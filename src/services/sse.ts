@@ -15,9 +15,16 @@ const api = axios.create({
   baseURL: process.env.GATSBY_SSE_API_BASE_URL,
 })
 
+// Confidence levels
+
+export const fetchConfidenceLevels = async (): Promise<ConfidenceLevel[]> => {
+  const response = await api.get('/confidence-levels')
+  return response.data.confidenceLevels
+}
+
 // Sessions
 
-export const createSession = async (claim: string, confidence: ConfidenceLevel): Promise<CreateSessionResult> => {
+export const createSession = async (claim: string, confidence: string): Promise<CreateSessionResult> => {
   const response = await api.post('/sessions', { claim, confidence })
   return response.data
 }
