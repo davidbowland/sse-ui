@@ -1,3 +1,4 @@
+import Box from '@mui/material/Box'
 import Breadcrumbs from '@mui/material/Breadcrumbs'
 import Grid from '@mui/material/Grid'
 import React from 'react'
@@ -7,8 +8,10 @@ import Typography from '@mui/material/Typography'
 import ChatContainer from '@components/chat-container'
 import ChatWindow from '@components/chat-window'
 import { ConfidenceLevel } from '@types'
-import PrivacyLink from '@components/privacy-link'
 import { useSession } from '@hooks/useSession'
+
+const selectedSx = { color: 'text.primary', fontStyle: 'italic', fontWeight: 700 }
+const unselectedSx = {}
 
 export interface SessionPageProps {
   params: {
@@ -27,32 +30,36 @@ const SessionPage = ({ params }: SessionPageProps): React.ReactNode => {
 
   return (
     <main style={{ minHeight: '90vh' }}>
-      <Grid container sx={{ padding: { sm: '50px', xs: '25px 10px' } }}>
-        <Grid item sx={{ m: 'auto', maxWidth: 1200, width: '100%' }}>
-          <ChatContainer initialConfidence={confidence} key={claim} onConfidenceChange={onConfidenceChange}>
+      <ChatContainer initialConfidence={confidence} key={claim} onConfidenceChange={onConfidenceChange}>
+        <Grid container sx={{ padding: { sm: '50px', xs: '25px 10px' } }}>
+          <Grid item sx={{ m: 'auto', maxWidth: 1200, width: '100%' }}>
             <Stack spacing={1}>
-              <Breadcrumbs aria-label="Breadcrumb">
-                <Typography fontWeight={chatStep === 'probe-confidence' ? 700 : 500} variant="body1">
-                  Confidence
-                </Typography>
-                <Typography fontWeight={chatStep === 'probe-reasons' ? 700 : 500} variant="body1">
-                  Reasons
-                </Typography>
-                <Typography fontWeight={chatStep === 'guess-reasons' ? 700 : 500} variant="body1">
-                  Opposing reasons
-                </Typography>
-                {chatStep === 'end' && (
-                  <Typography fontWeight={700} variant="body1">
-                    Thank you
+              <Box sx={{ textAlign: 'center', width: '100%' }}>
+                <Breadcrumbs
+                  aria-label="Breadcrumbs"
+                  sx={{ display: 'inline-block' }}
+                >
+                  <Typography sx={chatStep === 'probe-confidence' ? selectedSx : unselectedSx} variant="body1">
+                    Confidence
                   </Typography>
-                )}
-              </Breadcrumbs>
+                  <Typography sx={chatStep === 'probe-reasons' ? selectedSx : unselectedSx} variant="body1">
+                    Reasons
+                  </Typography>
+                  <Typography sx={chatStep === 'guess-reasons' ? selectedSx : unselectedSx} variant="body1">
+                    Opposing reasons
+                  </Typography>
+                  {chatStep === 'end' && (
+                    <Typography sx={selectedSx} variant="body1">
+                      Thank you
+                    </Typography>
+                  )}
+                </Breadcrumbs>
+              </Box>
               <ChatWindow history={history} isTyping={isLoading} sendChatMessage={sendChatMessage} />
             </Stack>
-          </ChatContainer>
-          <PrivacyLink />
+          </Grid>
         </Grid>
-      </Grid>
+      </ChatContainer>
     </main>
   )
 }

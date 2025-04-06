@@ -4,10 +4,13 @@ import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import ChatIcon from '@mui/icons-material/Chat'
+import FormControl from '@mui/material/FormControl'
+import Grid from '@mui/material/Grid'
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
 import { navigate } from 'gatsby'
-import Stack from '@mui/material/Stack'
-import ToggleButton from '@mui/material/ToggleButton'
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
+import PrivacyLink from '@components/privacy-link'
+import Select from '@mui/material/Select'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 
@@ -23,7 +26,7 @@ export interface ChatContainerProps {
 const ChatContainer = ({ children, initialConfidence, onConfidenceChange }: ChatContainerProps): React.ReactNode => {
   const [confidence, setConfidence] = useState<ConfidenceLevel | undefined>(initialConfidence)
 
-  const onToggleButtonChange = (e: any, value: ConfidenceLevel) => {
+  const onChatConfidenceChange = (value: ConfidenceLevel) => {
     setConfidence(value)
     onConfidenceChange(value)
   }
@@ -33,34 +36,56 @@ const ChatContainer = ({ children, initialConfidence, onConfidenceChange }: Chat
   }
 
   return (
-    <Stack spacing={2}>
+    <Box>
       <AppBar position="static">
         <Toolbar disableGutters>
-          <ChatIcon sx={{ display: { md: 'flex', xs: 'none' }, mr: 1 }} />
-          <Typography noWrap sx={{ display: 'flex', fontWeight: 700, letterSpacing: '0.2rem' }} variant="h6">
-            StreetLogic AI
-          </Typography>
-          <Box flexGrow={1}>
-            <ToggleButtonGroup
-              aria-label="Confidence level"
-              exclusive
-              onChange={onToggleButtonChange}
-              value={confidence}
-            >
-              {confidenceLevels.map((level, index) => (
-                <ToggleButton aria-label={getLabelFromConfidence(level)} key={index} value={level}>
-                  {getLabelFromConfidence(level)}
-                </ToggleButton>
-              ))}
-            </ToggleButtonGroup>
-          </Box>
-          <Button onClick={newClaim} startIcon={<AddCommentIcon />} sx={{ display: 'flex' }}>
-            New claim
-          </Button>
+          <Grid container padding={1} spacing={2}>
+            <Grid item lg={2} sm={6} sx={{ textAlign: 'center' }} xs={12}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center' }}>
+                <Box>
+                  <ChatIcon sx={{ mr: 1 }} />
+                  <Typography noWrap sx={{ display: 'inline-block', fontWeight: 700, letterSpacing: '0.2rem' }} variant="body1">
+                    StreetLogic AI
+                  </Typography>
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item lg={8} order={{ lg: 2, xs: 3 }} sx={{ textAlign: 'center' }} xs={12}>
+              <FormControl sx={{ minWidth: { sm: 600, xs: '100%' } }}>
+                <InputLabel id="confidence-select-label">Confidence</InputLabel>
+                <Select
+                  aria-label='Confidence'
+                  id="confidence-select"
+                  label="Confidence"
+                  labelId='confidence-select-label'
+                  onChange={(e) => onChatConfidenceChange(e.target.value as ConfidenceLevel)}
+                  value={confidence}
+                >
+                  {confidenceLevels.map((level, index) => (
+                    <MenuItem key={index} value={level}>{getLabelFromConfidence(level)}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item lg={2} order={{ lg: 3, xs: 2 }} sm={6} sx={{ paddingRight: { sm: 1, xs: 0} }} xs={12}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center' }}>
+                <Box sx={{ textAlign: 'center' }}>
+                  <Button onClick={newClaim} startIcon={<AddCommentIcon />} sx={{ maxWidth: 250, width: '100%' }} variant='contained'>
+                    New claim
+                  </Button>
+                </Box>
+              </Box>
+            </Grid>
+          </Grid>
         </Toolbar>
       </AppBar>
-      {children}
-    </Stack>
+      <Box>
+        {children}
+      </Box>
+      <Box sx={{ textAlign: 'center' }}>
+        <PrivacyLink />
+      </Box>
+    </Box>
   )
 }
 

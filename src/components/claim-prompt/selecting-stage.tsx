@@ -24,7 +24,7 @@ const SelectingStage = ({
   onAcceptClaim,
   onBack,
   suggestedClaims,
-}: SelectingStageProps): React.ReactNode => {
+}: SelectingStageProps) : React.ReactNode => {
   const [selectedIndex, setSelectedIndex] = useState<number>(initialIndex)
 
   useEffect(() => {

@@ -11,6 +11,7 @@ export interface UseSuggestedClaimsResults {
 export const useSuggestedClaims = () => {
   const [aiClaims, setAiClaims] = useState<string[] | undefined>(undefined)
   const [suggestedClaims, setSuggestedClaims] = useState<string[]>([])
+  const [validatedClaims, setValidatedClaims] = useState<any>({})
 
   const fetchSuggestedClaims = async (): Promise<void> => {
     if (aiClaims) {
@@ -23,8 +24,15 @@ export const useSuggestedClaims = () => {
   }
 
   const validateClaim = async (claim: string): Promise<ValidatedClaim> => {
+    const cachedClaim = validatedClaims[claim]
+    if (cachedClaim) {
+      setSuggestedClaims(cachedClaim.suggestions)
+      return { inappropriate: cachedClaim.inappropriate, isTruthClaim: cachedClaim.isTruthClaim }
+    }
     const { inappropriate, isTruthClaim, suggestions } = await postValidateClaim(claim)
-    setSuggestedClaims(!inappropriate && isTruthClaim ? [claim, ...suggestions] : suggestions)
+    const newSuggestions = !inappropriate && isTruthClaim ? [claim, ...suggestions] : suggestions
+    setSuggestedClaims(newSuggestions)
+    setValidatedClaims((prevValue: any) => ({ ...prevValue, [claim]: { inappropriate, isTruthClaim, suggestions: newSuggestions } }))
     return { inappropriate, isTruthClaim }
   }
 

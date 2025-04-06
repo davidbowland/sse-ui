@@ -4,6 +4,10 @@ import React from 'react'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
+export interface GeneratingStageProps {
+  ref: React.RefObject<HTMLDivElement>
+}
+
 const GeneratingStage = (): React.ReactNode => {
   return (
     <Stack margin="auto" maxWidth="m" padding={3} spacing={4} textAlign="center" width="100%">

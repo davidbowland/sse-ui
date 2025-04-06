@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Box from '@mui/material/Box'
 import Breadcrumbs from '@mui/material/Breadcrumbs'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
@@ -26,6 +26,7 @@ const ClaimPrompt = ({ onClaimSelect }: ClaimPromptProps): React.ReactNode => {
   const [claimInput, setClaimInput] = useState<string>('')
   const [inputErrorMessage, setInputErrorMessage] = useState<string | undefined>(undefined)
   const [promptStage, setPromptStage] = useState<ClaimPromptStage>('input')
+  const stageRef = useRef<HTMLDivElement>(null)
 
   const { fetchSuggestedClaims, suggestedClaims, validateClaim } = useSuggestedClaims()
 
@@ -73,17 +74,30 @@ const ClaimPrompt = ({ onClaimSelect }: ClaimPromptProps): React.ReactNode => {
     setPromptStage('selecting')
   }
 
+  /* Effects */
+
+  const scrollIntoView = () => {
+    if (stageRef.current) {
+      stageRef.current.scrollIntoView({ behavior: 'smooth', inline: 'center' })
+    }
+  }
+
   useEffect(() => {
     if (promptStage === 'selecting' && suggestedClaims.length === 0 && inputErrorMessage === undefined) {
       setInputErrorMessage('Error generating claims, please input a new claim')
     }
   }, [suggestedClaims])
 
+  useEffect(() => {
+    setTimeout(scrollIntoView, 10)
+  }, [promptStage])
+
   return (
     <Stack margin="auto" maxWidth={1000} spacing={1} width="100%">
       <Box sx={{ width: '100%' }}>
         <Breadcrumbs
-          aria-label="Breadcrumb"
+          aria-label="Breadcrumbs"
+          ref={stageRef}
           separator={<NavigateNextIcon fontSize="small" />}
           sx={{ display: 'inline-block' }}
         >

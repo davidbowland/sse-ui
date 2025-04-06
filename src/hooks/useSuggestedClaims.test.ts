@@ -49,6 +49,17 @@ describe('useSuggestedClaims', () => {
     await waitFor(() => expect(result.current.suggestedClaims).toEqual([claim, ...suggestedClaims]))
   })
 
+  it('uses cached validation for duplicate requests', async () => {
+    const { result } = renderHook(() => useSuggestedClaims())
+    await result.current.validateClaim(claim)
+    const { inappropriate, isTruthClaim } = await result.current.validateClaim(claim)
+
+    expect(sse.validateClaim).toHaveBeenCalledTimes(1)
+    expect(inappropriate).toEqual(validationResult.inappropriate)
+    expect(isTruthClaim).toEqual(validationResult.isTruthClaim)
+    await waitFor(() => expect(result.current.suggestedClaims).toEqual([claim, ...suggestedClaims]))
+  })
+
   it('omits inappropriate truth claims from suggestions', async () => {
     jest.mocked(sse).validateClaim.mockResolvedValueOnce({ ...validationResult, inappropriate: true })
     const { result } = renderHook(() => useSuggestedClaims())

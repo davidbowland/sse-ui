@@ -44,7 +44,6 @@ export const useSession = (sessionId: string): UseSessionResults => {
   }
 
   const nextChatStep = () => {
-    console.log('nextChatStep', { chatStep })
     if (chatStep === 'start') {
       setChatStep('probe-confidence')
     } else if (chatStep === 'probe-confidence') {
@@ -53,6 +52,7 @@ export const useSession = (sessionId: string): UseSessionResults => {
       setChatStep('guess-reasons')
     } else if (chatStep === 'guess-reasons') {
       setChatStep('end')
+      setIsLoading(false)
     }
   }
 
@@ -66,7 +66,6 @@ export const useSession = (sessionId: string): UseSessionResults => {
 
     const response = await sendToLlm(sessionId, { content: message, newConversation })
     setSession((prevSession) => (prevSession === undefined ? undefined : { ...prevSession, history: response.history }))
-    console.log('sendChatMessage', { chatStep, context: session?.context, response, session })
     if (response.finished) {
       nextChatStep()
     } else {
@@ -75,7 +74,6 @@ export const useSession = (sessionId: string): UseSessionResults => {
   }
 
   useEffect(() => {
-    console.log('chatStep', { chatStep, context: session?.context, session })
     if (session) {
       if (chatStep === 'probe-confidence' || chatStep === 'probe-reasons' || chatStep === 'guess-reasons') {
         sendChatMessage(`I ${session.context.confidence} with the claim: ${session.context.claim}`, true)
