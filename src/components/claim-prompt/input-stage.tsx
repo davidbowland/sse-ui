@@ -2,25 +2,48 @@ import React, { useState } from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import Switch from '@mui/material/Switch'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
 import TwoButtons from './two-buttons'
+import { useBrowserLanguage } from '@hooks/useBrowserLanguage'
 
 export interface InputStageProps {
   errorMessage?: string
   initialClaim: string
+  language: string
   onClaimSubmit: (claim: string) => void
+  onLanguageChange: (language: string) => void
   onSuggestionsRequested: () => void
 }
 
 const InputStage = ({
   errorMessage,
   initialClaim,
+  language,
   onClaimSubmit,
+  onLanguageChange,
   onSuggestionsRequested,
 }: InputStageProps): React.ReactNode => {
   const [claimInput, setClaimInput] = useState<string>(initialClaim)
+  const { browserLanguage } = useBrowserLanguage()
+
+  const generateLanguageSelector = () => {
+    return (
+      <Box>
+        <Typography variant="h5">Chat language</Typography>
+        <Typography variant="body2">
+          en-US
+          <Switch
+            checked={language === browserLanguage}
+            onChange={(e: any) => onLanguageChange(e.target.checked ? browserLanguage : 'en-US')}
+          />
+          {browserLanguage}
+        </Typography>
+      </Box>
+    )
+  }
 
   return (
     <Stack padding={2} spacing={1} sx={{ margin: 'auto', maxWidth: 'l', textAlign: 'center', width: '100%"' }}>
@@ -48,9 +71,10 @@ const InputStage = ({
           </Button>
         }
       />
-      <Typography padding={2} variant="body2">
+      <Typography sx={{ padding: 2 }} variant="body2">
         Suggested claims are only updated a few times per day
       </Typography>
+      {browserLanguage !== 'en-US' && browserLanguage && generateLanguageSelector()}
     </Stack>
   )
 }

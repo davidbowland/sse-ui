@@ -31,6 +31,7 @@ jest.mock('axios', () => ({
 describe('sse', () => {
   const claim = sessionContext.claim
   const confidence = sessionContext.confidence
+  const language = 'en-US'
 
   describe('fetchConfidenceLevels', () => {
     it('fetches confidence levels', async () => {
@@ -45,9 +46,9 @@ describe('sse', () => {
   describe('createSession', () => {
     it('creates a session', async () => {
       mockPost.mockResolvedValueOnce({ data: { sessionId } })
-      const result = await createSession(claim, confidence)
+      const result = await createSession(claim, confidence, language)
 
-      expect(mockPost).toHaveBeenCalledWith('/sessions', { claim, confidence })
+      expect(mockPost).toHaveBeenCalledWith('/sessions', { claim, confidence, language })
       expect(result).toEqual({ sessionId })
     })
   })
@@ -65,9 +66,9 @@ describe('sse', () => {
   describe('suggestClaims', () => {
     it('suggests claims', async () => {
       mockPost.mockResolvedValueOnce({ data: { claims: suggestedClaims } })
-      const result = await suggestClaims()
+      const result = await suggestClaims(language)
 
-      expect(mockPost).toHaveBeenCalledWith('/suggest-claims')
+      expect(mockPost).toHaveBeenCalledWith('/suggest-claims', { language })
       expect(result).toEqual({ claims: suggestedClaims })
     })
   })
@@ -75,9 +76,9 @@ describe('sse', () => {
   describe('validateClaim', () => {
     it('validates a claim', async () => {
       mockPost.mockResolvedValueOnce({ data: validationResult })
-      const result = await validateClaim(claim)
+      const result = await validateClaim(claim, language)
 
-      expect(mockPost).toHaveBeenCalledWith('/validate-claim', { claim })
+      expect(mockPost).toHaveBeenCalledWith('/validate-claim', { claim, language })
       expect(result).toEqual(validationResult)
     })
   })

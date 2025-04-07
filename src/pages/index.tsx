@@ -14,8 +14,8 @@ import PrivacyLink from '@components/privacy-link'
 const exampleClaimSx = { color: 'text.secondary', fontStyle: 'italic', fontWeight: 700 }
 
 const Index = (): React.ReactNode => {
-  const onClaimSelect = async (claim: string, confidence: string) => {
-    const { sessionId } = await createSession(claim, confidence)
+  const onClaimSelect = async (claim: string, confidence: string, language: string) => {
+    const { sessionId } = await createSession(claim, confidence, language)
     navigate(`/s/${encodeURIComponent(sessionId)}`)
   }
 

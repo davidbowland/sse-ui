@@ -17,7 +17,7 @@ const selectedSx = { color: 'text.primary', fontStyle: 'italic', fontWeight: 700
 const unselectedSx = {}
 
 export interface ClaimPromptProps {
-  onClaimSelect: (claim: string, confidence: string) => void
+  onClaimSelect: (claim: string, confidence: string, language: string) => void
   skipFirstScroll?: boolean
 }
 
@@ -26,6 +26,9 @@ type ClaimPromptStage = 'input' | 'generating' | 'selecting' | 'confidence' | 's
 const ClaimPrompt = ({ onClaimSelect, skipFirstScroll }: ClaimPromptProps): React.ReactNode => {
   const [claimInput, setClaimInput] = useState<string>('')
   const [inputErrorMessage, setInputErrorMessage] = useState<string | undefined>(undefined)
+  const [language, setLanguage] = useState<string>(
+    (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('language')) || 'en-US',
+  )
   const [promptStage, setPromptStage] = useState<ClaimPromptStage>('input')
   const [skipScroll, setSkipScroll] = useState<boolean>(skipFirstScroll ?? false)
   const stageRef = useRef<HTMLDivElement>(null)
@@ -39,7 +42,7 @@ const ClaimPrompt = ({ onClaimSelect, skipFirstScroll }: ClaimPromptProps): Reac
     setClaimInput(claim)
     setPromptStage('generating')
     setInputErrorMessage(undefined)
-    const { inappropriate } = await validateClaim(claim)
+    const { inappropriate } = await validateClaim(claim, language)
     if (inappropriate) {
       setInputErrorMessage('Invalid or inappropriate claim')
       setPromptStage('input')
@@ -51,7 +54,7 @@ const ClaimPrompt = ({ onClaimSelect, skipFirstScroll }: ClaimPromptProps): Reac
   const onSuggestionsRequested = async () => {
     setPromptStage('generating')
     setInputErrorMessage(undefined)
-    await fetchSuggestedClaims()
+    await fetchSuggestedClaims(language)
     setPromptStage('selecting')
   }
 
@@ -69,7 +72,7 @@ const ClaimPrompt = ({ onClaimSelect, skipFirstScroll }: ClaimPromptProps): Reac
   /* Confidence */
 
   const onAcceptConfidence = (confidence: string) => {
-    onClaimSelect(claimInput, confidence)
+    onClaimSelect(claimInput, confidence, language)
     setPromptStage('submitted')
   }
 
@@ -129,7 +132,9 @@ const ClaimPrompt = ({ onClaimSelect, skipFirstScroll }: ClaimPromptProps): Reac
         <InputStage
           errorMessage={inputErrorMessage}
           initialClaim={claimInput}
+          language={language}
           onClaimSubmit={onClaimSubmit}
+          onLanguageChange={setLanguage}
           onSuggestionsRequested={onSuggestionsRequested}
         />
       )}

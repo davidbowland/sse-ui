@@ -24,8 +24,8 @@ export const fetchConfidenceLevels = async (): Promise<ConfidenceLevel[]> => {
 
 // Sessions
 
-export const createSession = async (claim: string, confidence: string): Promise<CreateSessionResult> => {
-  const response = await api.post('/sessions', { claim, confidence })
+export const createSession = async (claim: string, confidence: string, language: string): Promise<CreateSessionResult> => {
+  const response = await api.post('/sessions', { claim, confidence, language })
   return response.data
 }
 
@@ -36,15 +36,15 @@ export const fetchSession = async (sessionId: SessionId): Promise<Session> => {
 
 // Suggest claims
 
-export const suggestClaims = async (): Promise<SuggestedClaims> => {
-  const response = await api.post('/suggest-claims')
+export const suggestClaims = async (language: string): Promise<SuggestedClaims> => {
+  const response = await api.post('/suggest-claims', { language })
   return response.data
 }
 
 // Validate claim
 
-export const validateClaim = async (claim: string): Promise<ValidationResult> => {
-  const response = await api.post('/validate-claim', { claim })
+export const validateClaim = async (claim: string, language: string): Promise<ValidationResult> => {
+  const response = await api.post('/validate-claim', { claim, language })
   return response.data
 }
 

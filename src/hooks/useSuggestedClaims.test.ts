@@ -8,6 +8,7 @@ jest.mock('@services/sse')
 
 describe('useSuggestedClaims', () => {
   const claim = 'Bacon is delicious'
+  const language = 'en-US'
 
   beforeAll(() => {
     jest.mocked(sse).suggestClaims.mockResolvedValue({ claims: suggestedClaims })
@@ -24,7 +25,7 @@ describe('useSuggestedClaims', () => {
 
   it('fetches suggested claims', async () => {
     const { result } = renderHook(() => useSuggestedClaims())
-    await result.current.fetchSuggestedClaims()
+    await result.current.fetchSuggestedClaims(language)
 
     expect(sse.suggestClaims).toHaveBeenCalledTimes(1)
     await waitFor(() => expect(result.current.suggestedClaims).toEqual(suggestedClaims))
@@ -33,9 +34,9 @@ describe('useSuggestedClaims', () => {
   it('fetches suggested claims only once', async () => {
     const { result } = renderHook(() => useSuggestedClaims())
 
-    await result.current.fetchSuggestedClaims()
+    await result.current.fetchSuggestedClaims(language)
     await waitFor(() => expect(result.current.suggestedClaims).toEqual(suggestedClaims))
-    await result.current.fetchSuggestedClaims()
+    await result.current.fetchSuggestedClaims(language)
 
     expect(sse.suggestClaims).toHaveBeenCalledTimes(1)
     expect(result.current.suggestedClaims).toEqual(suggestedClaims)
@@ -44,7 +45,7 @@ describe('useSuggestedClaims', () => {
   it('returns nothing when there is an erro fetching claims', async () => {
     jest.mocked(sse).suggestClaims.mockRejectedValueOnce(new Error('Something went wrong'))
     const { result } = renderHook(() => useSuggestedClaims())
-    await result.current.fetchSuggestedClaims()
+    await result.current.fetchSuggestedClaims(language)
 
     expect(sse.suggestClaims).toHaveBeenCalledTimes(1)
     await waitFor(() => expect(result.current.suggestedClaims).toEqual([]))
@@ -52,7 +53,7 @@ describe('useSuggestedClaims', () => {
 
   it('validates a claim and suggests others', async () => {
     const { result } = renderHook(() => useSuggestedClaims())
-    const { inappropriate, isTruthClaim } = await result.current.validateClaim(claim)
+    const { inappropriate, isTruthClaim } = await result.current.validateClaim(claim, language)
 
     expect(sse.validateClaim).toHaveBeenCalledTimes(1)
     expect(inappropriate).toEqual(validationResult.inappropriate)
@@ -62,9 +63,9 @@ describe('useSuggestedClaims', () => {
 
   it('uses cached validation for duplicate requests', async () => {
     const { result } = renderHook(() => useSuggestedClaims())
-    await result.current.validateClaim(claim)
+    await result.current.validateClaim(claim, language)
     await waitFor(() => expect(result.current.suggestedClaims).toEqual([claim, ...suggestedClaims]))
-    const { inappropriate, isTruthClaim } = await result.current.validateClaim(claim)
+    const { inappropriate, isTruthClaim } = await result.current.validateClaim(claim, language)
 
     expect(sse.validateClaim).toHaveBeenCalledTimes(1)
     expect(inappropriate).toEqual(validationResult.inappropriate)
@@ -75,7 +76,7 @@ describe('useSuggestedClaims', () => {
   it('omits inappropriate truth claims from suggestions', async () => {
     jest.mocked(sse).validateClaim.mockResolvedValueOnce({ ...validationResult, inappropriate: true })
     const { result } = renderHook(() => useSuggestedClaims())
-    const { inappropriate, isTruthClaim } = await result.current.validateClaim(claim)
+    const { inappropriate, isTruthClaim } = await result.current.validateClaim(claim, language)
 
     expect(sse.validateClaim).toHaveBeenCalledTimes(1)
     expect(inappropriate).toEqual(true)
@@ -86,7 +87,7 @@ describe('useSuggestedClaims', () => {
   it("omits input that isn't a truth claim from suggestions", async () => {
     jest.mocked(sse).validateClaim.mockResolvedValueOnce({ ...validationResult, isTruthClaim: false })
     const { result } = renderHook(() => useSuggestedClaims())
-    const { inappropriate, isTruthClaim } = await result.current.validateClaim(claim)
+    const { inappropriate, isTruthClaim } = await result.current.validateClaim(claim, language)
 
     expect(sse.validateClaim).toHaveBeenCalledTimes(1)
     expect(inappropriate).toEqual(validationResult.inappropriate)
@@ -97,7 +98,7 @@ describe('useSuggestedClaims', () => {
   it('returns expected result when validate claim rejects', async () => {
     jest.mocked(sse).validateClaim.mockRejectedValueOnce(undefined)
     const { result } = renderHook(() => useSuggestedClaims())
-    const { inappropriate, isTruthClaim } = await result.current.validateClaim(claim)
+    const { inappropriate, isTruthClaim } = await result.current.validateClaim(claim, language)
 
     expect(sse.validateClaim).toHaveBeenCalledTimes(1)
     expect(inappropriate).toEqual(true)
