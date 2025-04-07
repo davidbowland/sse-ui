@@ -9,7 +9,12 @@ export interface ChatMessage {
   role: ChatRole
 }
 
-export type ChatStep = 'start' | 'probe-confidence' | 'probe-reasons' | 'guess-reasons' | 'end'
+export interface ConversationStep {
+  isFinalStep?: boolean
+  label: string
+  path: string
+  value: string
+}
 
 // Claims
 
@@ -40,12 +45,13 @@ export interface ConfidenceLevel {
 
 export interface LLMRequest {
   content: string
-  newConversation?: boolean
+  language?: string
 }
 
 export interface LLMResponse {
-  finished: boolean
+  currentStep: string
   history: ChatMessage[]
+  newConversation: boolean
 }
 
 // Sessions
@@ -60,11 +66,16 @@ export interface SessionContext {
   claim: string
   confidence: string
   generatedReasons: string[]
+  language: string
   possibleConfidenceLevels: ConfidenceLevel[]
 }
 
 export interface Session {
   context: SessionContext
+  conversationSteps: ConversationStep[]
+  currentStep?: string
   expiration: number
   history: ChatMessage[]
+  newConversation: boolean
+  originalConfidence: string
 }

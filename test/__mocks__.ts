@@ -1,11 +1,28 @@
 /* eslint-disable sort-keys */
-import { ChatMessage, LLMRequest, LLMResponse, Session, SessionContext, SessionId, Theme } from '@types'
+import {
+  ChatMessage,
+  ConversationStep,
+  LLMRequest,
+  LLMResponse,
+  Session,
+  SessionContext,
+  SessionId,
+  Theme,
+} from '@types'
 
 // Chat
 
 export const assistantMessage: ChatMessage = { content: 'Whatchu mean?', role: 'assistant' }
 export const newAssistantMessage: ChatMessage = { content: 'Why do you think that?', role: 'assistant' }
 export const userMessage: ChatMessage = { content: 'I think I saw a cat', role: 'user' }
+
+export const conversationSteps: ConversationStep[] = [
+  { label: 'Introduction', path: 'start-chat', value: 'start' },
+  { label: 'Confidence', path: 'probe-confidence', value: 'probe confidence' },
+  { label: 'Reasons', path: 'probe-reasons', value: 'probe reasons' },
+  { label: 'Opposing reasons', path: 'guess-reasons', value: 'guess reasons' },
+  { isFinalStep: true, label: 'Conclusion', path: 'end-chat', value: 'end' },
+]
 
 // Claims
 
@@ -42,8 +59,9 @@ export const llmRequest: LLMRequest = {
 }
 
 export const llmResponse: LLMResponse = {
-  finished: false,
+  currentStep: 'probe confidence',
   history: [assistantMessage, userMessage, newAssistantMessage],
+  newConversation: false,
 }
 
 // Sessions
@@ -53,14 +71,19 @@ export const sessionId: SessionId = '8675309'
 export const sessionContext: SessionContext = {
   claim: 'The Holy Roman Empire was neither Holy nor Roman nor an Empire.',
   confidence: 'strongly agree',
+  language: 'en-US',
   generatedReasons: ["They're animatronic"],
   possibleConfidenceLevels: confidenceLevels,
 }
 
 export const session: Session = {
   context: sessionContext,
+  conversationSteps,
+  currentStep: 'probe confidence',
   expiration: 1743407368,
   history: [userMessage, assistantMessage],
+  newConversation: true,
+  originalConfidence: 'strongly agree',
 }
 
 // Themes

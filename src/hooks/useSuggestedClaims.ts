@@ -21,7 +21,7 @@ export const useSuggestedClaims = () => {
         const { claims } = await suggestClaims(language)
         setSuggestedClaims(claims)
         setAiClaims(claims)
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching suggested claims', { error })
       }
     }
@@ -38,9 +38,12 @@ export const useSuggestedClaims = () => {
       const { inappropriate, isTruthClaim, suggestions } = await postValidateClaim(claim, language)
       const newSuggestions = !inappropriate && isTruthClaim ? [claim, ...suggestions] : suggestions
       setSuggestedClaims(newSuggestions)
-      setValidatedClaims((prevValue: any) => ({ ...prevValue, [claim + language]: { inappropriate, isTruthClaim, suggestions: newSuggestions } }))
+      setValidatedClaims((prevValue: any) => ({
+        ...prevValue,
+        [claim + language]: { inappropriate, isTruthClaim, suggestions: newSuggestions },
+      }))
       return { inappropriate, isTruthClaim }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error validating claim', { error })
       return { inappropriate: true, isTruthClaim: false }
     }

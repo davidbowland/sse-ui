@@ -24,7 +24,11 @@ export const fetchConfidenceLevels = async (): Promise<ConfidenceLevel[]> => {
 
 // Sessions
 
-export const createSession = async (claim: string, confidence: string, language: string): Promise<CreateSessionResult> => {
+export const createSession = async (
+  claim: string,
+  confidence: string,
+  language: string,
+): Promise<CreateSessionResult> => {
   const response = await api.post('/sessions', { claim, confidence, language })
   return response.data
 }
@@ -50,17 +54,7 @@ export const validateClaim = async (claim: string, language: string): Promise<Va
 
 // LLM prompts
 
-export const sendGuessReasonsMessage = async (sessionId: SessionId, request: LLMRequest): Promise<LLMResponse> => {
-  const response = await api.post(`/sessions/${encodeURIComponent(sessionId)}/guess-reasons`, request)
-  return response.data
-}
-
-export const sendProbeConfidenceMessage = async (sessionId: SessionId, request: LLMRequest): Promise<LLMResponse> => {
-  const response = await api.post(`/sessions/${encodeURIComponent(sessionId)}/probe-confidence`, request)
-  return response.data
-}
-
-export const sendProbeReasonsMessage = async (sessionId: SessionId, request: LLMRequest): Promise<LLMResponse> => {
-  const response = await api.post(`/sessions/${encodeURIComponent(sessionId)}/probe-reasons`, request)
+export const sendLlmMessage = async (sessionId: SessionId, path: string, request: LLMRequest): Promise<LLMResponse> => {
+  const response = await api.post(`/sessions/${encodeURIComponent(sessionId)}/${encodeURIComponent(path)}`, request)
   return response.data
 }

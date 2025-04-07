@@ -41,7 +41,7 @@ const Index = (): React.ReactNode => {
                 </Typography>
                 , or as profound as{' '}
                 <Typography component="span" sx={exampleClaimSx}>
-                  my spouse loves me
+                  God exists
                 </Typography>
                 . Enter a truth claim below to get started or have some claims suggested for you.
               </Typography>

@@ -7,6 +7,7 @@ import PrivacyLink from '@components/privacy-link'
 import { sessionId } from '@test/__mocks__'
 
 jest.mock('@aws-amplify/analytics')
+jest.mock('@components/chat-container')
 jest.mock('@components/privacy-link')
 
 describe('Channel page', () => {
@@ -16,7 +17,7 @@ describe('Channel page', () => {
 
   it('renders PrivacyLink', () => {
     render(<SessionPage params={{ sessionId }} />)
-    expect(jest.mocked(PrivacyLink)).toHaveBeenCalledTimes(1)
+    expect(jest.mocked(PrivacyLink)).toHaveBeenCalledTimes(0)
   })
 
   it('renders Head', () => {

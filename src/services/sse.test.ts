@@ -8,16 +8,7 @@ import {
   suggestedClaims,
   validationResult,
 } from '@test/__mocks__'
-import {
-  createSession,
-  fetchConfidenceLevels,
-  fetchSession,
-  sendGuessReasonsMessage,
-  sendProbeConfidenceMessage,
-  sendProbeReasonsMessage,
-  suggestClaims,
-  validateClaim,
-} from './sse'
+import { createSession, fetchConfidenceLevels, fetchSession, sendLlmMessage, suggestClaims, validateClaim } from './sse'
 
 const mockGet = jest.fn()
 const mockPost = jest.fn()
@@ -83,32 +74,12 @@ describe('sse', () => {
     })
   })
 
-  describe('sendGuessReasonsMessage', () => {
+  describe('sendLlmMessage', () => {
     it('sends a guess reasons message', async () => {
       mockPost.mockResolvedValueOnce({ data: llmResponse })
-      const result = await sendGuessReasonsMessage(sessionId, llmRequest)
+      const result = await sendLlmMessage(sessionId, 'llm-message', llmRequest)
 
-      expect(mockPost).toHaveBeenCalledWith(`/sessions/${sessionId}/guess-reasons`, llmRequest)
-      expect(result).toEqual(llmResponse)
-    })
-  })
-
-  describe('sendProbeConfidenceMessage', () => {
-    it('sends a guess reasons message', async () => {
-      mockPost.mockResolvedValueOnce({ data: llmResponse })
-      const result = await sendProbeConfidenceMessage(sessionId, llmRequest)
-
-      expect(mockPost).toHaveBeenCalledWith(`/sessions/${sessionId}/probe-confidence`, llmRequest)
-      expect(result).toEqual(llmResponse)
-    })
-  })
-
-  describe('sendProbeReasonsMessage', () => {
-    it('sends a guess reasons message', async () => {
-      mockPost.mockResolvedValueOnce({ data: llmResponse })
-      const result = await sendProbeReasonsMessage(sessionId, llmRequest)
-
-      expect(mockPost).toHaveBeenCalledWith(`/sessions/${sessionId}/probe-reasons`, llmRequest)
+      expect(mockPost).toHaveBeenCalledWith(`/sessions/${sessionId}/llm-message`, llmRequest)
       expect(result).toEqual(llmResponse)
     })
   })

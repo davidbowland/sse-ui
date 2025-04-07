@@ -1,35 +1,28 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
-import { ChatMessage, ChatStep, ConfidenceLevel, LLMResponse, Session } from '@types'
-import {
-  fetchSession,
-  sendGuessReasonsMessage,
-  sendProbeConfidenceMessage,
-  sendProbeReasonsMessage,
-} from '@services/sse'
-
-const CHAT_STEP_HANDLERS = {
-  end: () => ({}) as LLMResponse,
-  'guess-reasons': sendGuessReasonsMessage,
-  'probe-confidence': sendProbeConfidenceMessage,
-  'probe-reasons': sendProbeReasonsMessage,
-  start: () => ({}) as LLMResponse,
-}
+import { ChatMessage, ConfidenceLevel, ConversationStep, Session } from '@types'
+import { fetchSession, sendLlmMessage } from '@services/sse'
 
 export interface UseSessionResults {
-  chatStep: ChatStep
+  chatStep?: string
   claim?: string
   confidence?: string
   confidenceLevels: ConfidenceLevel[]
+  conversationSteps: ConversationStep[]
+  finished: boolean
   history: ChatMessage[]
   isLoading: boolean
   sendChatMessage: (message: string) => void
 }
 
 export const useSession = (sessionId: string): UseSessionResults => {
-  const [chatStep, setChatStep] = useState<ChatStep>('start')
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [session, setSession] = useState<Session | undefined>(undefined)
+
+  const currentStep = useMemo(
+    () => session?.conversationSteps.find((step) => step.value === session.currentStep),
+    [session],
+  )
 
   const addMessageToHistory = (message: ChatMessage): void => {
     setSession((prevSession) => {
@@ -44,76 +37,79 @@ export const useSession = (sessionId: string): UseSessionResults => {
     })
   }
 
-  const nextChatStep = () => {
-    if (chatStep === 'start') {
-      setChatStep('probe-confidence')
-    } else if (chatStep === 'probe-confidence') {
-      setChatStep('probe-reasons')
-    } else if (chatStep === 'probe-reasons') {
-      setChatStep('guess-reasons')
-    } else if (chatStep === 'guess-reasons') {
-      setChatStep('end')
-      setIsLoading(false)
-    }
-  }
-
-  const sendToLlm = CHAT_STEP_HANDLERS[chatStep]
-
   const sendChatMessage = async (message: string, newConversation?: boolean): Promise<void> => {
-    if (!newConversation) {
+    if (!currentStep) {
+      return
+    } else if (!newConversation) {
       addMessageToHistory({ content: message, role: 'user' })
     }
     setIsLoading(true)
 
-    const response = await sendToLlm(sessionId, { content: message, newConversation })
-    setSession((prevSession) => (prevSession === undefined ? undefined : { ...prevSession, history: response.history }))
-    if (response.finished) {
-      nextChatStep()
-    } else {
+    const response = await sendLlmMessage(sessionId, currentStep.path, {
+      content: message,
+      language: session?.context.language,
+    })
+    setSession((prevSession) =>
+      prevSession === undefined
+        ? undefined
+        : {
+          ...prevSession,
+          currentStep: response.currentStep,
+          history: response.history,
+          newConversation: response.newConversation,
+        },
+    )
+
+    if (!response.newConversation) {
       setIsLoading(false)
     }
   }
 
   useEffect(() => {
-    if (session) {
-      if (chatStep === 'probe-confidence' || chatStep === 'probe-reasons' || chatStep === 'guess-reasons') {
-        sendChatMessage(`I ${session.context.confidence} with the claim: ${session.context.claim}`, true)
-      } else if (chatStep === 'start') {
-        nextChatStep()
-      }
+    if (session?.newConversation && currentStep) {
+      const text = session.context.possibleConfidenceLevels.find(
+        (level) => level.value === session.context.confidence,
+      )?.text
+      sendChatMessage(`I ${text} with the claim: ${session.context.claim}`, true)
     }
-  }, [chatStep])
+  }, [currentStep])
 
   useEffect(() => {
-    setChatStep('end')
     setIsLoading(true)
     setSession(undefined)
 
-    fetchSession(sessionId).then((session) => {
-      setSession(session)
-      setChatStep('start')
-    }).catch((error) => {
-      console.error('Error fetching session', { error })
-    })
+    fetchSession(sessionId)
+      .then((session) => {
+        setSession(session)
+        setIsLoading(session.newConversation)
+      })
+      .catch((error) => {
+        console.error('Error fetching session', { error })
+      })
   }, [sessionId])
 
   if (session === undefined) {
     return {
-      chatStep,
+      chatStep: undefined,
       claim: undefined,
       confidence: undefined,
       confidenceLevels: [],
+      conversationSteps: [],
+      finished: true,
       history: [],
       isLoading,
       sendChatMessage,
     }
   }
 
+  const finished = !!currentStep?.isFinalStep && !session.newConversation
   return {
-    chatStep,
+    chatStep: currentStep?.value,
     claim: session.context.claim,
     confidence: session.context.confidence,
     confidenceLevels: session.context.possibleConfidenceLevels,
+    conversationSteps: session.conversationSteps,
+    finished,
     history: session.history,
     isLoading,
     sendChatMessage,

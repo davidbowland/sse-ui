@@ -23,16 +23,17 @@ export interface ChatContainerProps {
   onConfidenceChange: (confidence: string) => void
 }
 
-const ChatContainer = ({ children, confidenceLevels, initialConfidence, onConfidenceChange }: ChatContainerProps): React.ReactNode => {
+const ChatContainer = ({
+  children,
+  confidenceLevels,
+  initialConfidence,
+  onConfidenceChange,
+}: ChatContainerProps): React.ReactNode => {
   const [confidence, setConfidence] = useState<string | undefined>(initialConfidence)
 
   const onChatConfidenceChange = (value: string) => {
     setConfidence(value)
     onConfidenceChange(value)
-  }
-
-  const newClaim = () => {
-    navigate('/')
   }
 
   return (
@@ -44,7 +45,11 @@ const ChatContainer = ({ children, confidenceLevels, initialConfidence, onConfid
               <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center' }}>
                 <Box>
                   <ChatIcon sx={{ mr: 1 }} />
-                  <Typography noWrap sx={{ display: 'inline-block', fontWeight: 700, letterSpacing: '0.2rem' }} variant="body1">
+                  <Typography
+                    noWrap
+                    sx={{ display: 'inline-block', fontWeight: 700, letterSpacing: '0.2rem' }}
+                    variant="body1"
+                  >
                     StreetLogic AI
                   </Typography>
                 </Box>
@@ -54,23 +59,30 @@ const ChatContainer = ({ children, confidenceLevels, initialConfidence, onConfid
               <FormControl sx={{ minWidth: { sm: 600, xs: '100%' } }}>
                 <InputLabel id="confidence-select-label">Confidence</InputLabel>
                 <Select
-                  aria-label='Confidence'
+                  aria-label="Confidence"
                   id="confidence-select"
                   label="Confidence"
-                  labelId='confidence-select-label'
+                  labelId="confidence-select-label"
                   onChange={(e) => onChatConfidenceChange(e.target.value)}
                   value={confidence}
                 >
                   {confidenceLevels.map((level, index) => (
-                    <MenuItem key={index} value={level.value}>{level.label}</MenuItem>
+                    <MenuItem key={index} value={level.value}>
+                      {level.label}
+                    </MenuItem>
                   ))}
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item lg={2} order={{ lg: 3, xs: 2 }} sm={6} sx={{ paddingRight: { sm: 1, xs: 0} }} xs={12}>
+            <Grid item lg={2} order={{ lg: 3, xs: 2 }} sm={6} sx={{ paddingRight: { sm: 1, xs: 0 } }} xs={12}>
               <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center' }}>
                 <Box sx={{ textAlign: 'center' }}>
-                  <Button onClick={newClaim} startIcon={<AddCommentIcon />} sx={{ maxWidth: 250, width: '100%' }} variant='contained'>
+                  <Button
+                    onClick={() => navigate('/')}
+                    startIcon={<AddCommentIcon />}
+                    sx={{ maxWidth: 250, width: '100%' }}
+                    variant="contained"
+                  >
                     New claim
                   </Button>
                 </Box>
@@ -79,9 +91,7 @@ const ChatContainer = ({ children, confidenceLevels, initialConfidence, onConfid
           </Grid>
         </Toolbar>
       </AppBar>
-      <Box>
-        {children}
-      </Box>
+      <Box>{children}</Box>
       <Box sx={{ textAlign: 'center' }}>
         <PrivacyLink />
       </Box>
