@@ -54,7 +54,6 @@ const ChatWindow = ({ finished, history, isTyping, sendChatMessage }: ChatWindow
       <Grid container>
         <Grid item padding={2} sm={9} xs={12}>
           <TextField
-            autoFocus={true}
             label="Message"
             maxRows={4}
             multiline
@@ -93,7 +92,12 @@ const ChatWindow = ({ finished, history, isTyping, sendChatMessage }: ChatWindow
           {history.map((message: ChatMessage, index: number) => (
             <MessageDisplay key={index} role={message.role}>
               {message.content.split('\n').map((line, lineNum) => (
-                <Typography key={lineNum} ref={messageRef} variant="body1">
+                <Typography
+                  key={lineNum}
+                  ref={messageRef}
+                  sx={{ fontSize: { md: '1.0rem', sm: '0.9rem', xs: '0.8rem' } }}
+                  variant="body1"
+                >
                   {line}
                 </Typography>
               ))}
@@ -132,8 +136,8 @@ const MessageDisplay = ({ children, role }: MessageDisplayProps): React.ReactNod
 
   return (
     <Grid container>
-      {role === 'assistant' && <Grid item xs={5} />}
-      <Grid item textAlign="right" xs={7}>
+      {role === 'assistant' && <Grid item sm={3} xs={2} />}
+      <Grid item sm={9} xs={10}>
         <Paper
           elevation={3}
           sx={{ backgroundColor, color, display: 'inline-block', padding: 2, textAlign: 'left', width: '100%' }}
@@ -141,7 +145,7 @@ const MessageDisplay = ({ children, role }: MessageDisplayProps): React.ReactNod
           {children}
         </Paper>
       </Grid>
-      {role === 'user' && <Grid item xs={5} />}
+      {role === 'user' && <Grid item sm={3} xs={2} />}
     </Grid>
   )
 }
