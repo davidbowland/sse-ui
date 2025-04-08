@@ -16,7 +16,7 @@ const exampleClaimSx = { color: 'text.secondary', fontStyle: 'italic', fontWeigh
 const Index = (): React.ReactNode => {
   const onClaimSelect = async (claim: string, confidence: string, language: string) => {
     const { sessionId } = await createSession(claim, confidence, language)
-    navigate(`/s/${encodeURIComponent(sessionId)}`)
+    navigate(`/c/${encodeURIComponent(sessionId)}`)
   }
 
   return (

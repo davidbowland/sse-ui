@@ -6,6 +6,7 @@ import Index, { Head } from './index'
 import PrivacyLink from '@components/privacy-link'
 
 jest.mock('@aws-amplify/analytics')
+jest.mock('@components/claim-prompt')
 jest.mock('@components/privacy-link')
 
 describe('Index page', () => {

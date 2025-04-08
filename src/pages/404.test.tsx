@@ -32,13 +32,13 @@ describe('404 error page', () => {
   })
 
   it('renders nothing for session paths', () => {
-    window.location.pathname = '/s/aeiou'
+    window.location.pathname = '/c/aeiou'
     render(<NotFound />)
     expect(jest.mocked(ServerErrorMessage)).toHaveBeenCalledTimes(0)
   })
 
   it('renders ServerErrorMessage when the path name extends beyond sessionId', () => {
-    window.location.pathname = '/s/aeiou/y'
+    window.location.pathname = '/c/aeiou/y'
     render(<NotFound />)
     expect(jest.mocked(ServerErrorMessage)).toHaveBeenCalledTimes(1)
   })
