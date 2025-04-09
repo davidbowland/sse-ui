@@ -82,17 +82,17 @@ const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: 
     )
   }
 
-  useEffect(() => {
-    if (messageRef.current) {
+  const scrollIntoView = () => {
+    if (typingIndicatorRef.current) {
+      typingIndicatorRef.current.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
+    } else if (messageRef.current) {
       messageRef.current.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
     }
-  }, [history])
+  }
 
   useEffect(() => {
-    if (isTyping && typingIndicatorRef.current) {
-      typingIndicatorRef.current.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
-    }
-  }, [isTyping])
+    setTimeout(scrollIntoView, 10)
+  }, [history])
 
   return (
     <Stack spacing={2}>
@@ -153,9 +153,17 @@ const MessageDisplay = forwardRef(
         <Grid item sm={9} xs={10}>
           <Paper
             elevation={3}
-            sx={{ backgroundColor, color, display: 'inline-block', padding: 2, textAlign: 'left', width: '100%' }}
+            sx={{
+              backgroundColor,
+              borderRadius: 4,
+              color,
+              display: 'inline-block',
+              padding: 2,
+              textAlign: 'left',
+              width: '100%',
+            }}
           >
-            {children}
+            <Stack spacing={1}>{children}</Stack>
           </Paper>
         </Grid>
         {role === 'user' && <Grid item sm={3} xs={2} />}
