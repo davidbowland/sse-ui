@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 import {
+  ConfidenceChangeResponse,
   ConfidenceLevel,
   CreateSessionResult,
   LLMRequest,
@@ -20,6 +21,11 @@ const api = axios.create({
 export const fetchConfidenceLevels = async (): Promise<ConfidenceLevel[]> => {
   const response = await api.get('/confidence-levels')
   return response.data.confidenceLevels
+}
+
+export const changeConfidence = async (sessionId: SessionId, confidence: string): Promise<ConfidenceChangeResponse> => {
+  const response = await api.post(`/sessions/${encodeURIComponent(sessionId)}/change-confidence`, { confidence })
+  return response.data
 }
 
 // Sessions

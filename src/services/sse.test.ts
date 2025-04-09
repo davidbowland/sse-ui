@@ -1,4 +1,14 @@
 import {
+  changeConfidence,
+  createSession,
+  fetchConfidenceLevels,
+  fetchSession,
+  sendLlmMessage,
+  suggestClaims,
+  validateClaim,
+} from './sse'
+import {
+  confidenceChangeResponse,
   confidenceLevels,
   llmRequest,
   llmResponse,
@@ -8,7 +18,6 @@ import {
   suggestedClaims,
   validationResult,
 } from '@test/__mocks__'
-import { createSession, fetchConfidenceLevels, fetchSession, sendLlmMessage, suggestClaims, validateClaim } from './sse'
 
 const mockGet = jest.fn()
 const mockPost = jest.fn()
@@ -31,6 +40,17 @@ describe('sse', () => {
 
       expect(mockGet).toHaveBeenCalledWith('/confidence-levels')
       expect(result).toEqual(confidenceLevels)
+    })
+  })
+
+  describe('changeConfidence', () => {
+    it('changes confidence', async () => {
+      const newConfidence = confidenceChangeResponse.confidence
+      mockPost.mockResolvedValueOnce({ data: confidenceChangeResponse })
+      const result = await changeConfidence(sessionId, newConfidence)
+
+      expect(mockPost).toHaveBeenCalledWith(`/sessions/${sessionId}/change-confidence`, { confidence: newConfidence })
+      expect(result).toEqual(confidenceChangeResponse)
     })
   })
 

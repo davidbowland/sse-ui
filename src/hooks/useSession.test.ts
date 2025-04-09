@@ -1,8 +1,8 @@
 import { renderHook, waitFor } from '@testing-library/react'
 
 import * as sse from '@services/sse'
+import { confidenceChangeResponse, llmResponse, session, sessionContext, sessionId } from '@test/__mocks__'
 import { LLMRequest, LLMResponse } from '@types'
-import { llmResponse, session, sessionContext, sessionId } from '@test/__mocks__'
 import { useSession } from './useSession'
 
 jest.mock('@services/sse')
@@ -14,6 +14,7 @@ describe('useSession', () => {
   }
 
   beforeAll(() => {
+    jest.mocked(sse).changeConfidence.mockResolvedValue(confidenceChangeResponse)
     jest.mocked(sse).createSession.mockResolvedValue({ sessionId })
     jest.mocked(sse).fetchSession.mockResolvedValue(session)
     jest.mocked(sse).sendLlmMessage.mockResolvedValue(llmResponse)
@@ -63,6 +64,23 @@ describe('useSession', () => {
     result.current.sendChatMessage(message)
     await waitFor(() =>
       expect(sse.sendLlmMessage).toHaveBeenCalledWith(sessionId, 'probe-confidence', {
+        content: message,
+      }),
+    )
+  })
+
+  it('sends a confidence change', async () => {
+    const message = 'I am a fish called Wanda'
+    const { result } = renderHook(() => useSession(sessionId))
+
+    await waitFor(() => expect(result.current.chatStep).toEqual('probe confidence'))
+    result.current.onChangeConfidence(confidenceChangeResponse.confidence)
+    await waitFor(() => expect(result.current.chatStep).toEqual('confidence changed'))
+    expect(sse.changeConfidence).toHaveBeenCalledWith(sessionId, confidenceChangeResponse.confidence)
+
+    result.current.sendChatMessage(message)
+    await waitFor(() =>
+      expect(sse.sendLlmMessage).toHaveBeenCalledWith(sessionId, 'new-confidence', {
         content: message,
       }),
     )
