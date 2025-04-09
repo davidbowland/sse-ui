@@ -31,9 +31,11 @@ const ChatContainer = ({
 }: ChatContainerProps): React.ReactNode => {
   const [confidence, setConfidence] = useState<string | undefined>(initialConfidence)
 
-  const onChatConfidenceChange = (value: string) => {
-    setConfidence(value)
-    onConfidenceChange(value)
+  const onChangeOptionList = (value: string) => {
+    if (value) {
+      setConfidence(value)
+      onConfidenceChange(value)
+    }
   }
 
   return (
@@ -63,7 +65,7 @@ const ChatContainer = ({
                   id="confidence-select"
                   label="Confidence"
                   labelId="confidence-select-label"
-                  onChange={(e) => onChatConfidenceChange(e.target.value)}
+                  onChange={(e) => onChangeOptionList(e.target.value)}
                   value={confidence}
                 >
                   {confidenceLevels.map((level, index) => (

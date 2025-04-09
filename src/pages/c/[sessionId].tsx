@@ -31,14 +31,9 @@ const SessionPage = ({ params }: SessionPageProps): React.ReactNode => {
     finished,
     history,
     isLoading,
+    onChangeConfidence,
     sendChatMessage,
   } = useSession(params.sessionId)
-
-  const onConfidenceChange = (confidence: string) => {
-    if (confidence === undefined) {
-      return
-    }
-  }
 
   return (
     <main style={{ minHeight: '90vh' }}>
@@ -46,7 +41,7 @@ const SessionPage = ({ params }: SessionPageProps): React.ReactNode => {
         confidenceLevels={confidenceLevels}
         initialConfidence={confidence}
         key={claim}
-        onConfidenceChange={onConfidenceChange}
+        onConfidenceChange={onChangeConfidence}
       >
         <Grid container sx={{ padding: { sm: '50px', xs: '25px 10px' } }}>
           <Grid item sx={{ m: 'auto', maxWidth: 1200, width: '100%' }}>

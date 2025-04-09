@@ -1,6 +1,7 @@
 /* eslint-disable sort-keys */
 import {
   ChatMessage,
+  ConfidenceChangeResponse,
   ConversationStep,
   Dividers,
   LLMRequest,
@@ -54,6 +55,13 @@ export const confidenceLevels = [
   { label: 'Disagree', text: 'disagree', value: 'disagree' },
   { label: 'Strongly disagree', text: 'strongly disagree', value: 'strongly disagree' },
 ]
+
+export const confidenceChangeResponse: ConfidenceChangeResponse = {
+  confidence: 'disagree',
+  dividers,
+  newConversation: false,
+  overrideStep: { label: 'Confidence change', path: 'new-confidence', value: 'confidence changed' },
+}
 
 // LLM prompts
 

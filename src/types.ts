@@ -47,6 +47,13 @@ export interface ConfidenceLevel {
   value: string
 }
 
+export interface ConfidenceChangeResponse {
+  confidence: string
+  dividers: Dividers
+  newConversation: boolean
+  overrideStep: ConversationStep
+}
+
 // LLM prompts
 
 export interface LLMRequest {
@@ -58,6 +65,7 @@ export interface LLMResponse {
   dividers: Dividers
   history: ChatMessage[]
   newConversation: boolean
+  overrideStep?: ConversationStep
 }
 
 // Sessions
@@ -86,4 +94,5 @@ export interface Session {
   newConversation: boolean
   originalConfidence: string
   overrideStep?: ConversationStep
+  storedMessage?: ChatMessage
 }

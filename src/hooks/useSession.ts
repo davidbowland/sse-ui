@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 
+import { changeConfidence, fetchSession, sendLlmMessage } from '@services/sse'
 import { ChatMessage, ConfidenceLevel, ConversationStep, Dividers, Session } from '@types'
-import { fetchSession, sendLlmMessage } from '@services/sse'
 
 export interface UseSessionResults {
   chatStep?: string
@@ -13,6 +13,7 @@ export interface UseSessionResults {
   finished: boolean
   history: ChatMessage[]
   isLoading: boolean
+  onChangeConfidence: (confidence: string) => void
   sendChatMessage: (message: string) => void
 }
 
@@ -21,7 +22,7 @@ export const useSession = (sessionId: string): UseSessionResults => {
   const [session, setSession] = useState<Session | undefined>(undefined)
 
   const currentStep = useMemo(
-    () => session?.conversationSteps.find((step) => step.value === session.currentStep),
+    () => session?.overrideStep ?? session?.conversationSteps.find((step) => step.value === session.currentStep),
     [session],
   )
 
@@ -54,10 +55,8 @@ export const useSession = (sessionId: string): UseSessionResults => {
         ? undefined
         : {
           ...prevSession,
-          currentStep: response.currentStep,
-          dividers: response.dividers,
-          history: response.history,
-          newConversation: response.newConversation,
+          ...response,
+          overrideStep: response.overrideStep,
         },
     )
 
@@ -66,11 +65,34 @@ export const useSession = (sessionId: string): UseSessionResults => {
     }
   }
 
+  const onChangeConfidence = async (newConfidence: string): Promise<void> => {
+    if (!session || newConfidence === session?.context.confidence) {
+      return
+    }
+
+    setIsLoading(true)
+    const { confidence, dividers, newConversation, overrideStep } = await changeConfidence(sessionId, newConfidence)
+    setSession((prevSession) =>
+      prevSession === undefined
+        ? undefined
+        : {
+          ...prevSession,
+          context: {
+            ...prevSession.context,
+            confidence,
+          },
+          dividers,
+          newConversation,
+          overrideStep,
+        },
+    )
+  }
+
   useEffect(() => {
     if (session?.newConversation && currentStep) {
-      const text = session.context.possibleConfidenceLevels.find(
-        (level) => level.value === session.context.confidence,
-      )?.text
+      const text =
+        session.context.possibleConfidenceLevels.find((level) => level.value === session.context.confidence)?.text ??
+        session.context.confidence
       sendChatMessage(`I ${text} with the claim: ${session.context.claim}`, true)
     }
   }, [currentStep])
@@ -100,6 +122,7 @@ export const useSession = (sessionId: string): UseSessionResults => {
       finished: true,
       history: [],
       isLoading,
+      onChangeConfidence,
       sendChatMessage,
     }
   }
@@ -115,6 +138,7 @@ export const useSession = (sessionId: string): UseSessionResults => {
     finished,
     history: session.history,
     isLoading,
+    onChangeConfidence,
     sendChatMessage,
   }
 }

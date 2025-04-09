@@ -60,7 +60,7 @@ const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: 
             label="Message"
             maxRows={4}
             multiline
-            onChange={(e: any) => setMessage(e.target.value)}
+            onInput={(e: any) => setMessage(e.target.value)}
             onKeyUp={(e: any) => e.key === 'Enter' && sendMessage()}
             sx={{ width: '100%' }}
             value={message.slice(0, MAX_CHAT_LENGTH)}

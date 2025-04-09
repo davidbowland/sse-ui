@@ -45,6 +45,10 @@ const InputStage = ({
     )
   }
 
+  const submitClaim = () => {
+    onClaimSubmit(claimInput)
+  }
+
   return (
     <Stack spacing={2} sx={{ margin: 'auto', maxWidth: 'l', padding: 2, textAlign: 'center', width: '100%"' }}>
       <Box>
@@ -54,7 +58,7 @@ const InputStage = ({
         error={errorMessage !== undefined}
         helperText={errorMessage}
         label="Truth claim"
-        onChange={(e: any) => setClaimInput(e.target.value)}
+        onInput={(e: any) => setClaimInput(e.target.value)}
         sx={{ width: '100%' }}
         value={claimInput}
         variant="outlined"
@@ -66,7 +70,7 @@ const InputStage = ({
           </Button>
         }
         button2={
-          <Button onClick={() => onClaimSubmit(claimInput)} sx={{ width: '100%' }} variant="contained">
+          <Button onClick={submitClaim} sx={{ width: '100%' }} variant="contained">
             Submit
           </Button>
         }
