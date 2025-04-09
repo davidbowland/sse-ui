@@ -16,6 +16,12 @@ export interface ConversationStep {
   value: string
 }
 
+export interface Dividers {
+  [key: number]: {
+    label: string
+  }
+}
+
 // Claims
 
 export interface SuggestedClaims {
@@ -45,11 +51,11 @@ export interface ConfidenceLevel {
 
 export interface LLMRequest {
   content: string
-  language?: string
 }
 
 export interface LLMResponse {
   currentStep: string
+  dividers: Dividers
   history: ChatMessage[]
   newConversation: boolean
 }
@@ -74,8 +80,10 @@ export interface Session {
   context: SessionContext
   conversationSteps: ConversationStep[]
   currentStep?: string
+  dividers: Dividers
   expiration: number
   history: ChatMessage[]
   newConversation: boolean
   originalConfidence: string
+  overrideStep?: ConversationStep
 }

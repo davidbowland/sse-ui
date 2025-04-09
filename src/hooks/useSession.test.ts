@@ -11,7 +11,6 @@ describe('useSession', () => {
   const finishedLlmResponse: LLMResponse = { ...llmResponse, newConversation: true }
   const llmRequest: LLMRequest = {
     content: `I ${sessionContext.confidence} with the claim: ${sessionContext.claim}`,
-    language: 'en-US',
   }
 
   beforeAll(() => {
@@ -32,6 +31,7 @@ describe('useSession', () => {
     expect(result.current.confidence).toEqual(sessionContext.confidence)
     expect(result.current.confidenceLevels).toEqual(session.context.possibleConfidenceLevels)
     expect(result.current.conversationSteps).toEqual(session.conversationSteps)
+    expect(result.current.dividers).toEqual(session.dividers)
     expect(result.current.finished).toBeFalsy()
     expect(result.current.history).toEqual(llmResponse.history)
     expect(result.current.isLoading).toEqual(false)
@@ -64,7 +64,6 @@ describe('useSession', () => {
     await waitFor(() =>
       expect(sse.sendLlmMessage).toHaveBeenCalledWith(sessionId, 'probe-confidence', {
         content: message,
-        language: 'en-US',
       }),
     )
   })

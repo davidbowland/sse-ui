@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { ForwardedRef, forwardRef, useEffect, useRef, useState } from 'react'
 import AddCommentIcon from '@mui/icons-material/AddComment'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import Divider from '@mui/material/Divider'
 import Grid from '@mui/material/Grid'
 import { navigate } from 'gatsby'
 import Paper from '@mui/material/Paper'
@@ -11,21 +12,23 @@ import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
-import { ChatMessage, ChatRole } from '@types'
+import { ChatMessage, ChatRole, Dividers } from '@types'
 
 const MAX_CHAT_LENGTH = 500
 
 export interface ChatWindowProps {
+  dividers: Dividers
   finished: boolean
   history: ChatMessage[]
   isTyping: boolean
   sendChatMessage: (message: string) => void
 }
 
-const ChatWindow = ({ finished, history, isTyping, sendChatMessage }: ChatWindowProps): React.ReactNode => {
+const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: ChatWindowProps): React.ReactNode => {
   const [message, setMessage] = useState<string>('')
 
   const messageRef = useRef<HTMLDivElement>(null)
+  const typingIndicatorRef = useRef<HTMLDivElement>(null)
 
   const sendMessage = () => {
     if (!isTyping && message.length) {
@@ -52,7 +55,7 @@ const ChatWindow = ({ finished, history, isTyping, sendChatMessage }: ChatWindow
   const genereateTextInput = () => {
     return (
       <Grid container>
-        <Grid item padding={2} sm={9} xs={12}>
+        <Grid item sm={9} sx={{ padding: 2 }} xs={12}>
           <TextField
             label="Message"
             maxRows={4}
@@ -64,7 +67,7 @@ const ChatWindow = ({ finished, history, isTyping, sendChatMessage }: ChatWindow
             variant="outlined"
           />
         </Grid>
-        <Grid item padding={2} sm={3} xs={12}>
+        <Grid item sm={3} sx={{ padding: 2 }} xs={12}>
           <Button
             disabled={finished || isTyping || !message.length}
             onClick={sendMessage}
@@ -85,26 +88,35 @@ const ChatWindow = ({ finished, history, isTyping, sendChatMessage }: ChatWindow
     }
   }, [history])
 
+  useEffect(() => {
+    if (isTyping && typingIndicatorRef.current) {
+      typingIndicatorRef.current.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
+    }
+  }, [isTyping])
+
   return (
     <Stack spacing={2}>
       <Paper elevation={3} sx={{ flexGrow: 1 }}>
-        <Stack padding={2} spacing={2} sx={{ maxHeight: '80vh', minHeight: '60vh', overflowY: 'scroll' }}>
+        <Stack spacing={2} sx={{ maxHeight: '80vh', minHeight: '60vh', overflowY: 'scroll', padding: 2 }}>
           {history.map((message: ChatMessage, index: number) => (
-            <MessageDisplay key={index} role={message.role}>
-              {message.content.split('\n').map((line, lineNum) => (
-                <Typography
-                  key={lineNum}
-                  ref={messageRef}
-                  sx={{ fontSize: { md: '1.0rem', sm: '0.9rem', xs: '0.8rem' } }}
-                  variant="body1"
-                >
-                  {line}
-                </Typography>
-              ))}
-            </MessageDisplay>
+            <Stack key={index} spacing={2}>
+              {dividers[index] && <Divider>{dividers[index].label}</Divider>}
+              <MessageDisplay role={message.role}>
+                {message.content.split('\n').map((line, lineNum) => (
+                  <Typography
+                    key={lineNum}
+                    ref={messageRef}
+                    sx={{ fontSize: { md: '1.0rem', sm: '0.9rem', xs: '0.8rem' } }}
+                    variant="body1"
+                  >
+                    {line}
+                  </Typography>
+                ))}
+              </MessageDisplay>
+            </Stack>
           ))}
           {isTyping && (
-            <MessageDisplay role="assistant">
+            <MessageDisplay ref={typingIndicatorRef} role="assistant">
               <Skeleton />
               <Skeleton />
               <Skeleton />
@@ -122,32 +134,36 @@ interface MessageDisplayProps {
   role: ChatRole
 }
 
-const MessageDisplay = ({ children, role }: MessageDisplayProps): React.ReactNode => {
-  const { backgroundColor, color } =
-    role === 'assistant'
-      ? {
-        backgroundColor: '#00BFFF',
-        color: '#fff',
-      }
-      : {
-        backgroundColor: '#E5E4E2',
-        color: '#000',
-      }
+const MessageDisplay = forwardRef(
+  ({ children, role }: MessageDisplayProps, ref: ForwardedRef<HTMLDivElement>): React.ReactNode => {
+    const { backgroundColor, color } =
+      role === 'assistant'
+        ? {
+          backgroundColor: '#00BFFF',
+          color: '#fff',
+        }
+        : {
+          backgroundColor: '#E5E4E2',
+          color: '#000',
+        }
 
-  return (
-    <Grid container>
-      {role === 'assistant' && <Grid item sm={3} xs={2} />}
-      <Grid item sm={9} xs={10}>
-        <Paper
-          elevation={3}
-          sx={{ backgroundColor, color, display: 'inline-block', padding: 2, textAlign: 'left', width: '100%' }}
-        >
-          {children}
-        </Paper>
+    return (
+      <Grid container ref={ref}>
+        {role === 'assistant' && <Grid item sm={3} xs={2} />}
+        <Grid item sm={9} xs={10}>
+          <Paper
+            elevation={3}
+            sx={{ backgroundColor, color, display: 'inline-block', padding: 2, textAlign: 'left', width: '100%' }}
+          >
+            {children}
+          </Paper>
+        </Grid>
+        {role === 'user' && <Grid item sm={3} xs={2} />}
       </Grid>
-      {role === 'user' && <Grid item sm={3} xs={2} />}
-    </Grid>
-  )
-}
+    )
+  },
+)
+
+MessageDisplay.displayName = 'MessageDisplay'
 
 export default ChatWindow

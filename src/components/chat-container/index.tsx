@@ -40,7 +40,7 @@ const ChatContainer = ({
     <Box>
       <AppBar position="static">
         <Toolbar disableGutters>
-          <Grid container padding={1} spacing={2}>
+          <Grid container spacing={2} sx={{ padding: 1 }}>
             <Grid item lg={2} sm={6} sx={{ textAlign: 'center' }} xs={12}>
               <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center' }}>
                 <Box>

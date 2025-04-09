@@ -46,7 +46,7 @@ const InputStage = ({
   }
 
   return (
-    <Stack padding={2} spacing={1} sx={{ margin: 'auto', maxWidth: 'l', textAlign: 'center', width: '100%"' }}>
+    <Stack spacing={2} sx={{ margin: 'auto', maxWidth: 'l', padding: 2, textAlign: 'center', width: '100%"' }}>
       <Box>
         <Typography variant="h4">Submit claim</Typography>
       </Box>

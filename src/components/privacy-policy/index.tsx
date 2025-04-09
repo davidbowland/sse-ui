@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography'
 
 const PrivacyPolicy = (): React.ReactNode => {
   return (
-    <Stack padding={4} spacing={2}>
+    <Stack spacing={2} sx={{ padding: 4 }}>
       <Typography variant="h5">StreetLogic AI Privacy Policy</Typography>
       <Typography variant="body1">
         This Privacy Policy describes how your personal information is collected, used, and shared when you visit{' '}
