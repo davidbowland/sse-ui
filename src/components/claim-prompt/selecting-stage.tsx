@@ -66,6 +66,7 @@ const SelectingStage = ({
             Select
           </Button>
         }
+        hasExtraPadding
       />
     </Stack>
   )

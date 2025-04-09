@@ -24,7 +24,12 @@ export interface ConfidenceStageProps {
   onBack: () => void
 }
 
-const ConfidenceStage = ({ claim, confidenceLevels, onAcceptConfidence, onBack }: ConfidenceStageProps): React.ReactNode => {
+const ConfidenceStage = ({
+  claim,
+  confidenceLevels,
+  onAcceptConfidence,
+  onBack,
+}: ConfidenceStageProps): React.ReactNode => {
   const [selectedIndex, setSelectedIndex] = useState<number>(-1)
 
   return (
@@ -43,7 +48,9 @@ const ConfidenceStage = ({ claim, confidenceLevels, onAcceptConfidence, onBack }
         </Alert>
       </Box>
       <Box>
-        {confidenceLevels.length === 0 ? <Typography variant="body1">Error loading confidence levels. Please refresh to try again.</Typography> :
+        {confidenceLevels.length === 0 ? (
+          <Typography variant="body1">Error loading confidence levels. Please refresh to try again.</Typography>
+        ) : (
           <List sx={{ bgcolor: 'background.paper', margin: 'auto', maxWidth: 300 }}>
             {confidenceLevels.map((level, index) => (
               <ListItem disablePadding key={index}>
@@ -55,7 +62,8 @@ const ConfidenceStage = ({ claim, confidenceLevels, onAcceptConfidence, onBack }
                 </ListItemButton>
               </ListItem>
             ))}
-          </List>}
+          </List>
+        )}
       </Box>
       <TwoButtons
         button1={
@@ -72,6 +80,7 @@ const ConfidenceStage = ({ claim, confidenceLevels, onAcceptConfidence, onBack }
             Select
           </Button>
         }
+        hasExtraPadding
       />
     </Stack>
   )
