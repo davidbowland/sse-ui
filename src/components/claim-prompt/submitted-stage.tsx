@@ -38,7 +38,7 @@ const GeneratingStage = (): React.ReactNode => {
   const subtitle = useMemo(() => getRandomSubtitle(), [SUBTITLE_OPTIONS])
 
   return (
-    <Stack padding={3} spacing={4} sx={{ margin: 'auto', maxWidth: 'm', textAlign: 'center', width: '100%"' }}>
+    <Stack spacing={4} sx={{ margin: 'auto', maxWidth: 'm', padding: 3, textAlign: 'center', width: '100%"' }}>
       <Typography variant="h4">Creating chat session</Typography>
       <Typography fontStyle="italic" variant="body2">
         {subtitle}

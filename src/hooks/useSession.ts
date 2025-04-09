@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { ChatMessage, ConfidenceLevel, ConversationStep, Session } from '@types'
+import { ChatMessage, ConfidenceLevel, ConversationStep, Dividers, Session } from '@types'
 import { fetchSession, sendLlmMessage } from '@services/sse'
 
 export interface UseSessionResults {
@@ -9,6 +9,7 @@ export interface UseSessionResults {
   confidence?: string
   confidenceLevels: ConfidenceLevel[]
   conversationSteps: ConversationStep[]
+  dividers: Dividers
   finished: boolean
   history: ChatMessage[]
   isLoading: boolean
@@ -47,7 +48,6 @@ export const useSession = (sessionId: string): UseSessionResults => {
 
     const response = await sendLlmMessage(sessionId, currentStep.path, {
       content: message,
-      language: session?.context.language,
     })
     setSession((prevSession) =>
       prevSession === undefined
@@ -55,6 +55,7 @@ export const useSession = (sessionId: string): UseSessionResults => {
         : {
           ...prevSession,
           currentStep: response.currentStep,
+          dividers: response.dividers,
           history: response.history,
           newConversation: response.newConversation,
         },
@@ -95,6 +96,7 @@ export const useSession = (sessionId: string): UseSessionResults => {
       confidence: undefined,
       confidenceLevels: [],
       conversationSteps: [],
+      dividers: {},
       finished: true,
       history: [],
       isLoading,
@@ -109,6 +111,7 @@ export const useSession = (sessionId: string): UseSessionResults => {
     confidence: session.context.confidence,
     confidenceLevels: session.context.possibleConfidenceLevels,
     conversationSteps: session.conversationSteps,
+    dividers: session.dividers,
     finished,
     history: session.history,
     isLoading,

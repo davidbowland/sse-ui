@@ -25,7 +25,7 @@ const SelectingStage = ({
   onAcceptClaim,
   onBack,
   suggestedClaims,
-}: SelectingStageProps) : React.ReactNode => {
+}: SelectingStageProps): React.ReactNode => {
   const [selectedIndex, setSelectedIndex] = useState<number>(initialIndex)
 
   useEffect(() => {
@@ -33,7 +33,7 @@ const SelectingStage = ({
   }, [suggestedClaims])
 
   return (
-    <Stack spacing={1} sx={{ margin: 'auto', maxWidth: 'm', textAlign: 'center', width: '100%"' }}>
+    <Stack spacing={2} sx={{ margin: 'auto', maxWidth: 'm', textAlign: 'center', width: '100%"' }}>
       <Box>
         <Typography variant="h4">Select a claim</Typography>
       </Box>

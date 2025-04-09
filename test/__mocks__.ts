@@ -2,6 +2,7 @@
 import {
   ChatMessage,
   ConversationStep,
+  Dividers,
   LLMRequest,
   LLMResponse,
   Session,
@@ -23,6 +24,8 @@ export const conversationSteps: ConversationStep[] = [
   { label: 'Opposing reasons', path: 'guess-reasons', value: 'guess reasons' },
   { isFinalStep: true, label: 'Conclusion', path: 'end-chat', value: 'end' },
 ]
+
+export const dividers: Dividers = { 0: { label: 'Introduction' } }
 
 // Claims
 
@@ -60,6 +63,7 @@ export const llmRequest: LLMRequest = {
 
 export const llmResponse: LLMResponse = {
   currentStep: 'probe confidence',
+  dividers,
   history: [assistantMessage, userMessage, newAssistantMessage],
   newConversation: false,
 }
@@ -80,6 +84,7 @@ export const session: Session = {
   context: sessionContext,
   conversationSteps,
   currentStep: 'probe confidence',
+  dividers,
   expiration: 1743407368,
   history: [userMessage, assistantMessage],
   newConversation: true,

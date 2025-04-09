@@ -12,7 +12,7 @@ export interface ServerErrorProps {
 const ServerErrorMessage = ({ children, title }: ServerErrorProps): React.ReactNode => {
   return (
     <Grid container justifyContent="center">
-      <Grid container direction="column" item padding={4} spacing={2} sx={{ maxWidth: '900px' }}>
+      <Grid container direction="column" item spacing={2} sx={{ maxWidth: '900px', padding: 4 }}>
         <Grid item xs>
           <Typography variant="h1">{title}</Typography>
         </Grid>
