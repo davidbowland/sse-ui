@@ -10,7 +10,7 @@ jest.mock('@components/server-error-message')
 
 describe('404 error page', () => {
   beforeAll(() => {
-    jest.mocked(ServerErrorMessage).mockReturnValue(<></>)
+    jest.mocked(ServerErrorMessage).mockReturnValue(<>ServerErrorMessage</>)
     Object.defineProperty(window, 'location', {
       configurable: true,
       value: { pathname: '' },
@@ -24,6 +24,7 @@ describe('404 error page', () => {
   it('renders ServerErrorMessage', () => {
     const expectedTitle = '404: Not Found'
     render(<NotFound />)
+
     expect(jest.mocked(ServerErrorMessage)).toHaveBeenCalledWith(
       expect.objectContaining({ title: expectedTitle }),
       expect.anything(),
@@ -34,6 +35,7 @@ describe('404 error page', () => {
   it('renders nothing for session paths', () => {
     window.location.pathname = '/c/aeiou'
     render(<NotFound />)
+
     expect(jest.mocked(ServerErrorMessage)).toHaveBeenCalledTimes(0)
   })
 
@@ -45,6 +47,7 @@ describe('404 error page', () => {
 
   it('renders Head', () => {
     render(<Head />)
+
     expect(document.title).toEqual('StreetLogic AI | 404: Not Found')
   })
 })

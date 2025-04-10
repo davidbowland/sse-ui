@@ -25,8 +25,10 @@ export interface ChatWindowProps {
 }
 
 const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: ChatWindowProps): React.ReactNode => {
+  const [chatWindowHeight, setChatWindowHeight] = useState<number>(0)
   const [message, setMessage] = useState<string>('')
 
+  const chatWindowRef = useRef<HTMLDivElement>(null)
   const messageRef = useRef<HTMLDivElement>(null)
   const typingIndicatorRef = useRef<HTMLDivElement>(null)
 
@@ -83,6 +85,10 @@ const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: 
   }
 
   const scrollIntoView = () => {
+    if (chatWindowRef.current) {
+      setChatWindowHeight(chatWindowRef.current.clientHeight)
+    }
+
     if (typingIndicatorRef.current) {
       typingIndicatorRef.current.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
     } else if (messageRef.current) {
@@ -96,8 +102,12 @@ const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: 
 
   return (
     <Stack spacing={2}>
-      <Paper elevation={3} sx={{ flexGrow: 1 }}>
-        <Stack spacing={2} sx={{ maxHeight: '80vh', minHeight: '60vh', overflowY: 'scroll', padding: 2 }}>
+      <Paper elevation={3}>
+        <Stack
+          ref={chatWindowRef}
+          spacing={2}
+          sx={{ minHeight: chatWindowHeight ? `${chatWindowHeight}px` : '60vh', padding: 2 }}
+        >
           {history.map((message: ChatMessage, index: number) => (
             <Stack key={index} spacing={2}>
               {dividers[index] && <Divider>{dividers[index].label}</Divider>}

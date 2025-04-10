@@ -22,8 +22,8 @@ describe('Themed component', () => {
   const children = <>fnord</>
 
   beforeAll(() => {
-    jest.mocked(CssBaseline).mockReturnValue(<></>)
-    jest.mocked(Disclaimer).mockReturnValue(<></>)
+    jest.mocked(CssBaseline).mockReturnValue(<>CssBaseline</>)
+    jest.mocked(Disclaimer).mockReturnValue(<>Disclaimer</>)
     jest.mocked(ThemeProvider).mockImplementation(({ children }) => <>{children}</>)
     jest.mocked(createTheme).mockReturnValue(theme)
     jest.mocked(useMediaQuery).mockReturnValue(false)
@@ -32,7 +32,7 @@ describe('Themed component', () => {
   test('expect rendering Themed has children in output', async () => {
     render(<Themed>{children}</Themed>)
 
-    expect(await screen.findByText('fnord')).toBeInTheDocument()
+    expect(await screen.findByText(/fnord/)).toBeInTheDocument()
   })
 
   test('expect rendering Themed renders CssBaseline', async () => {
@@ -47,7 +47,7 @@ describe('Themed component', () => {
     expect(jest.mocked(Disclaimer)).toHaveBeenCalledTimes(1)
   })
 
-  test('expect rendering Themed uses light theme when reqeusted', () => {
+  test('expect rendering Themed uses light theme when requested', () => {
     render(<Themed>{children}</Themed>)
 
     expect(jest.mocked(createTheme)).toHaveBeenCalledWith({

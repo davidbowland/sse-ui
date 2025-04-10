@@ -7,12 +7,10 @@ const NotFound = (): React.ReactNode => {
 
   if (display404) {
     return (
-      <div className="main-content">
-        <ServerErrorMessage title="404: Not Found">
-          The resource you requested is unavailable. If you feel you have reached this page in error, please contact the
-          webmaster.
-        </ServerErrorMessage>
-      </div>
+      <ServerErrorMessage title="404: Not Found">
+        The resource you requested is unavailable. If you feel you have reached this page in error, please contact the
+        webmaster.
+      </ServerErrorMessage>
     )
   }
   return <></>

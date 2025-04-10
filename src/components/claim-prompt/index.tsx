@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
 import Breadcrumbs from '@mui/material/Breadcrumbs'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
@@ -33,8 +34,13 @@ const ClaimPrompt = ({ onClaimSelect, skipFirstScroll }: ClaimPromptProps): Reac
   const [skipScroll, setSkipScroll] = useState<boolean>(skipFirstScroll ?? false)
   const stageRef = useRef<HTMLDivElement>(null)
 
-  const { confidenceLevels } = useConfidenceLevels()
-  const { fetchSuggestedClaims, suggestedClaims, validateClaim } = useSuggestedClaims()
+  const { confidenceLevels, errorMessage: confidenceLevelsErrorMessage } = useConfidenceLevels()
+  const {
+    errorMessage: suggestedClaimsErrorMessage,
+    fetchSuggestedClaims,
+    suggestedClaims,
+    validateClaim,
+  } = useSuggestedClaims()
 
   /* Input */
 
@@ -94,16 +100,23 @@ const ClaimPrompt = ({ onClaimSelect, skipFirstScroll }: ClaimPromptProps): Reac
 
   useEffect(() => {
     if (promptStage === 'selecting' && suggestedClaims.length === 0 && inputErrorMessage === undefined) {
-      setInputErrorMessage('Error generating claims, please input a new claim')
+      setInputErrorMessage('Error generating claims, please input a new claim.')
+      setPromptStage('input')
     }
-  }, [suggestedClaims])
+  }, [inputErrorMessage, promptStage, suggestedClaims])
 
   useEffect(() => {
     setTimeout(scrollIntoView, 10)
   }, [promptStage])
 
+  const hasErrorMessage = confidenceLevelsErrorMessage || suggestedClaimsErrorMessage
   return (
     <Stack margin="auto" maxWidth={1000} spacing={1} width="100%">
+      {hasErrorMessage && (
+        <Alert severity="error" sx={{ margin: 'auto', maxWidth: 600 }}>
+          {confidenceLevelsErrorMessage} {suggestedClaimsErrorMessage} Please refresh to try again.
+        </Alert>
+      )}
       <Box sx={{ width: '100%' }}>
         <Breadcrumbs
           aria-label="Breadcrumbs"

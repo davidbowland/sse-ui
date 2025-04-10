@@ -1,7 +1,8 @@
 import '@testing-library/jest-dom'
-import { fireEvent, render, screen } from '@testing-library/react'
+import React, { act } from 'react'
+import { render, screen } from '@testing-library/react'
 import Cookies from 'universal-cookie'
-import React from 'react'
+import userEvent from '@testing-library/user-event'
 
 import Disclaimer from './index'
 
@@ -30,7 +31,7 @@ describe('disclaimer component', () => {
     const closeButton = (await screen.findByText(/Accept & continue/i, {
       selector: 'button',
     })) as HTMLButtonElement
-    fireEvent.click(closeButton)
+    await act(() => userEvent.click(closeButton))
 
     expect(mockCookieSet).toHaveBeenCalledWith('disclaimer_accept', 'true', {
       path: '/',

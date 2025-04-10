@@ -28,6 +28,7 @@ const SessionPage = ({ params }: SessionPageProps): React.ReactNode => {
     confidenceLevels,
     conversationSteps,
     dividers,
+    errorMessage,
     finished,
     history,
     isLoading,
@@ -47,14 +48,20 @@ const SessionPage = ({ params }: SessionPageProps): React.ReactNode => {
           <Grid item sx={{ m: 'auto', maxWidth: 1200, width: '100%' }}>
             <Stack spacing={1}>
               <Box sx={{ paddingBottom: 1 }}>
-                <Alert severity="success" sx={{ margin: 'auto', maxWidth: 600 }}>
-                  <Typography component="span" sx={{ fontWeight: 700, marginRight: 1 }}>
-                    Claim:
-                  </Typography>
-                  <Typography component="span" sx={claimSx}>
-                    {claim}
-                  </Typography>
-                </Alert>
+                {errorMessage ? (
+                  <Alert severity="error" sx={{ margin: 'auto', maxWidth: 600 }}>
+                    {errorMessage} Please refresh to try again.
+                  </Alert>
+                ) : (
+                  <Alert severity="success" sx={{ margin: 'auto', maxWidth: 600 }}>
+                    <Typography component="span" sx={{ fontWeight: 700, marginRight: 1 }}>
+                      Claim:
+                    </Typography>
+                    <Typography component="span" sx={claimSx}>
+                      {claim}
+                    </Typography>
+                  </Alert>
+                )}
               </Box>
               <Box sx={{ textAlign: 'center', width: '100%' }}>
                 <Breadcrumbs aria-label="Breadcrumbs" sx={{ display: 'inline-block' }}>

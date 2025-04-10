@@ -85,4 +85,11 @@ describe('useSession', () => {
       }),
     )
   })
+
+  it('returns an error message on error', async () => {
+    jest.mocked(sse).fetchSession.mockRejectedValueOnce(undefined)
+    const { result } = renderHook(() => useSession(sessionId))
+
+    await waitFor(() => expect(result.current.errorMessage).toEqual('Error fetching chat session.'))
+  })
 })

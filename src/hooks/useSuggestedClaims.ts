@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { ValidatedClaim } from '@types'
 
 export interface UseSuggestedClaimsResults {
+  errorMessage?: string
   fetchSuggestedClaims: () => Promise<void>
   suggestedClaims: string[]
   validateClaim: () => Promise<void>
@@ -10,6 +11,7 @@ export interface UseSuggestedClaimsResults {
 
 export const useSuggestedClaims = () => {
   const [aiClaims, setAiClaims] = useState<string[] | undefined>(undefined)
+  const [errorMessage, setErrorMessage] = useState<string | undefined>()
   const [suggestedClaims, setSuggestedClaims] = useState<string[]>([])
   const [validatedClaims, setValidatedClaims] = useState<any>({})
 
@@ -22,6 +24,7 @@ export const useSuggestedClaims = () => {
         setSuggestedClaims(claims)
         setAiClaims(claims)
       } catch (error: any) {
+        setErrorMessage('Error fetching suggested claims.')
         console.error('Error fetching suggested claims', { error })
       }
     }
@@ -44,12 +47,14 @@ export const useSuggestedClaims = () => {
       }))
       return { inappropriate, isTruthClaim }
     } catch (error: any) {
+      setErrorMessage('Error validating claim.')
       console.error('Error validating claim', { error })
       return { inappropriate: true, isTruthClaim: false }
     }
   }
 
   return {
+    errorMessage,
     fetchSuggestedClaims,
     suggestedClaims,
     validateClaim,

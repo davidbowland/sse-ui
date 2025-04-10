@@ -10,12 +10,13 @@ jest.mock('@components/server-error-message')
 
 describe('500 error page', () => {
   beforeAll(() => {
-    jest.mocked(ServerErrorMessage).mockReturnValue(<></>)
+    jest.mocked(ServerErrorMessage).mockReturnValue(<>ServerErrorMessage</>)
   })
 
   it('renders ServerErrorMessage', () => {
     const expectedTitle = '500: Internal Server Error'
     render(<InternalServerError />)
+
     expect(jest.mocked(ServerErrorMessage)).toHaveBeenCalledWith(
       expect.objectContaining({ title: expectedTitle }),
       expect.anything(),
@@ -25,6 +26,7 @@ describe('500 error page', () => {
 
   it('renders Head', () => {
     render(<Head />)
+
     expect(document.title).toEqual('StreetLogic AI | 500: Internal Server Error')
   })
 })

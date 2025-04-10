@@ -10,12 +10,21 @@ jest.mock('@components/server-error-message')
 
 describe('403 error page', () => {
   beforeAll(() => {
-    jest.mocked(ServerErrorMessage).mockReturnValue(<></>)
+    jest.mocked(ServerErrorMessage).mockReturnValue(<>ServerErrorMessage</>)
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      value: { pathname: '' },
+    })
+  })
+
+  beforeEach(() => {
+    window.location.pathname = '/an-invalid-page'
   })
 
   it('renders ServerErrorMessage', () => {
     const expectedTitle = '403: Forbidden'
     render(<Forbidden />)
+
     expect(jest.mocked(ServerErrorMessage)).toHaveBeenCalledWith(
       expect.objectContaining({ title: expectedTitle }),
       expect.anything(),
@@ -23,8 +32,22 @@ describe('403 error page', () => {
     expect(jest.mocked(ServerErrorMessage)).toHaveBeenCalledTimes(1)
   })
 
+  it('renders nothing for session paths', () => {
+    window.location.pathname = '/c/aeiou'
+    render(<Forbidden />)
+
+    expect(jest.mocked(ServerErrorMessage)).toHaveBeenCalledTimes(0)
+  })
+
+  it('renders ServerErrorMessage when the path name extends beyond sessionId', () => {
+    window.location.pathname = '/c/aeiou/y'
+    render(<Forbidden />)
+    expect(jest.mocked(ServerErrorMessage)).toHaveBeenCalledTimes(1)
+  })
+
   it('renders Head', () => {
     render(<Head />)
+
     expect(document.title).toEqual('StreetLogic AI | 403: Forbidden')
   })
 })

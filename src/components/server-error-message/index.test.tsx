@@ -12,7 +12,7 @@ describe('Server error message component', () => {
   const children = 'Nothing to see here'
 
   beforeAll(() => {
-    jest.mocked(PrivacyLink).mockReturnValue(<></>)
+    jest.mocked(PrivacyLink).mockReturnValue(<>PrivacyLink</>)
   })
 
   it('renders title in the output', () => {

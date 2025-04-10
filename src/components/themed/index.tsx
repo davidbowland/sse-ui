@@ -14,6 +14,7 @@ export interface ThemedProps {
 
 const Themed = ({ children }: ThemedProps): React.ReactNode => {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
+
   const theme = useMemo(
     () =>
       createTheme({

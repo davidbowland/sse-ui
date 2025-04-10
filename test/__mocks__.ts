@@ -99,6 +99,18 @@ export const session: Session = {
   originalConfidence: 'strongly agree',
 }
 
+export const useSessionResults = {
+  chatStep: session.currentStep,
+  claim: sessionContext.claim,
+  confidence: sessionContext.confidence,
+  confidenceLevels,
+  conversationSteps,
+  dividers,
+  finished: false,
+  history: [userMessage, assistantMessage],
+  isLoading: false,
+}
+
 // Themes
 
 export const theme: Theme = {

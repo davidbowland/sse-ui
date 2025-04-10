@@ -10,6 +10,7 @@ export interface UseSessionResults {
   confidenceLevels: ConfidenceLevel[]
   conversationSteps: ConversationStep[]
   dividers: Dividers
+  errorMessage?: string
   finished: boolean
   history: ChatMessage[]
   isLoading: boolean
@@ -18,6 +19,7 @@ export interface UseSessionResults {
 }
 
 export const useSession = (sessionId: string): UseSessionResults => {
+  const [errorMessage, setErrorMessage] = useState<string | undefined>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [session, setSession] = useState<Session | undefined>(undefined)
 
@@ -108,7 +110,8 @@ export const useSession = (sessionId: string): UseSessionResults => {
         setIsLoading(session.newConversation)
       })
       .catch((error) => {
-        console.error('Error fetching session', { error })
+        setErrorMessage('Error fetching chat session.')
+        console.error('Error fetching chat session', { error })
       })
   }, [sessionId])
 
@@ -120,6 +123,7 @@ export const useSession = (sessionId: string): UseSessionResults => {
       confidenceLevels: [],
       conversationSteps: [],
       dividers: {},
+      errorMessage,
       finished: true,
       history: [],
       isLoading,

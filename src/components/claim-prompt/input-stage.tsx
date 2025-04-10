@@ -36,6 +36,7 @@ const InputStage = ({
         <Typography variant="body2">
           en-US
           <Switch
+            aria-label="Chat language switch"
             checked={language === browserLanguage}
             onChange={(e: any) => onLanguageChange(e.target.checked ? browserLanguage : 'en-US')}
           />

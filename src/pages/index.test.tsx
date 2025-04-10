@@ -2,21 +2,50 @@ import '@testing-library/jest-dom'
 import React from 'react'
 import { render } from '@testing-library/react'
 
+import * as sse from '@services/sse'
 import Index, { Head } from './index'
+import ClaimPrompt from '@components/claim-prompt'
 import PrivacyLink from '@components/privacy-link'
+import { sessionId } from '@test/__mocks__'
 
 jest.mock('@aws-amplify/analytics')
 jest.mock('@components/claim-prompt')
 jest.mock('@components/privacy-link')
+jest.mock('@services/sse')
+jest.mock('gatsby')
 
 describe('Index page', () => {
+  const mockOnClaimSelect = jest.fn()
+
   beforeAll(() => {
-    jest.mocked(PrivacyLink).mockReturnValue(<></>)
+    jest.mocked(ClaimPrompt).mockImplementation(({ onClaimSelect }) => {
+      mockOnClaimSelect.mockImplementation(onClaimSelect)
+      return <>ClaimPrompt</>
+    })
+    jest.mocked(PrivacyLink).mockReturnValue(<>PrivacyLink</>)
+    jest.mocked(sse).createSession.mockResolvedValue({ sessionId })
   })
 
   it('renders PrivacyLink', () => {
     render(<Index />)
+
     expect(jest.mocked(PrivacyLink)).toHaveBeenCalledTimes(1)
+  })
+
+  it('renders ClaimPrompt', () => {
+    render(<Index />)
+
+    expect(jest.mocked(ClaimPrompt)).toHaveBeenCalledTimes(1)
+  })
+
+  it('invokes createSession on new session.', async () => {
+    const claim = 'mah claim'
+    const confidence = 'strongly agree'
+    const language = 'es-PA'
+    render(<Index />)
+    mockOnClaimSelect(claim, confidence, language)
+
+    expect(sse.createSession).toHaveBeenCalledWith(claim, confidence, language)
   })
 
   it('renders Head', () => {
