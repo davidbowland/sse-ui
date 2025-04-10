@@ -105,7 +105,7 @@ const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: 
                 {message.content.split('\n').map((line, lineNum) => (
                   <Typography
                     key={lineNum}
-                    ref={messageRef}
+                    ref={index === history.length - 1 ? messageRef : undefined}
                     sx={{ fontSize: { md: '1.0rem', sm: '0.9rem', xs: '0.8rem' } }}
                     variant="body1"
                   >

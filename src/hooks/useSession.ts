@@ -40,15 +40,16 @@ export const useSession = (sessionId: string): UseSessionResults => {
   }
 
   const sendChatMessage = async (message: string, newConversation?: boolean): Promise<void> => {
+    const sanitizedMessage = message.trim()
     if (!currentStep) {
       return
     } else if (!newConversation) {
-      addMessageToHistory({ content: message, role: 'user' })
+      addMessageToHistory({ content: sanitizedMessage, role: 'user' })
     }
     setIsLoading(true)
 
     const response = await sendLlmMessage(sessionId, currentStep.path, {
-      content: message,
+      content: sanitizedMessage,
     })
     setSession((prevSession) =>
       prevSession === undefined
