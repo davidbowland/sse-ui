@@ -49,7 +49,12 @@ const ChatContainer = ({
                   <ChatIcon sx={{ mr: 1 }} />
                   <Typography
                     noWrap
-                    sx={{ display: 'inline-block', fontWeight: 700, letterSpacing: '0.2rem' }}
+                    sx={{
+                      display: 'inline-block',
+                      fontVariant: 'small-caps',
+                      fontWeight: 700,
+                      letterSpacing: '0.2rem',
+                    }}
                     variant="body1"
                   >
                     StreetLogic AI

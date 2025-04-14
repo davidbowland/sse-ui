@@ -24,7 +24,10 @@ const Index = (): React.ReactNode => {
       <Grid container sx={{ padding: { sm: '50px', xs: '25px 10px' } }}>
         <Grid item sx={{ m: 'auto', maxWidth: 1200, width: '100%' }}>
           <Stack spacing={3} sx={{ minHeight: '80vh', textAlign: 'center' }}>
-            <Typography sx={{ fontSize: { sm: 64, xs: 44 }, fontWeight: 700, letterSpacing: '0.2rem' }} variant="h2">
+            <Typography
+              sx={{ fontSize: { sm: 64, xs: 44 }, fontVariant: 'small-caps', fontWeight: 700, letterSpacing: '0.2rem' }}
+              variant="h2"
+            >
               <ChatIcon sx={{ fontSize: { sm: 36, xs: 28 }, mr: 2 }} />
               StreetLogic AI
             </Typography>
