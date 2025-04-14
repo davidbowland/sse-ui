@@ -111,7 +111,7 @@ const ClaimPrompt = ({ onClaimSelect, skipFirstScroll }: ClaimPromptProps): Reac
 
   const hasErrorMessage = confidenceLevelsErrorMessage || suggestedClaimsErrorMessage
   return (
-    <Stack margin="auto" maxWidth={1000} spacing={1} width="100%">
+    <Stack spacing={4} sx={{ margin: 'auto', maxWidth: 1000, width: '100%' }}>
       {hasErrorMessage && (
         <Alert severity="error" sx={{ margin: 'auto', maxWidth: 600 }}>
           {confidenceLevelsErrorMessage} {suggestedClaimsErrorMessage} Please refresh to try again.

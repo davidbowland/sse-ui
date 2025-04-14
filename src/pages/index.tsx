@@ -47,7 +47,7 @@ const Index = (): React.ReactNode => {
               </Typography>
             </Box>
             <Divider />
-            <Box sx={{ minHeight: '60vh', width: '100%' }}>
+            <Box sx={{ minHeight: '90vh', width: '100%' }}>
               <ClaimPrompt onClaimSelect={onClaimSelect} skipFirstScroll />
             </Box>
           </Stack>
