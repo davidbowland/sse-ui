@@ -37,7 +37,7 @@ const ConfidenceStage = ({
         <Typography variant="h4">What is your stance?</Typography>
       </Box>
       <Box>
-        <Card sx={{ margin: 'auto', width: 'md' }}>
+        <Card sx={{ backgroundColor: '#6373fa', margin: 'auto', width: 'md' }}>
           <CardContent>
             <Typography gutterBottom sx={{ color: 'text.secondary' }} variant="h6">
               Claim:

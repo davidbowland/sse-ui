@@ -54,7 +54,7 @@ const SessionPage = ({ params }: SessionPageProps): React.ReactNode => {
                     {errorMessage} Please refresh to try again. Chat sessions expire after 24 hours.
                   </Alert>
                 ) : (
-                  <Card sx={{ margin: 'auto', width: 'md' }}>
+                  <Card sx={{ backgroundColor: '#6373fa', margin: 'auto', textAlign: 'center' }}>
                     <CardContent>
                       <Typography gutterBottom sx={{ color: 'text.secondary' }} variant="h6">
                         Claim:
