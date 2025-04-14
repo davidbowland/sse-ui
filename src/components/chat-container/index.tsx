@@ -58,23 +58,25 @@ const ChatContainer = ({
               </Box>
             </Grid>
             <Grid item lg={8} order={{ lg: 2, xs: 3 }} sx={{ textAlign: 'center' }} xs={12}>
-              <FormControl sx={{ minWidth: { sm: 600, xs: '100%' } }}>
-                <InputLabel id="confidence-select-label">Confidence</InputLabel>
-                <Select
-                  aria-label="Confidence"
-                  id="confidence-select"
-                  label="Confidence"
-                  labelId="confidence-select-label"
-                  onChange={(e) => onChangeOptionList(e.target.value)}
-                  value={confidence}
-                >
-                  {confidenceLevels.map((level, index) => (
-                    <MenuItem key={index} value={level.value}>
-                      {level.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              {confidenceLevels.length > 0 && (
+                <FormControl sx={{ minWidth: { sm: 600, xs: '100%' } }}>
+                  <InputLabel id="confidence-select-label">Confidence</InputLabel>
+                  <Select
+                    aria-label="Confidence"
+                    id="confidence-select"
+                    label="Confidence"
+                    labelId="confidence-select-label"
+                    onChange={(e) => onChangeOptionList(e.target.value)}
+                    value={confidence}
+                  >
+                    {confidenceLevels.map((level, index) => (
+                      <MenuItem key={index} value={level.value}>
+                        {level.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              )}
             </Grid>
             <Grid item lg={2} order={{ lg: 3, xs: 2 }} sm={6} sx={{ paddingRight: { sm: 1, xs: 0 } }} xs={12}>
               <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center' }}>

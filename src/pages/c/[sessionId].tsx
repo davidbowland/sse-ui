@@ -1,6 +1,8 @@
 import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
 import Breadcrumbs from '@mui/material/Breadcrumbs'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
 import Grid from '@mui/material/Grid'
 import React from 'react'
 import Stack from '@mui/material/Stack'
@@ -10,7 +12,6 @@ import ChatContainer from '@components/chat-container'
 import ChatWindow from '@components/chat-window'
 import { useSession } from '@hooks/useSession'
 
-const claimSx = { color: 'text.secondary', fontStyle: 'italic', fontWeight: 700 }
 const selectedSx = { color: 'text.primary', fontStyle: 'italic', fontWeight: 700 }
 const unselectedSx = {}
 
@@ -50,17 +51,17 @@ const SessionPage = ({ params }: SessionPageProps): React.ReactNode => {
               <Box sx={{ paddingBottom: 1 }}>
                 {errorMessage ? (
                   <Alert severity="error" sx={{ margin: 'auto', maxWidth: 600 }}>
-                    {errorMessage} Please refresh to try again.
+                    {errorMessage} Please refresh to try again. Chat sessions expire after 24 hours.
                   </Alert>
                 ) : (
-                  <Alert severity="success" sx={{ margin: 'auto', maxWidth: 600 }}>
-                    <Typography component="span" sx={{ fontWeight: 700, marginRight: 1 }}>
-                      Claim:
-                    </Typography>
-                    <Typography component="span" sx={claimSx}>
-                      {claim}
-                    </Typography>
-                  </Alert>
+                  <Card sx={{ margin: 'auto', width: 'md' }}>
+                    <CardContent>
+                      <Typography gutterBottom sx={{ color: 'text.secondary' }} variant="h6">
+                        Claim:
+                      </Typography>
+                      <Typography variant="h5">{claim}</Typography>
+                    </CardContent>
+                  </Card>
                 )}
               </Box>
               <Box sx={{ textAlign: 'center', width: '100%' }}>

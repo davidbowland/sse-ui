@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
@@ -14,8 +15,6 @@ import Typography from '@mui/material/Typography'
 
 import { ConfidenceLevel } from '@types'
 import TwoButtons from './two-buttons'
-
-const claimSx = { color: 'text.secondary', fontStyle: 'italic', fontWeight: 700 }
 
 export interface ConfidenceStageProps {
   claim: string
@@ -38,14 +37,14 @@ const ConfidenceStage = ({
         <Typography variant="h4">What is your stance?</Typography>
       </Box>
       <Box>
-        <Alert severity="success" sx={{ margin: 'auto', maxWidth: 600 }}>
-          <Typography component="span" sx={{ fontWeight: 700, marginRight: 1 }}>
-            Claim:
-          </Typography>
-          <Typography component="span" sx={claimSx}>
-            {claim}
-          </Typography>
-        </Alert>
+        <Card sx={{ margin: 'auto', width: 'md' }}>
+          <CardContent>
+            <Typography gutterBottom sx={{ color: 'text.secondary' }} variant="h6">
+              Claim:
+            </Typography>
+            <Typography variant="h5">{claim}</Typography>
+          </CardContent>
+        </Card>
       </Box>
       <Box>
         {confidenceLevels.length === 0 ? (
