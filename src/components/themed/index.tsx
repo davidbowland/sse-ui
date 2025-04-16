@@ -25,6 +25,9 @@ const Themed = ({ children }: ThemedProps): React.ReactNode => {
             paper: prefersDarkMode ? '#121212' : '#fff',
           },
           mode: prefersDarkMode ? 'dark' : 'light',
+          text: {
+            primary: prefersDarkMode ? '#fff' : '#000',
+          },
         },
       }),
     [prefersDarkMode],
@@ -33,7 +36,7 @@ const Themed = ({ children }: ThemedProps): React.ReactNode => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box sx={{ backgroundColor: 'background.default', minHeight: '100vh' }}>{children}</Box>
+      <Box sx={{ backgroundColor: 'background.default', color: 'text.primary', minHeight: '100vh' }}>{children}</Box>
       <Disclaimer />
     </ThemeProvider>
   )

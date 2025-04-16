@@ -57,6 +57,9 @@ describe('Themed component', () => {
           paper: '#fff',
         },
         mode: 'light',
+        text: {
+          primary: '#000',
+        },
       },
     })
     expect(jest.mocked(ThemeProvider)).toHaveBeenCalledWith(expect.objectContaining({ theme }), {})
@@ -73,6 +76,9 @@ describe('Themed component', () => {
           paper: '#121212',
         },
         mode: 'dark',
+        text: {
+          primary: '#fff',
+        },
       },
     })
     expect(jest.mocked(ThemeProvider)).toHaveBeenCalledWith(expect.objectContaining({ theme }), {})
