@@ -42,7 +42,7 @@ export const useSession = (sessionId: string): UseSessionResults => {
   }
 
   const sendChatMessage = async (message: string, newConversation?: boolean): Promise<void> => {
-    const sanitizedMessage = message.trim()
+    const sanitizedMessage = message.trim().replace(/\r|\n/g, '')
     if (!currentStep) {
       return
     } else if (!newConversation) {

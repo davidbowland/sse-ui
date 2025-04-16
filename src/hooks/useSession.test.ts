@@ -69,6 +69,19 @@ describe('useSession', () => {
     )
   })
 
+  it('strips newlines from llm message', async () => {
+    const message = "I don't\nget\r\nno respect"
+    const { result } = renderHook(() => useSession(sessionId))
+
+    await waitFor(() => expect(result.current.chatStep).toEqual('probe confidence'))
+    result.current.sendChatMessage(message)
+    await waitFor(() =>
+      expect(sse.sendLlmMessage).toHaveBeenCalledWith(sessionId, 'probe-confidence', {
+        content: "I don'tgetno respect",
+      }),
+    )
+  })
+
   it('sends a confidence change', async () => {
     const message = 'I am a fish called Wanda'
     const { result } = renderHook(() => useSession(sessionId))
