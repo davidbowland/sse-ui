@@ -51,8 +51,8 @@ const InputStage = ({
   }
 
   return (
-    <Stack spacing={2} sx={{ margin: 'auto', maxWidth: 'l', padding: 2, textAlign: 'center', width: '100%"' }}>
-      <Box>
+    <Stack sx={{ margin: 'auto', maxWidth: 'l', padding: 2, textAlign: 'center', width: '100%"' }}>
+      <Box sx={{ paddingBottom: 3 }}>
         <Typography variant="h4">Submit claim</Typography>
       </Box>
       <TextField
@@ -60,7 +60,7 @@ const InputStage = ({
         helperText={errorMessage}
         label="Truth claim"
         onInput={(e: any) => setClaimInput(e.target.value)}
-        sx={{ width: '100%' }}
+        sx={{ paddingBottom: 3, width: '100%' }}
         value={claimInput}
         variant="outlined"
       />
@@ -76,7 +76,7 @@ const InputStage = ({
           </Button>
         }
       />
-      <Typography sx={{ padding: 2 }} variant="body2">
+      <Typography sx={{ paddingBottom: 4, paddingTop: 4 }} variant="body2">
         Suggested claims are only updated a few times per day
       </Typography>
       {browserLanguage !== 'en-US' && browserLanguage && generateLanguageSelector()}
