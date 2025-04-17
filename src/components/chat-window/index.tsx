@@ -127,9 +127,15 @@ const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: 
           ))}
           {isTyping && (
             <MessageDisplay ref={typingIndicatorRef} role="assistant">
-              <Skeleton />
-              <Skeleton />
-              <Skeleton />
+              <Skeleton sx={{ fontSize: { md: '1.0rem', sm: '0.9rem', xs: '0.8rem' } }} />
+              <Skeleton sx={{ fontSize: { md: '1.0rem', sm: '0.9rem', xs: '0.8rem' } }} />
+              <Skeleton sx={{ fontSize: { md: '1.0rem', sm: '0.9rem', xs: '0.8rem' } }} />
+              <Skeleton
+                sx={{ display: { md: 'none', xs: 'initial' }, fontSize: { md: '1.0rem', sm: '0.9rem', xs: '0.8rem' } }}
+              />
+              <Skeleton
+                sx={{ display: { sm: 'none', xs: 'initial' }, fontSize: { md: '1.0rem', sm: '0.9rem', xs: '0.8rem' } }}
+              />
             </MessageDisplay>
           )}
         </Stack>
@@ -173,7 +179,7 @@ const MessageDisplay = forwardRef(
               width: '100%',
             }}
           >
-            <Stack spacing={1}>{children}</Stack>
+            <Stack spacing={{ md: 0.5, xs: 0 }}>{children}</Stack>
           </Paper>
         </Grid>
         {role === 'user' && <Grid item sm={3} xs={2} />}
