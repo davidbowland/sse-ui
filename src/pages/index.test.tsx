@@ -26,16 +26,38 @@ describe('Index page', () => {
     jest.mocked(sse).createSession.mockResolvedValue({ sessionId })
   })
 
+  beforeEach(() => {
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      value: { search: '' },
+    })
+  })
+
   it('renders PrivacyLink', () => {
     render(<Index />)
 
-    expect(jest.mocked(PrivacyLink)).toHaveBeenCalledTimes(1)
+    expect(PrivacyLink).toHaveBeenCalledTimes(1)
   })
 
   it('renders ClaimPrompt', () => {
     render(<Index />)
 
-    expect(jest.mocked(ClaimPrompt)).toHaveBeenCalledTimes(1)
+    expect(ClaimPrompt).toHaveBeenCalledTimes(1)
+  })
+
+  it('sends passed claim to ClaimPrompt', () => {
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      value: { search: '?claim=Pickles%20are%20lazy%20cucumbers' },
+    })
+
+    render(<Index />)
+
+    expect(ClaimPrompt).toHaveBeenCalledTimes(1)
+    expect(ClaimPrompt).toHaveBeenCalledWith(
+      expect.objectContaining({ initialClaim: 'Pickles are lazy cucumbers' }),
+      {},
+    )
   })
 
   it('invokes createSession on new session.', async () => {

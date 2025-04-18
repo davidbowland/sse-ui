@@ -25,24 +25,24 @@ describe('404 error page', () => {
     const expectedTitle = '404: Not Found'
     render(<NotFound />)
 
-    expect(jest.mocked(ServerErrorMessage)).toHaveBeenCalledWith(
+    expect(ServerErrorMessage).toHaveBeenCalledWith(
       expect.objectContaining({ title: expectedTitle }),
       expect.anything(),
     )
-    expect(jest.mocked(ServerErrorMessage)).toHaveBeenCalledTimes(1)
+    expect(ServerErrorMessage).toHaveBeenCalledTimes(1)
   })
 
   it('renders nothing for session paths', () => {
     window.location.pathname = '/c/aeiou'
     render(<NotFound />)
 
-    expect(jest.mocked(ServerErrorMessage)).toHaveBeenCalledTimes(0)
+    expect(ServerErrorMessage).toHaveBeenCalledTimes(0)
   })
 
   it('renders ServerErrorMessage when the path name extends beyond sessionId', () => {
     window.location.pathname = '/c/aeiou/y'
     render(<NotFound />)
-    expect(jest.mocked(ServerErrorMessage)).toHaveBeenCalledTimes(1)
+    expect(ServerErrorMessage).toHaveBeenCalledTimes(1)
   })
 
   it('renders Head', () => {

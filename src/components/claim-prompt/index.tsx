@@ -18,14 +18,15 @@ const selectedSx = { color: 'text.primary', fontStyle: 'italic', fontWeight: 700
 const unselectedSx = {}
 
 export interface ClaimPromptProps {
+  initialClaim?: string
   onClaimSelect: (claim: string, confidence: string, language: string) => void
   skipFirstScroll?: boolean
 }
 
 type ClaimPromptStage = 'input' | 'generating' | 'selecting' | 'confidence' | 'submitted'
 
-const ClaimPrompt = ({ onClaimSelect, skipFirstScroll }: ClaimPromptProps): React.ReactNode => {
-  const [claimInput, setClaimInput] = useState<string>('')
+const ClaimPrompt = ({ initialClaim, onClaimSelect, skipFirstScroll }: ClaimPromptProps): React.ReactNode => {
+  const [claimInput, setClaimInput] = useState<string>(initialClaim ?? '')
   const [inputErrorMessage, setInputErrorMessage] = useState<string | undefined>(undefined)
   const [language, setLanguage] = useState<string>(
     (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('language')) || 'en-US',

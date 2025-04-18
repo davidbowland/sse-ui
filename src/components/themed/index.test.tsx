@@ -38,19 +38,19 @@ describe('Themed component', () => {
   test('expect rendering Themed renders CssBaseline', async () => {
     render(<Themed>{children}</Themed>)
 
-    expect(jest.mocked(CssBaseline)).toHaveBeenCalledTimes(1)
+    expect(CssBaseline).toHaveBeenCalledTimes(1)
   })
 
   test('expect rendering Themed renders Disclaimer', async () => {
     render(<Themed>{children}</Themed>)
 
-    expect(jest.mocked(Disclaimer)).toHaveBeenCalledTimes(1)
+    expect(Disclaimer).toHaveBeenCalledTimes(1)
   })
 
   test('expect rendering Themed uses light theme when requested', () => {
     render(<Themed>{children}</Themed>)
 
-    expect(jest.mocked(createTheme)).toHaveBeenCalledWith({
+    expect(createTheme).toHaveBeenCalledWith({
       palette: {
         background: {
           default: '#ededed',
@@ -62,14 +62,14 @@ describe('Themed component', () => {
         },
       },
     })
-    expect(jest.mocked(ThemeProvider)).toHaveBeenCalledWith(expect.objectContaining({ theme }), {})
+    expect(ThemeProvider).toHaveBeenCalledWith(expect.objectContaining({ theme }), {})
   })
 
   test('expect rendering Themed uses dark theme when reqeusted', () => {
     jest.mocked(useMediaQuery).mockReturnValueOnce(true)
     render(<Themed>{children}</Themed>)
 
-    expect(jest.mocked(createTheme)).toHaveBeenCalledWith({
+    expect(createTheme).toHaveBeenCalledWith({
       palette: {
         background: {
           default: '#121212',
@@ -81,6 +81,6 @@ describe('Themed component', () => {
         },
       },
     })
-    expect(jest.mocked(ThemeProvider)).toHaveBeenCalledWith(expect.objectContaining({ theme }), {})
+    expect(ThemeProvider).toHaveBeenCalledWith(expect.objectContaining({ theme }), {})
   })
 })

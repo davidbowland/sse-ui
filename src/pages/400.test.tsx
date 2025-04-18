@@ -17,11 +17,11 @@ describe('400 error page', () => {
     const expectedTitle = '400: Bad Request'
     render(<BadRequest />)
 
-    expect(jest.mocked(ServerErrorMessage)).toHaveBeenCalledWith(
+    expect(ServerErrorMessage).toHaveBeenCalledWith(
       expect.objectContaining({ title: expectedTitle }),
       expect.anything(),
     )
-    expect(jest.mocked(ServerErrorMessage)).toHaveBeenCalledTimes(1)
+    expect(ServerErrorMessage).toHaveBeenCalledTimes(1)
   })
 
   it('renders Head', () => {

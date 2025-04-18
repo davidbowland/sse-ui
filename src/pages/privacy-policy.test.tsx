@@ -16,7 +16,7 @@ describe('Privacy page', () => {
   it('renderes PrivacyPolicy', () => {
     render(<PrivacyPage />)
 
-    expect(jest.mocked(PrivacyPolicy)).toHaveBeenCalledTimes(1)
+    expect(PrivacyPolicy).toHaveBeenCalledTimes(1)
   })
 
   it('renders Head', () => {

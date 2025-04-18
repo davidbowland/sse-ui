@@ -73,7 +73,7 @@ describe('Channel page', () => {
   it('renders PrivacyLink', () => {
     render(<SessionPage params={{ sessionId }} />)
 
-    expect(jest.mocked(PrivacyLink)).toHaveBeenCalledTimes(0)
+    expect(PrivacyLink).toHaveBeenCalledTimes(0)
   })
 
   it('renders Head', () => {

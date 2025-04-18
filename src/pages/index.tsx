@@ -1,9 +1,9 @@
+import React, { useMemo } from 'react'
 import Box from '@mui/material/Box'
 import ChatIcon from '@mui/icons-material/Chat'
 import Divider from '@mui/material/Divider'
 import Grid from '@mui/material/Grid'
 import { navigate } from 'gatsby'
-import React from 'react'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
@@ -18,6 +18,9 @@ const Index = (): React.ReactNode => {
     const { sessionId } = await createSession(claim, confidence, language)
     navigate(`/c/${encodeURIComponent(sessionId)}`)
   }
+
+  const searchText = typeof window === 'undefined' ? '' : window.location.search
+  const initialClaim = useMemo(() => new URLSearchParams(searchText).get('claim') || undefined, [searchText])
 
   return (
     <main style={{ minHeight: '90vh' }}>
@@ -51,7 +54,7 @@ const Index = (): React.ReactNode => {
             </Box>
             <Divider />
             <Box sx={{ minHeight: '90vh', width: '100%' }}>
-              <ClaimPrompt onClaimSelect={onClaimSelect} skipFirstScroll />
+              <ClaimPrompt initialClaim={initialClaim} onClaimSelect={onClaimSelect} skipFirstScroll />
             </Box>
           </Stack>
           <PrivacyLink />

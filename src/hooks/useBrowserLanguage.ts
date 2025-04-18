@@ -11,7 +11,7 @@ export const useBrowserLanguage = (): UseBrowserLanguageResults => {
 
   const browserLanguage = useMemo(
     () => new URLSearchParams(window.location.search).get('language') || window.navigator.language,
-    [window.navigator.language],
+    [window.location.search, window.navigator.language],
   )
   return { browserLanguage }
 }

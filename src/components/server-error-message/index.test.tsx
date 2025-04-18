@@ -37,6 +37,6 @@ describe('Server error message component', () => {
   it('renders privacy link', () => {
     render(<ServerErrorMessage title={title}> </ServerErrorMessage>)
 
-    expect(jest.mocked(PrivacyLink)).toHaveBeenCalledTimes(1)
+    expect(PrivacyLink).toHaveBeenCalledTimes(1)
   })
 })
