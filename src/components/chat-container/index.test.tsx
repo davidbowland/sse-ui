@@ -28,7 +28,7 @@ describe('chat-container', () => {
     expect(screen.getByText(/fnord/)).toBeInTheDocument()
   })
 
-  it('invokes onConfidenceChange on confidence change', async () => {
+  it.each([0, 1])('invokes onConfidenceChange on confidence change', async (index: number) => {
     const newConfidence = 'strongly agree'
     render(
       <ChatContainer
@@ -40,7 +40,7 @@ describe('chat-container', () => {
       </ChatContainer>,
     )
 
-    const confidenceOptionList = screen.getByText(/Agree/)
+    const confidenceOptionList = screen.getAllByText(/Agree/)[index]
     await act(() => userEvent.click(confidenceOptionList))
     const confidenceOptionItem = await screen.findByText(newConfidence, { exact: false })
     await act(() => userEvent.click(confidenceOptionItem))

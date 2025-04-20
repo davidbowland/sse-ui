@@ -37,7 +37,7 @@ describe('chat-window', () => {
     expect(screen.getByText(assistantMessage.content)).toBeInTheDocument()
   })
 
-  it('sends a message', async () => {
+  it('sends a message using the button', async () => {
     render(
       <ChatWindow
         dividers={dividers}
@@ -52,6 +52,24 @@ describe('chat-window', () => {
     await act(() => userEvent.type(inputBox, message))
     const sendButton = screen.getByText(/Send/, { selector: 'button' })
     await act(() => userEvent.click(sendButton))
+
+    expect(mockSendChatMessage).toHaveBeenCalledWith(message)
+    expect(inputBox.innerText).toBeFalsy()
+  })
+
+  it('sends a message using the enter key', async () => {
+    render(
+      <ChatWindow
+        dividers={dividers}
+        finished={finished}
+        history={history}
+        isTyping={isTyping}
+        sendChatMessage={mockSendChatMessage}
+      />,
+    )
+
+    const inputBox = screen.getByLabelText(/Message/)
+    await act(() => userEvent.type(inputBox, message + '{enter}'))
 
     expect(mockSendChatMessage).toHaveBeenCalledWith(message)
     expect(inputBox.innerText).toBeFalsy()
@@ -77,7 +95,7 @@ describe('chat-window', () => {
     expect(mockSendChatMessage).not.toHaveBeenCalled()
   })
 
-  it("won't send an empty message", async () => {
+  it("won't send an empty message using the send button", async () => {
     render(
       <ChatWindow
         dividers={dividers}
@@ -91,6 +109,24 @@ describe('chat-window', () => {
     const inputBox = screen.getByLabelText(/Message/)
     const sendButton = screen.getByText(/Send/, { selector: 'button' })
     await act(() => userEvent.click(sendButton.parentElement as HTMLDivElement))
+
+    expect(inputBox.innerText).toBeFalsy()
+    expect(mockSendChatMessage).not.toHaveBeenCalled()
+  })
+
+  it("won't send an empty message using the enter key", async () => {
+    render(
+      <ChatWindow
+        dividers={dividers}
+        finished={finished}
+        history={history}
+        isTyping={isTyping}
+        sendChatMessage={mockSendChatMessage}
+      />,
+    )
+
+    const inputBox = screen.getByLabelText(/Message/)
+    await act(() => userEvent.type(inputBox, '{enter}'))
 
     expect(inputBox.innerText).toBeFalsy()
     expect(mockSendChatMessage).not.toHaveBeenCalled()

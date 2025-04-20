@@ -25,15 +25,12 @@ export interface ChatWindowProps {
 }
 
 const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: ChatWindowProps): React.ReactNode => {
-  const [chatWindowHeight, setChatWindowHeight] = useState<number>(0)
   const [message, setMessage] = useState<string>('')
 
-  const chatWindowRef = useRef<HTMLDivElement>(null)
   const messageRef = useRef<HTMLDivElement>(null)
-  const typingIndicatorRef = useRef<HTMLDivElement>(null)
 
   const sendMessage = () => {
-    if (!isTyping && message.length) {
+    if (!isTyping && message.trim().length) {
       sendChatMessage(message)
       setMessage('')
     }
@@ -62,7 +59,7 @@ const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: 
             label="Message"
             maxRows={4}
             multiline
-            onInput={(e: any) => setMessage(e.target.value)}
+            onInput={(e: any) => setMessage(e.target.value.replace(/\n/g, ''))}
             onKeyUp={(e: any) => e.key === 'Enter' && sendMessage()}
             sx={{ width: '100%' }}
             value={message.slice(0, MAX_CHAT_LENGTH)}
@@ -85,13 +82,7 @@ const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: 
   }
 
   const scrollIntoView = () => {
-    if (chatWindowRef.current) {
-      setChatWindowHeight(chatWindowRef.current.clientHeight)
-    }
-
-    if (typingIndicatorRef.current) {
-      typingIndicatorRef.current.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
-    } else if (messageRef.current) {
+    if (messageRef.current) {
       messageRef.current.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
     }
   }
@@ -100,14 +91,11 @@ const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: 
     setTimeout(scrollIntoView, 10)
   }, [history])
 
+  const fontSize = { md: '1.0rem', sm: '0.9rem', xs: '0.8rem' }
   return (
     <Stack spacing={2}>
       <Paper elevation={3}>
-        <Stack
-          ref={chatWindowRef}
-          spacing={2}
-          sx={{ minHeight: chatWindowHeight ? `${chatWindowHeight}px` : '60vh', padding: 2 }}
-        >
+        <Stack spacing={2} sx={{ minHeight: '60vh', padding: 2 }}>
           {history.map((message: ChatMessage, index: number) => (
             <Stack key={index} spacing={2}>
               {dividers[index] && <Divider>{dividers[index].label}</Divider>}
@@ -116,7 +104,7 @@ const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: 
                   <Typography
                     key={lineNum}
                     ref={index === history.length - 1 ? messageRef : undefined}
-                    sx={{ fontSize: { md: '1.0rem', sm: '0.9rem', xs: '0.8rem' } }}
+                    sx={{ fontSize, padding: '0.1rem 0' }}
                     variant="body1"
                   >
                     {line}
@@ -126,16 +114,12 @@ const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: 
             </Stack>
           ))}
           {isTyping && (
-            <MessageDisplay ref={typingIndicatorRef} role="assistant">
-              <Skeleton sx={{ fontSize: { md: '1.0rem', sm: '0.9rem', xs: '0.8rem' } }} />
-              <Skeleton sx={{ fontSize: { md: '1.0rem', sm: '0.9rem', xs: '0.8rem' } }} />
-              <Skeleton sx={{ fontSize: { md: '1.0rem', sm: '0.9rem', xs: '0.8rem' } }} />
-              <Skeleton
-                sx={{ display: { md: 'none', xs: 'initial' }, fontSize: { md: '1.0rem', sm: '0.9rem', xs: '0.8rem' } }}
-              />
-              <Skeleton
-                sx={{ display: { sm: 'none', xs: 'initial' }, fontSize: { md: '1.0rem', sm: '0.9rem', xs: '0.8rem' } }}
-              />
+            <MessageDisplay role="assistant">
+              <Skeleton sx={{ fontSize }} />
+              <Skeleton sx={{ fontSize }} />
+              <Skeleton sx={{ fontSize }} />
+              <Skeleton sx={{ display: { md: 'none', xs: 'initial' }, fontSize }} />
+              <Skeleton sx={{ display: { sm: 'none', xs: 'initial' }, fontSize }} />
             </MessageDisplay>
           )}
         </Stack>
@@ -150,18 +134,12 @@ interface MessageDisplayProps {
   role: ChatRole
 }
 
+const assistantColors = { backgroundColor: '#00BFFF', color: '#fff' }
+const userColors = { backgroundColor: '#E5E4E2', color: '#000' }
+
 const MessageDisplay = forwardRef(
   ({ children, role }: MessageDisplayProps, ref: ForwardedRef<HTMLDivElement>): React.ReactNode => {
-    const { backgroundColor, color } =
-      role === 'assistant'
-        ? {
-          backgroundColor: '#00BFFF',
-          color: '#fff',
-        }
-        : {
-          backgroundColor: '#E5E4E2',
-          color: '#000',
-        }
+    const { backgroundColor, color } = role === 'assistant' ? assistantColors : userColors
 
     return (
       <Grid container ref={ref}>

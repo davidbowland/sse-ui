@@ -123,7 +123,7 @@ const ClaimPrompt = ({ initialClaim, onClaimSelect, skipFirstScroll }: ClaimProm
           aria-label="Breadcrumbs"
           ref={stageRef}
           separator={<NavigateNextIcon fontSize="small" />}
-          sx={{ display: 'inline-block' }}
+          sx={{ display: 'inline-block', padding: '0 1rem' }}
         >
           <Typography sx={promptStage === 'input' ? selectedSx : unselectedSx} variant="body1">
             Submit claim

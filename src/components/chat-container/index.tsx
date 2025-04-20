@@ -32,18 +32,16 @@ const ChatContainer = ({
   const [confidence, setConfidence] = useState<string | undefined>(initialConfidence)
 
   const onChangeOptionList = (value: string) => {
-    if (value) {
-      setConfidence(value)
-      onConfidenceChange(value)
-    }
+    setConfidence(value)
+    onConfidenceChange(value)
   }
 
   return (
     <Box>
       <AppBar position="static">
         <Toolbar disableGutters>
-          <Grid container spacing={2} sx={{ padding: 1 }}>
-            <Grid item lg={2} sm={6} sx={{ textAlign: 'center' }} xs={12}>
+          <Grid container spacing={2} sx={{ padding: 1, textAlign: 'center' }}>
+            <Grid item lg={2} sm={6} xs={12}>
               <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center' }}>
                 <Box>
                   <ChatIcon sx={{ mr: 1 }} />
@@ -62,7 +60,7 @@ const ChatContainer = ({
                 </Box>
               </Box>
             </Grid>
-            <Grid item lg={8} order={{ lg: 2, xs: 3 }} sx={{ textAlign: 'center' }} xs={12}>
+            <Grid item lg={8} order={{ lg: 2, xs: 3 }} xs={12}>
               {confidenceLevels.length > 0 && (
                 <FormControl sx={{ minWidth: { sm: 600, xs: '100%' } }}>
                   <InputLabel id="confidence-select-label">Confidence</InputLabel>
@@ -85,7 +83,7 @@ const ChatContainer = ({
             </Grid>
             <Grid item lg={2} order={{ lg: 3, xs: 2 }} sm={6} sx={{ paddingRight: { sm: 1, xs: 0 } }} xs={12}>
               <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center' }}>
-                <Box sx={{ textAlign: 'center' }}>
+                <Box>
                   <Button
                     onClick={() => navigate('/')}
                     startIcon={<AddCommentIcon />}
@@ -101,7 +99,28 @@ const ChatContainer = ({
         </Toolbar>
       </AppBar>
       <Box>{children}</Box>
-      <Box sx={{ textAlign: 'center' }}>
+      <Box sx={{ display: { sm: 'none' }, paddingLeft: 3, paddingRight: 3, textAlign: 'center' }}>
+        {confidenceLevels.length > 0 && (
+          <FormControl sx={{ minWidth: '100%' }}>
+            <InputLabel id="confidence-select-label-bottom">Confidence</InputLabel>
+            <Select
+              aria-label="Confidence"
+              id="confidence-select"
+              label="Confidence"
+              labelId="confidence-select-label-bottom"
+              onChange={(e) => onChangeOptionList(e.target.value)}
+              value={confidence}
+            >
+              {confidenceLevels.map((level, index) => (
+                <MenuItem key={index} value={level.value}>
+                  {level.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )}
+      </Box>
+      <Box sx={{ paddingTop: '6rem', textAlign: 'center' }}>
         <PrivacyLink />
       </Box>
     </Box>

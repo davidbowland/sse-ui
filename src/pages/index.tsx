@@ -28,15 +28,23 @@ const Index = (): React.ReactNode => {
         <Grid item sx={{ m: 'auto', maxWidth: 1200, width: '100%' }}>
           <Stack spacing={3} sx={{ minHeight: '80vh', textAlign: 'center' }}>
             <Typography
-              sx={{ fontSize: { sm: 64, xs: 44 }, fontVariant: 'small-caps', fontWeight: 700, letterSpacing: '0.2rem' }}
+              sx={{
+                fontSize: { sm: 64, xs: 44 },
+                fontVariant: 'small-caps',
+                fontWeight: 700,
+                letterSpacing: '0.2rem',
+                padding: '0 0.1rem',
+              }}
               variant="h2"
             >
               <ChatIcon sx={{ fontSize: { sm: 36, xs: 28 }, mr: 2 }} />
               StreetLogic AI
             </Typography>
-            <Typography variant="h4">Explore your confidence in what you believe</Typography>
+            <Typography sx={{ padding: '0 0.5rem' }} variant="h4">
+              Explore your confidence in what you believe
+            </Typography>
             <Box sx={{ width: '100%' }}>
-              <Typography sx={{ margin: 'auto', maxWidth: 800 }} variant="body1">
+              <Typography sx={{ margin: 'auto', maxWidth: 800, padding: '0 1rem' }} variant="body1">
                 A truth claim can be as simple as{' '}
                 <Typography component="span" sx={exampleClaimSx}>
                   my city is the best city to live in
