@@ -4,6 +4,7 @@ import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import ChatIcon from '@mui/icons-material/Chat'
+import Divider from '@mui/material/Divider'
 import FormControl from '@mui/material/FormControl'
 import Grid from '@mui/material/Grid'
 import InputLabel from '@mui/material/InputLabel'
@@ -100,25 +101,28 @@ const ChatContainer = ({
       </AppBar>
       <Box>{children}</Box>
       <Box sx={{ display: { sm: 'none' }, paddingLeft: 3, paddingRight: 3, textAlign: 'center' }}>
-        {confidenceLevels.length > 0 && (
-          <FormControl sx={{ minWidth: '100%' }}>
-            <InputLabel id="confidence-select-label-bottom">Confidence</InputLabel>
-            <Select
-              aria-label="Confidence"
-              id="confidence-select"
-              label="Confidence"
-              labelId="confidence-select-label-bottom"
-              onChange={(e) => onChangeOptionList(e.target.value)}
-              value={confidence}
-            >
-              {confidenceLevels.map((level, index) => (
-                <MenuItem key={index} value={level.value}>
-                  {level.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        )}
+        <Divider />
+        <Box sx={{ paddingTop: 4 }}>
+          {confidenceLevels.length > 0 && (
+            <FormControl sx={{ minWidth: '100%' }}>
+              <InputLabel id="confidence-select-label-bottom">Confidence</InputLabel>
+              <Select
+                aria-label="Confidence"
+                id="confidence-select"
+                label="Confidence"
+                labelId="confidence-select-label-bottom"
+                onChange={(e) => onChangeOptionList(e.target.value)}
+                value={confidence}
+              >
+                {confidenceLevels.map((level, index) => (
+                  <MenuItem key={index} value={level.value}>
+                    {level.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
+        </Box>
       </Box>
       <Box sx={{ paddingTop: '6rem', textAlign: 'center' }}>
         <PrivacyLink />
