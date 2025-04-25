@@ -43,7 +43,7 @@ const Index = (): React.ReactNode => {
             <Typography sx={{ padding: '0 0.5rem' }} variant="h4">
               Explore your confidence in what you believe
             </Typography>
-            <Box sx={{ width: '100%' }}>
+            <Box>
               <Typography sx={{ margin: 'auto', maxWidth: 800, padding: '0 1rem' }} variant="body1">
                 A truth claim can be as simple as{' '}
                 <Typography component="span" sx={exampleClaimSx}>
@@ -60,8 +60,13 @@ const Index = (): React.ReactNode => {
                 . Enter a truth claim below to get started or have some claims suggested for you.
               </Typography>
             </Box>
+            <Box>
+              <Typography sx={{ margin: 'auto', maxWidth: 800, padding: '0 1rem' }} variant="body1">
+                If this is your first time here, it&apos;s recommended that you start with suggested claims.
+              </Typography>
+            </Box>
             <Divider />
-            <Box sx={{ minHeight: '90vh', width: '100%' }}>
+            <Box sx={{ minHeight: '90vh' }}>
               <ClaimPrompt initialClaim={initialClaim} onClaimSelect={onClaimSelect} skipFirstScroll />
             </Box>
           </Stack>
