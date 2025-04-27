@@ -77,6 +77,13 @@ const PrivacyPolicy = (): React.ReactNode => {
         remove this information from our database, you may delete your channel at any time. Deleting your channel is
         immediate, but builds will be retained until they expire.
       </Typography>
+      <Typography variant="h6">AI INTERACTIONS</Typography>
+      <Typography variant="body1">
+        We do not use your interactions with the site to train AI models. We store claims and conversation chat history
+        at least 24 hours to provide the opportunity to pause and resume conversations or refer back to them. Roughly
+        24-48 hours after a chat session is initiated, all information about it is permanently deleted, including the
+        claim and chat history.
+      </Typography>
       <Typography variant="h6">MINORS</Typography>
       <Typography variant="body1">The Site is not intended for individuals under the age of 18.</Typography>
       <Typography variant="h6">CHANGES</Typography>

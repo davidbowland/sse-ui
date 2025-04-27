@@ -69,6 +69,13 @@ const Index = (): React.ReactNode => {
             <Box sx={{ minHeight: '90vh' }}>
               <ClaimPrompt initialClaim={initialClaim} onClaimSelect={onClaimSelect} skipFirstScroll />
             </Box>
+            <Box>
+              <Typography sx={{ margin: 'auto', maxWidth: 800, padding: '0 1rem' }} variant="body1">
+                We do not use your interactions with this site to train AI models. We store claims, chat history, and
+                associated information for roughly 24-48 hours&nbsp;-- allowing you to resume a conversation or refer
+                back to it&nbsp;-- then permanently delete the conversation.
+              </Typography>
+            </Box>
           </Stack>
           <PrivacyLink />
         </Grid>
