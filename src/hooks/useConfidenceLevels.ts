@@ -16,8 +16,8 @@ export const useConfidenceLevels = (): UseConfidenceLevelsResults => {
     fetchConfidenceLevels()
       .then(setConfidenceLevels)
       .catch((error) => {
-        setErrorMessage('Error fetching confidence levels.')
         console.error('Error fetching confidence levels', { error })
+        setErrorMessage('We apologize, but we encountered an error retrieving confidence levels.')
       })
   }, [])
 

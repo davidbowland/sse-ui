@@ -99,10 +99,21 @@ describe('useSession', () => {
     )
   })
 
-  it('returns an error message on error', async () => {
+  it('returns an error message when error loading chat session', async () => {
     jest.mocked(sse).fetchSession.mockRejectedValueOnce(undefined)
     const { result } = renderHook(() => useSession(sessionId))
 
-    await waitFor(() => expect(result.current.errorMessage).toEqual('Error fetching chat session.'))
+    await waitFor(() =>
+      expect(result.current.errorMessage).toEqual('We apologize, but we were unable to load your chat session.'),
+    )
+  })
+
+  it('returns an error message when error sending chat message', async () => {
+    jest.mocked(sse).sendLlmMessage.mockRejectedValueOnce(undefined)
+    const { result } = renderHook(() => useSession(sessionId))
+
+    await waitFor(() =>
+      expect(result.current.errorMessage).toEqual('We apologize, but there was an error sending your chat message.'),
+    )
   })
 })

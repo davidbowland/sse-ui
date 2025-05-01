@@ -24,8 +24,8 @@ export const useSuggestedClaims = () => {
         setSuggestedClaims(claims)
         setAiClaims(claims)
       } catch (error: any) {
-        setErrorMessage('Error fetching suggested claims.')
         console.error('Error fetching suggested claims', { error })
+        setErrorMessage('We apologize, but we encountered an error compiling suggested claims.')
       }
     }
   }
@@ -47,8 +47,8 @@ export const useSuggestedClaims = () => {
       }))
       return { inappropriate, isTruthClaim }
     } catch (error: any) {
-      setErrorMessage('Error validating claim.')
       console.error('Error validating claim', { error })
+      setErrorMessage('We apologize, but we encountered an error validating your claim.')
       return { inappropriate: true, isTruthClaim: false }
     }
   }

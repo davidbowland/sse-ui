@@ -1,10 +1,10 @@
+import React, { useEffect, useRef } from 'react'
 import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
 import Breadcrumbs from '@mui/material/Breadcrumbs'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Grid from '@mui/material/Grid'
-import React from 'react'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
@@ -37,6 +37,14 @@ const SessionPage = ({ params }: SessionPageProps): React.ReactNode => {
     sendChatMessage,
   } = useSession(params.sessionId)
 
+  const errorMessageRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const scrollErrorIntoView = () =>
+      errorMessageRef?.current && errorMessageRef.current.scrollIntoView({ behavior: 'smooth', inline: 'center' })
+    setTimeout(scrollErrorIntoView, 10)
+  }, [errorMessage])
+
   return (
     <main style={{ minHeight: '90vh' }}>
       <ChatContainer
@@ -50,7 +58,7 @@ const SessionPage = ({ params }: SessionPageProps): React.ReactNode => {
             <Stack spacing={1}>
               <Box sx={{ paddingBottom: 1 }}>
                 {errorMessage ? (
-                  <Alert severity="error" sx={{ margin: 'auto', maxWidth: 600 }}>
+                  <Alert ref={errorMessageRef} severity="error" sx={{ margin: 'auto', maxWidth: 600 }}>
                     {errorMessage} Please refresh to try again. Chat sessions expire after 24 hours.
                   </Alert>
                 ) : (

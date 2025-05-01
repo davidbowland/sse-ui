@@ -49,7 +49,9 @@ describe('useSuggestedClaims', () => {
 
     expect(sse.suggestClaims).toHaveBeenCalledTimes(1)
     await waitFor(() => {
-      expect(result.current.errorMessage).toEqual('Error fetching suggested claims.')
+      expect(result.current.errorMessage).toEqual(
+        'We apologize, but we encountered an error compiling suggested claims.',
+      )
     })
     expect(result.current.suggestedClaims).toEqual([])
   })
@@ -105,7 +107,7 @@ describe('useSuggestedClaims', () => {
 
     expect(sse.validateClaim).toHaveBeenCalledTimes(1)
     await waitFor(() => {
-      expect(result.current.errorMessage).toEqual('Error validating claim.')
+      expect(result.current.errorMessage).toEqual('We apologize, but we encountered an error validating your claim.')
     })
     expect(inappropriate).toEqual(true)
     expect(isTruthClaim).toEqual(false)

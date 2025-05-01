@@ -50,21 +50,26 @@ export const useSession = (sessionId: string): UseSessionResults => {
     }
     setIsLoading(true)
 
-    const response = await sendLlmMessage(sessionId, currentStep.path, {
-      content: sanitizedMessage,
-    })
-    setSession((prevSession) =>
-      prevSession === undefined
-        ? undefined
-        : {
-          ...prevSession,
-          ...response,
-          overrideStep: response.overrideStep,
-        },
-    )
+    try {
+      const response = await sendLlmMessage(sessionId, currentStep.path, {
+        content: sanitizedMessage,
+      })
+      setSession((prevSession) =>
+        prevSession === undefined
+          ? undefined
+          : {
+            ...prevSession,
+            ...response,
+            overrideStep: response.overrideStep,
+          },
+      )
 
-    if (!response.newConversation) {
-      setIsLoading(false)
+      if (!response.newConversation) {
+        setIsLoading(false)
+      }
+    } catch (error) {
+      console.error('Error sending message', { error })
+      setErrorMessage('We apologize, but there was an error sending your chat message.')
     }
   }
 
@@ -110,8 +115,8 @@ export const useSession = (sessionId: string): UseSessionResults => {
         setIsLoading(session.newConversation)
       })
       .catch((error) => {
-        setErrorMessage('Error fetching chat session.')
         console.error('Error fetching chat session', { error })
+        setErrorMessage('We apologize, but we were unable to load your chat session.')
       })
   }, [sessionId])
 
@@ -140,6 +145,7 @@ export const useSession = (sessionId: string): UseSessionResults => {
     confidenceLevels: session.context.possibleConfidenceLevels,
     conversationSteps: session.conversationSteps,
     dividers: session.dividers,
+    errorMessage,
     finished,
     history: session.history,
     isLoading,
