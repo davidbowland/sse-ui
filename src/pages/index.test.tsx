@@ -1,12 +1,12 @@
-import '@testing-library/jest-dom'
-import React from 'react'
-import { render } from '@testing-library/react'
-
-import * as sse from '@services/sse'
-import Index, { Head } from './index'
 import ClaimPrompt from '@components/claim-prompt'
 import PrivacyLink from '@components/privacy-link'
+import * as sse from '@services/sse'
 import { sessionId } from '@test/__mocks__'
+import '@testing-library/jest-dom'
+import { render } from '@testing-library/react'
+import React from 'react'
+
+import Index, { Head } from './index'
 
 jest.mock('@aws-amplify/analytics')
 jest.mock('@components/claim-prompt')

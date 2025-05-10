@@ -1,13 +1,4 @@
 import {
-  changeConfidence,
-  createSession,
-  fetchConfidenceLevels,
-  fetchSession,
-  sendLlmMessage,
-  suggestClaims,
-  validateClaim,
-} from './sse'
-import {
   confidenceChangeResponse,
   confidenceLevels,
   llmRequest,
@@ -18,6 +9,16 @@ import {
   suggestedClaims,
   validationResult,
 } from '@test/__mocks__'
+
+import {
+  changeConfidence,
+  createSession,
+  fetchConfidenceLevels,
+  fetchSession,
+  sendLlmMessage,
+  suggestClaims,
+  validateClaim,
+} from './sse'
 
 const mockGet = jest.fn()
 const mockPost = jest.fn()

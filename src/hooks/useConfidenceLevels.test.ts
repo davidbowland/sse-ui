@@ -1,7 +1,7 @@
-import { renderHook, waitFor } from '@testing-library/react'
-
 import * as sse from '@services/sse'
 import { confidenceLevels } from '@test/__mocks__'
+import { renderHook, waitFor } from '@testing-library/react'
+
 import { useConfidenceLevels } from './useConfidenceLevels'
 
 jest.mock('@services/sse')

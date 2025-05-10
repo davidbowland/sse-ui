@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked'
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
@@ -8,12 +9,11 @@ import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
-import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked'
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-
 import { ConfidenceLevel } from '@types'
+import React, { useState } from 'react'
+
 import TwoButtons from './two-buttons'
 
 export interface ConfidenceStageProps {

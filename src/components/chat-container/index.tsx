@@ -1,21 +1,20 @@
-import React, { useState } from 'react'
+import PrivacyLink from '@components/privacy-link'
 import AddCommentIcon from '@mui/icons-material/AddComment'
+import ChatIcon from '@mui/icons-material/Chat'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import ChatIcon from '@mui/icons-material/Chat'
 import Divider from '@mui/material/Divider'
 import FormControl from '@mui/material/FormControl'
 import Grid from '@mui/material/Grid'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
-import { navigate } from 'gatsby'
-import PrivacyLink from '@components/privacy-link'
 import Select from '@mui/material/Select'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-
 import { ConfidenceLevel } from '@types'
+import { navigate } from 'gatsby'
+import React, { useState } from 'react'
 
 export interface ChatContainerProps {
   children: React.ReactNode

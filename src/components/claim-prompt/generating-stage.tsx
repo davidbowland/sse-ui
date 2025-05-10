@@ -1,8 +1,8 @@
 import Box from '@mui/material/Box'
 import LinearProgress from '@mui/material/LinearProgress'
-import React from 'react'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import React from 'react'
 
 export interface GeneratingStageProps {
   ref: React.RefObject<HTMLDivElement>

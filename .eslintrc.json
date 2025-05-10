@@ -40,7 +40,6 @@
     ],
     "react/jsx-sort-props": ["error"],
     "semi": ["error", "never"],
-    "sort-imports": ["error", { "allowSeparatedGroups": true, "ignoreCase": true }],
     "sort-keys": ["error", "asc", { "caseSensitive": false, "natural": false }],
     "sort-vars": ["error"]
   },

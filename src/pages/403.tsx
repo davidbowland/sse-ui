@@ -1,6 +1,5 @@
-import React from 'react'
-
 import ServerErrorMessage from '@components/server-error-message'
+import React from 'react'
 
 const Forbidden = (): React.ReactNode => {
   const display403 = typeof window !== 'undefined' && window.location.pathname.match(/^\/c\/[^/]+$/) === null

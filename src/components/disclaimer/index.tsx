@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
 import Button from '@mui/material/Button'
-import Cookies from 'universal-cookie'
 import Drawer from '@mui/material/Drawer'
 import Grid from '@mui/material/Grid'
-import { Link } from 'gatsby'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { Link } from 'gatsby'
+import React, { useState } from 'react'
+import Cookies from 'universal-cookie'
 
 const Disclaimer = (): React.ReactNode => {
   const cookies = new Cookies()

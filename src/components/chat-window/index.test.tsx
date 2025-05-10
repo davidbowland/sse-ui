@@ -1,10 +1,10 @@
+import { assistantMessage, dividers, userMessage } from '@test/__mocks__'
 import '@testing-library/jest-dom'
-import * as gatsby from 'gatsby'
-import React, { act } from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import * as gatsby from 'gatsby'
+import React, { act } from 'react'
 
-import { assistantMessage, dividers, userMessage } from '@test/__mocks__'
 import ChatWindow from './index'
 
 jest.mock('@aws-amplify/analytics')

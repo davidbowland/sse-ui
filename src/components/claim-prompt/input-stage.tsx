@@ -1,13 +1,13 @@
-import React, { useState } from 'react'
+import { useBrowserLanguage } from '@hooks/useBrowserLanguage'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Switch from '@mui/material/Switch'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+import React, { useState } from 'react'
 
 import TwoButtons from './two-buttons'
-import { useBrowserLanguage } from '@hooks/useBrowserLanguage'
 
 export interface InputStageProps {
   errorMessage?: string

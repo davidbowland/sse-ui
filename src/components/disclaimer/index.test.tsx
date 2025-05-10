@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom'
-import React, { act } from 'react'
 import { render, screen } from '@testing-library/react'
-import Cookies from 'universal-cookie'
 import userEvent from '@testing-library/user-event'
+import React, { act } from 'react'
+import Cookies from 'universal-cookie'
 
 import Disclaimer from './index'
 

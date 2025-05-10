@@ -1,8 +1,8 @@
+import PrivacyLink from '@components/privacy-link'
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
 import React from 'react'
 
-import PrivacyLink from '@components/privacy-link'
 import ServerErrorMessage from './index'
 
 jest.mock('@components/privacy-link')

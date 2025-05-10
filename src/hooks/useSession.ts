@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useState } from 'react'
-
 import { changeConfidence, fetchSession, sendLlmMessage } from '@services/sse'
 import { ChatMessage, ConfidenceLevel, ConversationStep, Dividers, Session } from '@types'
+import { useEffect, useMemo, useState } from 'react'
 
 export interface UseSessionResults {
   chatStep?: string

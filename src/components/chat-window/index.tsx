@@ -1,18 +1,17 @@
-import React, { ForwardedRef, forwardRef, useEffect, useRef, useState } from 'react'
 import AddCommentIcon from '@mui/icons-material/AddComment'
+import SendIcon from '@mui/icons-material/Send'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import Grid from '@mui/material/Grid'
-import { navigate } from 'gatsby'
 import Paper from '@mui/material/Paper'
-import SendIcon from '@mui/icons-material/Send'
 import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-
 import { ChatMessage, ChatRole, Dividers } from '@types'
+import { navigate } from 'gatsby'
+import React, { ForwardedRef, forwardRef, useEffect, useRef, useState } from 'react'
 
 const MAX_CHAT_LENGTH = 500
 

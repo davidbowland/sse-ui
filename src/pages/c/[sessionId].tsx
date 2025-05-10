@@ -1,4 +1,6 @@
-import React, { useEffect, useRef } from 'react'
+import ChatContainer from '@components/chat-container'
+import ChatWindow from '@components/chat-window'
+import { useSession } from '@hooks/useSession'
 import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
 import Breadcrumbs from '@mui/material/Breadcrumbs'
@@ -7,10 +9,7 @@ import CardContent from '@mui/material/CardContent'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-
-import ChatContainer from '@components/chat-container'
-import ChatWindow from '@components/chat-window'
-import { useSession } from '@hooks/useSession'
+import React, { useEffect, useRef } from 'react'
 
 const selectedSx = { color: 'text.primary', fontStyle: 'italic', fontWeight: 700 }
 const unselectedSx = {}

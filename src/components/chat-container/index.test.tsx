@@ -1,11 +1,11 @@
+import { confidenceLevels } from '@test/__mocks__'
 import '@testing-library/jest-dom'
-import * as gatsby from 'gatsby'
-import React, { act } from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import * as gatsby from 'gatsby'
+import React, { act } from 'react'
 
 import ChatContainer from './index'
-import { confidenceLevels } from '@test/__mocks__'
 
 jest.mock('@aws-amplify/analytics')
 jest.mock('gatsby')

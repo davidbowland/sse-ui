@@ -1,13 +1,13 @@
-import '@testing-library/jest-dom'
-import { render, screen, waitFor } from '@testing-library/react'
-import React from 'react'
-
-import { confidenceLevels, sessionId, useSessionResults } from '@test/__mocks__'
-import SessionPage, { Head } from './[sessionId]'
 import ChatContainer from '@components/chat-container'
 import ChatWindow from '@components/chat-window'
 import PrivacyLink from '@components/privacy-link'
 import { useSession } from '@hooks/useSession'
+import { confidenceLevels, sessionId, useSessionResults } from '@test/__mocks__'
+import '@testing-library/jest-dom'
+import { render, screen, waitFor } from '@testing-library/react'
+import React from 'react'
+
+import SessionPage, { Head } from './[sessionId]'
 
 jest.mock('@aws-amplify/analytics')
 jest.mock('@components/chat-container')

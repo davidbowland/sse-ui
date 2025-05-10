@@ -1,5 +1,3 @@
-import axios from 'axios'
-
 import {
   ConfidenceChangeResponse,
   ConfidenceLevel,
@@ -11,6 +9,7 @@ import {
   SuggestedClaims,
   ValidationResult,
 } from '@types'
+import axios from 'axios'
 
 const api = axios.create({
   baseURL: process.env.GATSBY_SSE_API_BASE_URL,
