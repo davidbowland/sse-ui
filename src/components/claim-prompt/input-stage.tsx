@@ -47,7 +47,7 @@ const InputStage = ({
   }
 
   const submitClaim = () => {
-    onClaimSubmit(claimInput)
+    onClaimSubmit(claimInput.trim())
   }
 
   return (
@@ -60,6 +60,7 @@ const InputStage = ({
         helperText={errorMessage}
         label="Truth claim"
         onInput={(e: any) => setClaimInput(e.target.value)}
+        onKeyUp={(e: any) => e.key === 'Enter' && submitClaim()}
         sx={{ paddingBottom: 3, width: '100%' }}
         value={claimInput}
         variant="outlined"

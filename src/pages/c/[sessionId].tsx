@@ -7,6 +7,7 @@ import Breadcrumbs from '@mui/material/Breadcrumbs'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Grid from '@mui/material/Grid'
+import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import React, { useEffect, useRef } from 'react'
@@ -66,7 +67,7 @@ const SessionPage = ({ params }: SessionPageProps): React.ReactNode => {
                       <Typography gutterBottom sx={{ color: 'text.secondary' }} variant="h6">
                         Claim:
                       </Typography>
-                      <Typography variant="h5">{claim}</Typography>
+                      {claim ? <Typography variant="h5">{claim}</Typography> : <Skeleton />}
                     </CardContent>
                   </Card>
                 )}

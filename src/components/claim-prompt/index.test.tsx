@@ -98,6 +98,22 @@ describe('claim-prompt', () => {
     expect(mockOnClaimSelect).toHaveBeenCalledWith('A super claim', 'strongly disagree', 'en-US')
   })
 
+  it('validates a claim on enter being pressed', async () => {
+    jest.mocked(useSuggestedClaims).mockReturnValue({
+      errorMessage,
+      fetchSuggestedClaims: mockFetchSuggestedClaims,
+      suggestedClaims: validatedClaims,
+      validateClaim: mockValidateClaim,
+    })
+
+    render(<ClaimPrompt onClaimSelect={mockOnClaimSelect} />)
+
+    const claimInput = await screen.findByLabelText(/Truth claim/)
+    await act(() => userEvent.type(claimInput, 'An awesome claim{enter}'))
+
+    expect(mockValidateClaim).toHaveBeenCalledWith('An awesome claim', 'en-US')
+  })
+
   it("doesn't show language option when browser language is en-US", async () => {
     render(<ClaimPrompt onClaimSelect={mockOnClaimSelect} />)
 
