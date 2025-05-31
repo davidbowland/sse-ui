@@ -40,7 +40,6 @@ export const suggestedClaims: string[] = [
 
 export const validationResult = {
   inappropriate: false,
-  isTruthClaim: true,
   suggestions: suggestedClaims,
 }
 

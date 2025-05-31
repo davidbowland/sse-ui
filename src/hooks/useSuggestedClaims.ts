@@ -34,22 +34,21 @@ export const useSuggestedClaims = () => {
     const cachedClaim = validatedClaims[claim + language]
     if (cachedClaim) {
       setSuggestedClaims(cachedClaim.suggestions)
-      return { inappropriate: cachedClaim.inappropriate, isTruthClaim: cachedClaim.isTruthClaim }
+      return { inappropriate: cachedClaim.inappropriate }
     }
 
     try {
-      const { inappropriate, isTruthClaim, suggestions } = await postValidateClaim(claim, language)
-      const newSuggestions = !inappropriate && isTruthClaim ? [claim, ...suggestions] : suggestions
-      setSuggestedClaims(newSuggestions)
+      const { inappropriate, suggestions } = await postValidateClaim(claim, language)
+      setSuggestedClaims(suggestions)
       setValidatedClaims((prevValue: any) => ({
         ...prevValue,
-        [claim + language]: { inappropriate, isTruthClaim, suggestions: newSuggestions },
+        [claim + language]: { inappropriate, suggestions },
       }))
-      return { inappropriate, isTruthClaim }
+      return { inappropriate }
     } catch (error: any) {
       console.error('Error validating claim', { error })
       setErrorMessage('We apologize, but we encountered an error validating your claim.')
-      return { inappropriate: true, isTruthClaim: false }
+      return { inappropriate: true }
     }
   }
 

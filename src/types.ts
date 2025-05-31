@@ -30,13 +30,11 @@ export interface SuggestedClaims {
 
 export interface ValidationResult {
   inappropriate: boolean
-  isTruthClaim: boolean
   suggestions: string[]
 }
 
 export interface ValidatedClaim {
   inappropriate: boolean
-  isTruthClaim: boolean
 }
 
 // Confidence levels
