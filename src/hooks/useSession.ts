@@ -1,6 +1,6 @@
 import { changeConfidence, fetchSession, sendLlmMessage } from '@services/sse'
 import { ChatMessage, ConfidenceLevel, ConversationStep, Dividers, Session } from '@types'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 export interface UseSessionResults {
   chatStep?: string
@@ -40,60 +40,66 @@ export const useSession = (sessionId: string): UseSessionResults => {
     })
   }
 
-  const sendChatMessage = async (message: string, newConversation?: boolean): Promise<void> => {
-    const sanitizedMessage = message.trim().replace(/\r|\n/g, '')
-    if (!currentStep) {
-      return
-    } else if (!newConversation) {
-      addMessageToHistory({ content: sanitizedMessage, role: 'user' })
-    }
-    setIsLoading(true)
+  const onChangeConfidence = useCallback(
+    async (newConfidence: string): Promise<void> => {
+      if (!session || newConfidence === session?.context.confidence) {
+        return
+      }
 
-    try {
-      const response = await sendLlmMessage(sessionId, currentStep.path, {
-        content: sanitizedMessage,
-      })
+      setIsLoading(true)
+      const { confidence, dividers, newConversation, overrideStep } = await changeConfidence(sessionId, newConfidence)
       setSession((prevSession) =>
         prevSession === undefined
           ? undefined
           : {
             ...prevSession,
-            ...response,
-            overrideStep: response.overrideStep,
+            context: {
+              ...prevSession.context,
+              confidence,
+            },
+            dividers,
+            newConversation,
+            overrideStep,
           },
       )
+    },
+    [sessionId, session?.context.confidence],
+  )
 
-      if (!response.newConversation) {
-        setIsLoading(false)
+  const sendChatMessage = useCallback(
+    async (message: string, newConversation?: boolean): Promise<void> => {
+      const sanitizedMessage = message.trim().replace(/\r|\n/g, '')
+      if (!currentStep) {
+        return
+      } else if (!newConversation) {
+        addMessageToHistory({ content: sanitizedMessage, role: 'user' })
       }
-    } catch (error) {
-      console.error('Error sending message', { error })
-      setErrorMessage('We apologize, but there was an error sending your chat message.')
-    }
-  }
+      setIsLoading(true)
 
-  const onChangeConfidence = async (newConfidence: string): Promise<void> => {
-    if (!session || newConfidence === session?.context.confidence) {
-      return
-    }
+      try {
+        const response = await sendLlmMessage(sessionId, currentStep.path, {
+          content: sanitizedMessage,
+        })
+        setSession((prevSession) =>
+          prevSession === undefined
+            ? undefined
+            : {
+              ...prevSession,
+              ...response,
+              overrideStep: response.overrideStep,
+            },
+        )
 
-    setIsLoading(true)
-    const { confidence, dividers, newConversation, overrideStep } = await changeConfidence(sessionId, newConfidence)
-    setSession((prevSession) =>
-      prevSession === undefined
-        ? undefined
-        : {
-          ...prevSession,
-          context: {
-            ...prevSession.context,
-            confidence,
-          },
-          dividers,
-          newConversation,
-          overrideStep,
-        },
-    )
-  }
+        if (!response.newConversation) {
+          setIsLoading(false)
+        }
+      } catch (error) {
+        console.error('Error sending message', { error })
+        setErrorMessage('We apologize, but there was an error sending your chat message.')
+      }
+    },
+    [currentStep, sessionId],
+  )
 
   useEffect(() => {
     if (session?.newConversation && currentStep) {
