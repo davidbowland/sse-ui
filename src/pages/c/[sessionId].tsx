@@ -67,7 +67,17 @@ const SessionPage = ({ params }: SessionPageProps): React.ReactNode => {
                       <Typography gutterBottom sx={{ color: 'text.secondary' }} variant="h6">
                         Claim:
                       </Typography>
-                      {claim ? <Typography variant="h5">{claim}</Typography> : <Skeleton />}
+                      <Typography variant="h5">
+                        {claim ? (
+                          claim
+                        ) : (
+                          <>
+                            <Skeleton />
+                            <Skeleton sx={{ display: { md: 'none', xs: 'block' }, width: '100%' }} />
+                            <Skeleton sx={{ display: { sm: 'none', xs: 'block' }, width: '100%' }} />
+                          </>
+                        )}
+                      </Typography>
                     </CardContent>
                   </Card>
                 )}
