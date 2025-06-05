@@ -32,7 +32,7 @@ const ConfidenceStage = ({
   const [selectedIndex, setSelectedIndex] = useState<number>(-1)
 
   return (
-    <Stack spacing={4} sx={{ margin: 'auto', maxWidth: 'm', textAlign: 'center', width: '100%"' }}>
+    <Stack spacing={4} sx={{ margin: 'auto', maxWidth: 'm', textAlign: 'center', width: '100%' }}>
       <Box>
         <Typography variant="h4">What is your stance?</Typography>
       </Box>

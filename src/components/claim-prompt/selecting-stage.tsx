@@ -33,7 +33,7 @@ const SelectingStage = ({
   }, [suggestedClaims])
 
   return (
-    <Stack spacing={2} sx={{ margin: 'auto', maxWidth: 'm', textAlign: 'center', width: '100%"' }}>
+    <Stack spacing={2} sx={{ margin: 'auto', maxWidth: 'm', textAlign: 'center', width: '100%' }}>
       <Box>
         <Typography variant="h4">Select a claim</Typography>
       </Box>

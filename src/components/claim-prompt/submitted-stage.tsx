@@ -34,11 +34,11 @@ const SUBTITLE_OPTIONS = [
 
 const getRandomSubtitle = () => SUBTITLE_OPTIONS[Math.floor(Math.random() * SUBTITLE_OPTIONS.length)]
 
-const GeneratingStage = (): React.ReactNode => {
+const SubmittedStage = (): React.ReactNode => {
   const subtitle = useMemo(() => getRandomSubtitle(), [SUBTITLE_OPTIONS])
 
   return (
-    <Stack spacing={4} sx={{ margin: 'auto', maxWidth: 'm', padding: 3, textAlign: 'center', width: '100%"' }}>
+    <Stack spacing={4} sx={{ margin: 'auto', maxWidth: 'm', padding: 3, textAlign: 'center', width: '100%' }}>
       <Typography variant="h4">Creating chat session</Typography>
       <Typography fontStyle="italic" variant="body2">
         {subtitle}
@@ -50,4 +50,4 @@ const GeneratingStage = (): React.ReactNode => {
   )
 }
 
-export default GeneratingStage
+export default SubmittedStage
