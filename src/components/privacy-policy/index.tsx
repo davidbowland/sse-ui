@@ -72,11 +72,6 @@ const PrivacyPolicy = (): React.ReactNode => {
         We may maintain log files for up to 90 days. If you request data you entered into the site to be deleted, it
         will be removed within 30 days of your request.
       </Typography>
-      <Typography variant="body1">
-        If you choose to sign up, the only information we store longer than 90 days is your channel information. To
-        remove this information from our database, you may delete your channel at any time. Deleting your channel is
-        immediate, but builds will be retained until they expire.
-      </Typography>
       <Typography variant="h6">AI INTERACTIONS</Typography>
       <Typography variant="body1">
         We do not use your interactions with the site to train AI models. We store claims and conversation chat history

@@ -9,11 +9,18 @@ export interface UseSuggestedClaimsResults {
   validateClaim: () => Promise<void>
 }
 
+interface ValidatedClaimsCache {
+  [key: string]: {
+    inappropriate: boolean
+    suggestions: string[]
+  }
+}
+
 export const useSuggestedClaims = () => {
   const [aiClaims, setAiClaims] = useState<string[] | undefined>(undefined)
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
   const [suggestedClaims, setSuggestedClaims] = useState<string[]>([])
-  const [validatedClaims, setValidatedClaims] = useState<any>({})
+  const [validatedClaims, setValidatedClaims] = useState<ValidatedClaimsCache>({})
 
   const fetchSuggestedClaims = useCallback(
     async (language: string): Promise<void> => {
@@ -24,7 +31,7 @@ export const useSuggestedClaims = () => {
           const { claims } = await suggestClaims(language)
           setSuggestedClaims(claims)
           setAiClaims(claims)
-        } catch (error: any) {
+        } catch (error: unknown) {
           console.error('Error fetching suggested claims', { error })
           setErrorMessage('We apologize, but we encountered an error compiling suggested claims.')
         }
@@ -44,12 +51,12 @@ export const useSuggestedClaims = () => {
       try {
         const { inappropriate, suggestions } = await postValidateClaim(claim, language)
         setSuggestedClaims(suggestions)
-        setValidatedClaims((prevValue: any) => ({
+        setValidatedClaims((prevValue: ValidatedClaimsCache) => ({
           ...prevValue,
           [claim + language]: { inappropriate, suggestions },
         }))
         return { inappropriate }
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error('Error validating claim', { error })
         setErrorMessage('We apologize, but we encountered an error validating your claim.')
         return { inappropriate: true }

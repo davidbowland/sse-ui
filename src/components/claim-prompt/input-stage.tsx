@@ -38,7 +38,9 @@ const InputStage = ({
           <Switch
             aria-label="Chat language switch"
             checked={language === browserLanguage}
-            onChange={(e: any) => onLanguageChange(e.target.checked ? browserLanguage : 'en-US')}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              onLanguageChange(e.target.checked ? browserLanguage : 'en-US')
+            }
           />
           {browserLanguage}
         </Typography>
@@ -59,8 +61,8 @@ const InputStage = ({
         error={errorMessage !== undefined}
         helperText={errorMessage}
         label="Truth claim"
-        onInput={(e: any) => setClaimInput(e.target.value)}
-        onKeyUp={(e: any) => e.key === 'Enter' && submitClaim()}
+        onInput={(e: React.ChangeEvent<HTMLInputElement>) => setClaimInput(e.target.value)}
+        onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && submitClaim()}
         sx={{ paddingBottom: 3, width: '100%' }}
         value={claimInput}
         variant="outlined"
