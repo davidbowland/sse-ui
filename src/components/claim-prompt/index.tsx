@@ -1,18 +1,19 @@
-import { useConfidenceLevels } from '@hooks/useConfidenceLevels'
-import { useSuggestedClaims } from '@hooks/useSuggestedClaims'
+import React, { useEffect, useRef, useState } from 'react'
+
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
 import Breadcrumbs from '@mui/material/Breadcrumbs'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import React, { useEffect, useRef, useState } from 'react'
 
 import ConfidenceStage from './confidence-stage'
 import GeneratingStage from './generating-stage'
 import InputStage from './input-stage'
 import SelectingStage from './selecting-stage'
 import SubmittedStage from './submitted-stage'
+import { useConfidenceLevels } from '@hooks/useConfidenceLevels'
+import { useSuggestedClaims } from '@hooks/useSuggestedClaims'
 
 const selectedSx = { color: 'text.primary', fontStyle: 'italic', fontWeight: 700 }
 const unselectedSx = {}

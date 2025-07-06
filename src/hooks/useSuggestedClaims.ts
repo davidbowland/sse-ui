@@ -1,6 +1,7 @@
+import { useCallback, useState } from 'react'
+
 import { validateClaim as postValidateClaim, suggestClaims } from '@services/sse'
 import { ValidatedClaim } from '@types'
-import { useCallback, useState } from 'react'
 
 export interface UseSuggestedClaimsResults {
   errorMessage?: string

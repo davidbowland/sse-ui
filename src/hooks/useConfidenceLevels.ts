@@ -1,6 +1,7 @@
+import { useEffect, useState } from 'react'
+
 import { fetchConfidenceLevels } from '@services/sse'
 import { ConfidenceLevel } from '@types'
-import { useEffect, useState } from 'react'
 
 export interface UseConfidenceLevelsResults {
   confidenceLevels: ConfidenceLevel[]

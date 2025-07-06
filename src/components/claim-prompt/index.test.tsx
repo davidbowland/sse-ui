@@ -1,6 +1,3 @@
-import { useBrowserLanguage } from '@hooks/useBrowserLanguage'
-import { useConfidenceLevels } from '@hooks/useConfidenceLevels'
-import { useSuggestedClaims } from '@hooks/useSuggestedClaims'
 import { confidenceLevels, suggestedClaims } from '@test/__mocks__'
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
@@ -8,6 +5,9 @@ import userEvent from '@testing-library/user-event'
 import React, { act } from 'react'
 
 import ClaimPrompt from './index'
+import { useBrowserLanguage } from '@hooks/useBrowserLanguage'
+import { useConfidenceLevels } from '@hooks/useConfidenceLevels'
+import { useSuggestedClaims } from '@hooks/useSuggestedClaims'
 
 jest.mock('@aws-amplify/analytics')
 jest.mock('@hooks/useBrowserLanguage')

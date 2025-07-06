@@ -1,5 +1,6 @@
-import Grid from '@mui/material/Grid'
 import React from 'react'
+
+import Grid from '@mui/material/Grid'
 
 export interface TwoButtonsProps {
   button1: React.ReactNode

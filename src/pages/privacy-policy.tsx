@@ -1,6 +1,8 @@
-import PrivacyPolicy from '@components/privacy-policy'
-import Paper from '@mui/material/Paper'
 import React from 'react'
+
+import Paper from '@mui/material/Paper'
+
+import PrivacyPolicy from '@components/privacy-policy'
 
 const PrivacyPage = (): React.ReactNode => {
   return (

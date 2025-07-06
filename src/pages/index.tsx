@@ -1,14 +1,16 @@
-import ClaimPrompt from '@components/claim-prompt'
-import PrivacyLink from '@components/privacy-link'
+import { navigate } from 'gatsby'
+import React, { useMemo } from 'react'
+
 import ChatIcon from '@mui/icons-material/Chat'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+
+import ClaimPrompt from '@components/claim-prompt'
+import PrivacyLink from '@components/privacy-link'
 import { createSession } from '@services/sse'
-import { navigate } from 'gatsby'
-import React, { useMemo } from 'react'
 
 const exampleClaimSx = { color: 'text.secondary', fontStyle: 'italic', fontWeight: 700 }
 

@@ -1,9 +1,9 @@
-import * as sse from '@services/sse'
 import { confidenceChangeResponse, llmResponse, session, sessionContext, sessionId } from '@test/__mocks__'
 import { renderHook, waitFor } from '@testing-library/react'
-import { LLMRequest, LLMResponse } from '@types'
 
 import { useSession } from './useSession'
+import * as sse from '@services/sse'
+import { LLMRequest, LLMResponse } from '@types'
 
 jest.mock('@services/sse')
 

@@ -1,8 +1,9 @@
+import React, { useMemo } from 'react'
+
 import Box from '@mui/material/Box'
 import LinearProgress from '@mui/material/LinearProgress'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import React, { useMemo } from 'react'
 
 const SUBTITLE_OPTIONS = [
   'This oughta be fun',

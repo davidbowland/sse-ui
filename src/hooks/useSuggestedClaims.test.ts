@@ -1,8 +1,8 @@
-import * as sse from '@services/sse'
 import { suggestedClaims, validationResult } from '@test/__mocks__'
 import { renderHook, waitFor } from '@testing-library/react'
 
 import { useSuggestedClaims } from './useSuggestedClaims'
+import * as sse from '@services/sse'
 
 jest.mock('@services/sse')
 
