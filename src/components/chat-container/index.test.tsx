@@ -7,7 +7,6 @@ import React, { act } from 'react'
 
 import ChatContainer from './index'
 
-jest.mock('@aws-amplify/analytics')
 jest.mock('gatsby')
 
 describe('chat-container', () => {

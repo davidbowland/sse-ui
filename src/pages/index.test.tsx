@@ -8,7 +8,6 @@ import ClaimPrompt from '@components/claim-prompt'
 import PrivacyLink from '@components/privacy-link'
 import * as sse from '@services/sse'
 
-jest.mock('@aws-amplify/analytics')
 jest.mock('@components/claim-prompt')
 jest.mock('@components/privacy-link')
 jest.mock('@services/sse')

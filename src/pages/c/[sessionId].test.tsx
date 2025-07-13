@@ -9,7 +9,6 @@ import ChatWindow from '@components/chat-window'
 import PrivacyLink from '@components/privacy-link'
 import { useSession } from '@hooks/useSession'
 
-jest.mock('@aws-amplify/analytics')
 jest.mock('@components/chat-container')
 jest.mock('@components/chat-window')
 jest.mock('@components/privacy-link')

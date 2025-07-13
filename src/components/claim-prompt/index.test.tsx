@@ -9,7 +9,6 @@ import { useBrowserLanguage } from '@hooks/useBrowserLanguage'
 import { useConfidenceLevels } from '@hooks/useConfidenceLevels'
 import { useSuggestedClaims } from '@hooks/useSuggestedClaims'
 
-jest.mock('@aws-amplify/analytics')
 jest.mock('@hooks/useBrowserLanguage')
 jest.mock('@hooks/useConfidenceLevels')
 jest.mock('@hooks/useSuggestedClaims')
