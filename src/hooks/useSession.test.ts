@@ -108,6 +108,19 @@ describe('useSession', () => {
     )
   })
 
+  it('returns an error message when error changing confidence', async () => {
+    jest.mocked(sse).changeConfidence.mockRejectedValueOnce(undefined)
+    const { result } = renderHook(() => useSession(sessionId))
+
+    await waitFor(() => result.current.confidence === 'strongly agree')
+    await result.current.onChangeConfidence('agree')
+    await waitFor(() =>
+      expect(result.current.errorMessage).toEqual(
+        'We apologize, but there was an error changing your confidence level.',
+      ),
+    )
+  })
+
   it('returns an error message when error sending chat message', async () => {
     jest.mocked(sse).sendLlmMessage.mockRejectedValueOnce(undefined)
     const { result } = renderHook(() => useSession(sessionId))

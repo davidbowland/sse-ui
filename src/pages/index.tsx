@@ -1,5 +1,5 @@
 import { navigate } from 'gatsby'
-import React, { useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 
 import ChatIcon from '@mui/icons-material/Chat'
 import Box from '@mui/material/Box'
@@ -15,10 +15,10 @@ import { createSession } from '@services/sse'
 const exampleClaimSx = { color: 'text.secondary', fontStyle: 'italic', fontWeight: 700 }
 
 const Index = (): React.ReactNode => {
-  const onClaimSelect = async (claim: string, confidence: string, language: string) => {
+  const onClaimSelect = useCallback(async (claim: string, confidence: string, language: string) => {
     const { sessionId } = await createSession(claim, confidence, language)
     navigate(`/c/${encodeURIComponent(sessionId)}`)
-  }
+  }, [])
 
   const searchText = typeof window === 'undefined' ? '' : window.location.search
   const initialClaim = useMemo(() => new URLSearchParams(searchText).get('claim') || undefined, [searchText])

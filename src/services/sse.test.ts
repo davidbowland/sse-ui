@@ -28,6 +28,7 @@ jest.mock('axios', () => ({
     post: (...args: any[]) => mockPost(...args),
   })),
 }))
+jest.mock('axios-retry', () => jest.fn())
 
 describe('sse', () => {
   const claim = sessionContext.claim

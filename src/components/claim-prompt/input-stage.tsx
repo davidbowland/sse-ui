@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -30,6 +30,30 @@ const InputStage = ({
   const [claimInput, setClaimInput] = useState<string>(initialClaim)
   const { browserLanguage } = useBrowserLanguage()
 
+  const handleLanguageChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      onLanguageChange(e.target.checked ? browserLanguage : 'en-US')
+    },
+    [onLanguageChange, browserLanguage],
+  )
+
+  const handleClaimInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setClaimInput(e.target.value)
+  }, [])
+
+  const handleKeyUp = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+        onClaimSubmit(claimInput.trim())
+      }
+    },
+    [onClaimSubmit, claimInput],
+  )
+
+  const submitClaim = useCallback(() => {
+    onClaimSubmit(claimInput.trim())
+  }, [onClaimSubmit, claimInput])
+
   const generateLanguageSelector = () => {
     return (
       <Box>
@@ -39,18 +63,12 @@ const InputStage = ({
           <Switch
             aria-label="Chat language switch"
             checked={language === browserLanguage}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              onLanguageChange(e.target.checked ? browserLanguage : 'en-US')
-            }
+            onChange={handleLanguageChange}
           />
           {browserLanguage}
         </Typography>
       </Box>
     )
-  }
-
-  const submitClaim = () => {
-    onClaimSubmit(claimInput.trim())
   }
 
   return (
@@ -62,15 +80,15 @@ const InputStage = ({
         error={errorMessage !== undefined}
         helperText={errorMessage}
         label="Truth claim"
-        onInput={(e: React.ChangeEvent<HTMLInputElement>) => setClaimInput(e.target.value)}
-        onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && submitClaim()}
+        onInput={handleClaimInput}
+        onKeyUp={handleKeyUp}
         sx={{ paddingBottom: 3, width: '100%' }}
         value={claimInput}
         variant="outlined"
       />
       <TwoButtons
         button1={
-          <Button color="secondary" onClick={() => onSuggestionsRequested()} sx={{ width: '100%' }} variant="contained">
+          <Button color="secondary" onClick={onSuggestionsRequested} sx={{ width: '100%' }} variant="contained">
             Suggest claims
           </Button>
         }

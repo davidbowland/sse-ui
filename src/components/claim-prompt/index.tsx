@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import Alert from '@mui/material/Alert'
@@ -20,7 +20,7 @@ const unselectedSx = {}
 
 export interface ClaimPromptProps {
   initialClaim?: string
-  onClaimSelect: (claim: string, confidence: string, language: string) => void
+  onClaimSelect: (claim: string, confidence: string, language: string) => Promise<void>
   skipFirstScroll?: boolean
 }
 
@@ -46,51 +46,63 @@ const ClaimPrompt = ({ initialClaim, onClaimSelect, skipFirstScroll }: ClaimProm
 
   /* Input */
 
-  const onClaimSubmit = async (claim: string) => {
-    setClaimInput(claim)
-    setPromptStage('generating')
-    setInputErrorMessage(undefined)
-    const { inappropriate } = await validateClaim(claim, language)
-    if (inappropriate) {
-      setInputErrorMessage('Invalid or inappropriate claim')
-      setPromptStage('input')
-    } else {
-      setPromptStage('selecting')
-    }
-  }
+  const onClaimSubmit = useCallback(
+    async (claim: string) => {
+      setClaimInput(claim)
+      setPromptStage('generating')
+      setInputErrorMessage(undefined)
+      const { inappropriate } = await validateClaim(claim, language)
+      if (inappropriate) {
+        setInputErrorMessage(
+          'Error validating claim. It may be invalid or inappropriate. Please input a new claim to try again.',
+        )
+        setPromptStage('input')
+      } else {
+        setPromptStage('selecting')
+      }
+    },
+    [validateClaim, language],
+  )
 
-  const onSuggestionsRequested = async () => {
+  const onSuggestionsRequested = useCallback(async () => {
     setPromptStage('generating')
     setInputErrorMessage(undefined)
     await fetchSuggestedClaims(language)
     setPromptStage('selecting')
-  }
+  }, [fetchSuggestedClaims, language])
 
   /* Selecting */
 
-  const onAcceptClaim = (claim: string) => {
+  const onAcceptClaim = useCallback((claim: string) => {
     setClaimInput(claim)
     setPromptStage('confidence')
-  }
+  }, [])
 
-  const onSelectingBack = () => {
+  const onSelectingBack = useCallback(() => {
     setPromptStage('input')
-  }
+  }, [])
 
   /* Confidence */
 
-  const onAcceptConfidence = (confidence: string) => {
-    onClaimSelect(claimInput, confidence, language)
-    setPromptStage('submitted')
-  }
+  const onAcceptConfidence = useCallback(
+    (confidence: string) => {
+      setPromptStage('submitted')
+      onClaimSelect(claimInput, confidence, language).catch((error: unknown) => {
+        setInputErrorMessage('Error creating chat session. Please try again later.')
+        setPromptStage('confidence')
+        console.error('Error creating session', { error })
+      })
+    },
+    [onClaimSelect, claimInput, language],
+  )
 
-  const onConfidenceBack = () => {
+  const onConfidenceBack = useCallback(() => {
     setPromptStage('selecting')
-  }
+  }, [])
 
   /* Effects */
 
-  const scrollIntoView = () => {
+  const scrollIntoView = useCallback(() => {
     if (stageRef.current) {
       if (skipScroll) {
         setSkipScroll(false)
@@ -98,11 +110,11 @@ const ClaimPrompt = ({ initialClaim, onClaimSelect, skipFirstScroll }: ClaimProm
         stageRef.current.scrollIntoView({ behavior: 'smooth', inline: 'center' })
       }
     }
-  }
+  }, [skipScroll])
 
   useEffect(() => {
     if (promptStage === 'selecting' && suggestedClaims.length === 0 && inputErrorMessage === undefined) {
-      setInputErrorMessage('Error generating claims, please input a new claim.')
+      setInputErrorMessage('Error generating suggested claims. Please try again later.')
       setPromptStage('input')
     }
   }, [inputErrorMessage, promptStage, suggestedClaims])
@@ -166,6 +178,7 @@ const ClaimPrompt = ({ initialClaim, onClaimSelect, skipFirstScroll }: ClaimProm
         <ConfidenceStage
           claim={claimInput}
           confidenceLevels={confidenceLevels}
+          errorMessage={inputErrorMessage}
           key={claimInput}
           onAcceptConfidence={onAcceptConfidence}
           onBack={onConfidenceBack}

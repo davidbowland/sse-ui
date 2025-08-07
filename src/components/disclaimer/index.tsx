@@ -1,5 +1,5 @@
 import { Link } from 'gatsby'
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import Cookies from 'universal-cookie'
 
 import Button from '@mui/material/Button'
@@ -13,10 +13,10 @@ const Disclaimer = (): React.ReactNode => {
 
   const [open, setOpen] = useState(cookies.get('disclaimer_accept') !== 'true')
 
-  const closeDrawer = (): void => {
+  const closeDrawer = useCallback((): void => {
     setOpen(false)
     cookies.set('disclaimer_accept', 'true', { path: '/', sameSite: 'strict', secure: true })
-  }
+  }, [])
 
   return (
     <>

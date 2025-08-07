@@ -1,5 +1,5 @@
 import { navigate } from 'gatsby'
-import React, { ForwardedRef, forwardRef, useEffect, useRef, useState } from 'react'
+import React, { ForwardedRef, forwardRef, useCallback, useEffect, useRef, useState } from 'react'
 
 import AddCommentIcon from '@mui/icons-material/AddComment'
 import SendIcon from '@mui/icons-material/Send'
@@ -30,12 +30,12 @@ const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: 
 
   const messageRef = useRef<HTMLDivElement>(null)
 
-  const sendMessage = () => {
+  const sendMessage = useCallback(() => {
     if (!isTyping && message.trim().length) {
       sendChatMessage(message)
       setMessage('')
     }
-  }
+  }, [sendChatMessage, message, isTyping])
 
   const generateNewClaimButton = () => {
     return (

@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked'
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
+import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
@@ -20,6 +21,7 @@ import { ConfidenceLevel } from '@types'
 export interface ConfidenceStageProps {
   claim: string
   confidenceLevels: ConfidenceLevel[]
+  errorMessage?: string
   onAcceptConfidence: (confidence: string) => void
   onBack: () => void
 }
@@ -27,16 +29,26 @@ export interface ConfidenceStageProps {
 const ConfidenceStage = ({
   claim,
   confidenceLevels,
+  errorMessage,
   onAcceptConfidence,
   onBack,
 }: ConfidenceStageProps): React.ReactNode => {
   const [selectedIndex, setSelectedIndex] = useState<number>(-1)
+
+  const handleAcceptConfidence = useCallback(() => {
+    onAcceptConfidence(confidenceLevels[selectedIndex].value)
+  }, [onAcceptConfidence, confidenceLevels, selectedIndex])
 
   return (
     <Stack spacing={4} sx={{ margin: 'auto', maxWidth: 'm', textAlign: 'center', width: '100%' }}>
       <Box>
         <Typography variant="h4">What is your stance?</Typography>
       </Box>
+      {errorMessage && (
+        <Alert severity="error" sx={{ margin: 'auto', maxWidth: 600 }}>
+          {errorMessage}
+        </Alert>
+      )}
       <Box>
         <Card sx={{ backgroundColor: '#6373fa', margin: 'auto', width: 'md' }}>
           <CardContent>
@@ -67,16 +79,12 @@ const ConfidenceStage = ({
       </Box>
       <TwoButtons
         button1={
-          <Button onClick={() => onBack()} sx={{ width: '100%' }} variant="outlined">
+          <Button onClick={onBack} sx={{ width: '100%' }} variant="outlined">
             Back
           </Button>
         }
         button2={
-          <Button
-            onClick={() => onAcceptConfidence(confidenceLevels[selectedIndex].value)}
-            sx={{ width: '100%' }}
-            variant="contained"
-          >
+          <Button onClick={handleAcceptConfidence} sx={{ width: '100%' }} variant="contained">
             Select
           </Button>
         }

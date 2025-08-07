@@ -14,8 +14,8 @@ export interface UseSessionResults {
   finished: boolean
   history: ChatMessage[]
   isLoading: boolean
-  onChangeConfidence: (confidence: string) => void
-  sendChatMessage: (message: string) => void
+  onChangeConfidence: (confidence: string) => Promise<void>
+  sendChatMessage: (message: string) => Promise<void>
 }
 
 export const useSession = (sessionId: string): UseSessionResults => {
@@ -48,21 +48,26 @@ export const useSession = (sessionId: string): UseSessionResults => {
       }
 
       setIsLoading(true)
-      const { confidence, dividers, newConversation, overrideStep } = await changeConfidence(sessionId, newConfidence)
-      setSession((prevSession) =>
-        prevSession === undefined
-          ? undefined
-          : {
-            ...prevSession,
-            context: {
-              ...prevSession.context,
-              confidence,
-            },
-            dividers,
-            newConversation,
-            overrideStep,
-          },
-      )
+      try {
+        const { confidence, dividers, newConversation, overrideStep } = await changeConfidence(sessionId, newConfidence)
+        setSession((prevSession) =>
+          prevSession === undefined
+            ? undefined
+            : {
+                ...prevSession,
+                context: {
+                  ...prevSession.context,
+                  confidence,
+                },
+                dividers,
+                newConversation,
+                overrideStep,
+              },
+        )
+      } catch (error: unknown) {
+        console.error('Error changing confidence', { error })
+        setErrorMessage('We apologize, but there was an error changing your confidence level.')
+      }
     },
     [sessionId, session?.context.confidence],
   )
@@ -85,16 +90,16 @@ export const useSession = (sessionId: string): UseSessionResults => {
           prevSession === undefined
             ? undefined
             : {
-              ...prevSession,
-              ...response,
-              overrideStep: response.overrideStep,
-            },
+                ...prevSession,
+                ...response,
+                overrideStep: response.overrideStep,
+              },
         )
 
         if (!response.newConversation) {
           setIsLoading(false)
         }
-      } catch (error) {
+      } catch (error: unknown) {
         console.error('Error sending message', { error })
         setErrorMessage('We apologize, but there was an error sending your chat message.')
       }
@@ -120,7 +125,7 @@ export const useSession = (sessionId: string): UseSessionResults => {
         setSession(session)
         setIsLoading(session.newConversation)
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
         console.error('Error fetching chat session', { error })
         setErrorMessage('We apologize, but we were unable to load your chat session.')
       })

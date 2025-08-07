@@ -23,7 +23,7 @@ describe('claim-prompt', () => {
   const validatedClaims = ['An awesome claim', 'A super claim', 'An okay claim']
 
   beforeAll(() => {
-    mockValidateClaim.mockReturnValue({ inappropriate: false, isTruthClaim: true, suggestions: validatedClaims })
+    console.error = jest.fn()
     window.HTMLElement.prototype.scrollIntoView = mockScrollIntoView
   })
 
@@ -36,6 +36,9 @@ describe('claim-prompt', () => {
       validateClaim: mockValidateClaim,
     })
     jest.mocked(useBrowserLanguage).mockReturnValue({ browserLanguage: 'en-US' })
+
+    mockOnClaimSelect.mockResolvedValue(undefined)
+    mockValidateClaim.mockReturnValue({ inappropriate: false, isTruthClaim: true, suggestions: validatedClaims })
   })
 
   it('generates and selects a claim', async () => {
@@ -247,7 +250,11 @@ describe('claim-prompt', () => {
     const submitClaimButton = screen.getByText(/Submit/, { selector: 'button' })
     await act(() => userEvent.click(submitClaimButton))
 
-    expect(await screen.findByText(/Invalid or inappropriate claim/)).toBeInTheDocument()
+    expect(
+      await screen.findByText(
+        /Error validating claim\. It may be invalid or inappropriate\. Please input a new claim to try again\./,
+      ),
+    ).toBeInTheDocument()
   })
 
   it('allows backwards navigation', async () => {
@@ -314,7 +321,7 @@ describe('claim-prompt', () => {
     const suggestClaimsButton = await screen.findByText(/Suggest claims/, { selector: 'button' })
     await act(() => userEvent.click(suggestClaimsButton))
 
-    expect(await screen.findByText(/Error generating claims, please input a new claim./)).toBeInTheDocument()
+    expect(await screen.findByText(/Error generating suggested claims\. Please try again later\./)).toBeInTheDocument()
   })
 
   it('shows error alert when confidence levels fail to load', async () => {
@@ -353,5 +360,64 @@ describe('claim-prompt', () => {
     await act(() => userEvent.click(suggestClaimsButton))
 
     expect(await screen.findByText(/The worst error\. How many errors\?/)).toBeInTheDocument()
+  })
+
+  it('handles onClaimSelect errors and returns to confidence stage', async () => {
+    const mockOnClaimSelectWithError = jest.fn().mockRejectedValue(new Error('Session creation failed'))
+    render(<ClaimPrompt onClaimSelect={mockOnClaimSelectWithError} />)
+
+    const suggestClaimsButton = await screen.findByText(/Suggest claims/, { selector: 'button' })
+    await act(() => userEvent.click(suggestClaimsButton))
+
+    const claimToSelect = await screen.findByText(/The US should only intervene militarily when directly attacked\./)
+    await act(() => userEvent.click(claimToSelect))
+    const claimConfirmButton = screen.getByText(/Select/, { selector: 'button' })
+    await act(() => userEvent.click(claimConfirmButton))
+
+    const confidenceToSelect = await screen.findByText(/Strongly agree/)
+    await act(() => userEvent.click(confidenceToSelect))
+    const confidenceConfirmButton = screen.getByText(/Select/, { selector: 'button' })
+    await act(() => userEvent.click(confidenceConfirmButton))
+
+    // Should show error message and return to confidence stage
+    expect(await screen.findByText(/Error creating chat session\. Please try again later\./)).toBeInTheDocument()
+    expect(await screen.findByText(/Select your stance/)).toBeInTheDocument()
+
+    expect(mockOnClaimSelectWithError).toHaveBeenCalledTimes(1)
+    expect(mockOnClaimSelectWithError).toHaveBeenCalledWith(
+      'The US should only intervene militarily when directly attacked.',
+      'strongly agree',
+      'en-US',
+    )
+  })
+
+  it('succeeds on onClaimSelect success', async () => {
+    const mockOnClaimSelectSuccess = jest.fn().mockResolvedValueOnce(undefined)
+
+    render(<ClaimPrompt onClaimSelect={mockOnClaimSelectSuccess} />)
+
+    const suggestClaimsButton = await screen.findByText(/Suggest claims/, { selector: 'button' })
+    await act(() => userEvent.click(suggestClaimsButton))
+
+    const claimToSelect = await screen.findByText(/The US should only intervene militarily when directly attacked\./)
+    await act(() => userEvent.click(claimToSelect))
+    const claimConfirmButton = screen.getByText(/Select/, { selector: 'button' })
+    await act(() => userEvent.click(claimConfirmButton))
+
+    const confidenceToSelect = await screen.findByText(/Strongly agree/)
+    await act(() => userEvent.click(confidenceToSelect))
+    const confidenceConfirmButton = screen.getByText(/Select/, { selector: 'button' })
+    await act(() => userEvent.click(confidenceConfirmButton))
+
+    // Should proceed to submitted stage after successful call
+    await screen.findByText(/Creating chat session/)
+
+    // Should be called once
+    expect(mockOnClaimSelectSuccess).toHaveBeenCalledTimes(1)
+    expect(mockOnClaimSelectSuccess).toHaveBeenCalledWith(
+      'The US should only intervene militarily when directly attacked.',
+      'strongly agree',
+      'en-US',
+    )
   })
 })

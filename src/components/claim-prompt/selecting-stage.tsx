@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked'
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
@@ -29,6 +29,10 @@ const SelectingStage = ({
 }: SelectingStageProps): React.ReactNode => {
   const [selectedIndex, setSelectedIndex] = useState<number>(initialIndex)
 
+  const handleAcceptClaim = useCallback(() => {
+    onAcceptClaim(suggestedClaims[selectedIndex])
+  }, [onAcceptClaim, suggestedClaims, selectedIndex])
+
   useEffect(() => {
     setSelectedIndex(initialIndex)
   }, [suggestedClaims])
@@ -54,16 +58,12 @@ const SelectingStage = ({
       </Box>
       <TwoButtons
         button1={
-          <Button onClick={() => onBack()} sx={{ width: '100%' }} variant="outlined">
+          <Button onClick={onBack} sx={{ width: '100%' }} variant="outlined">
             Back
           </Button>
         }
         button2={
-          <Button
-            onClick={() => onAcceptClaim(suggestedClaims[selectedIndex])}
-            sx={{ width: '100%' }}
-            variant="contained"
-          >
+          <Button onClick={handleAcceptClaim} sx={{ width: '100%' }} variant="contained">
             Select
           </Button>
         }

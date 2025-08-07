@@ -1,4 +1,5 @@
 import axios from 'axios'
+import axiosRetry from 'axios-retry'
 
 import {
   ConfidenceChangeResponse,
@@ -15,6 +16,15 @@ import {
 const api = axios.create({
   baseURL: process.env.GATSBY_SSE_API_BASE_URL,
   timeout: 35_000, // 35 seconds
+})
+
+// Retry once on timeout errors or network problems
+axiosRetry(api, {
+  retries: 1,
+  retryCondition: (error) => {
+    return axiosRetry.isNetworkOrIdempotentRequestError(error) || error.code === 'ECONNABORTED'
+  },
+  retryDelay: axiosRetry.exponentialDelay,
 })
 
 // Confidence levels
