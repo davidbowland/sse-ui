@@ -18,7 +18,7 @@ export interface UseSessionResults {
   sendChatMessage: (message: string) => Promise<void>
 }
 
-export const useSession = (sessionId: string): UseSessionResults => {
+export const useSession = (sessionId: string | undefined): UseSessionResults => {
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [session, setSession] = useState<Session | undefined>(undefined)
@@ -117,6 +117,8 @@ export const useSession = (sessionId: string): UseSessionResults => {
   }, [currentStep])
 
   useEffect(() => {
+    if (!sessionId) return
+
     setIsLoading(true)
     setSession(undefined)
 

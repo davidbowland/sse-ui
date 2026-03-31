@@ -40,7 +40,7 @@ const SessionPage = (): React.ReactNode => {
     isLoading,
     onChangeConfidence,
     sendChatMessage,
-  } = useSession(sessionId ?? '')
+  } = useSession(sessionId)
 
   const errorMessageRef = useRef<HTMLDivElement>(null)
 
