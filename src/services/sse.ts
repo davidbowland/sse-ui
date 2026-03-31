@@ -14,7 +14,7 @@ import {
 } from '@types'
 
 const api = axios.create({
-  baseURL: process.env.GATSBY_SSE_API_BASE_URL,
+  baseURL: process.env.NEXT_PUBLIC_SSE_API_BASE_URL,
   timeout: 35_000, // 35 seconds
 })
 
