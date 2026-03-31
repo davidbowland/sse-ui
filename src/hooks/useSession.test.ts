@@ -112,7 +112,7 @@ describe('useSession', () => {
     jest.mocked(sse).changeConfidence.mockRejectedValueOnce(undefined)
     const { result } = renderHook(() => useSession(sessionId))
 
-    await waitFor(() => result.current.confidence === 'strongly agree')
+    await waitFor(() => expect(result.current.confidence).toEqual('strongly agree'))
     await result.current.onChangeConfidence('agree')
     await waitFor(() =>
       expect(result.current.errorMessage).toEqual(
