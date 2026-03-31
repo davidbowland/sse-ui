@@ -18,7 +18,7 @@
   "scripts": {
     "build": "npm run clean && next build",
     "postbuild": "node scripts/generate-dynamic-pages.js && next-sitemap",
-    "clean": "rm -rf .next coverage out && npm ci --legacy-peer-deps",
+    "clean": "rm -rf .next coverage out && npm ci",
     "start": "next dev",
     "serve": "next build && npx serve out",
     "test": "jest --colors",

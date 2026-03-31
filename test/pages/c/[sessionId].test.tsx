@@ -13,7 +13,7 @@ jest.mock('@components/chat-container')
 jest.mock('@components/chat-window')
 jest.mock('@hooks/useSession')
 jest.mock('next/router', () => ({
-  useRouter: jest.fn().mockReturnValue({ query: { sessionId } }),
+  useRouter: jest.fn().mockReturnValue({ query: { sessionId: require('@test/__mocks__').sessionId } }),
 }))
 
 describe('Session page', () => {
