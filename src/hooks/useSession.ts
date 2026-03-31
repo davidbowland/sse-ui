@@ -49,7 +49,10 @@ export const useSession = (sessionId: string | undefined): UseSessionResults => 
 
       setIsLoading(true)
       try {
-        const { confidence, dividers, newConversation, overrideStep } = await changeConfidence(sessionId, newConfidence)
+        const { confidence, dividers, newConversation, overrideStep } = await changeConfidence(
+          sessionId!,
+          newConfidence,
+        )
         setSession((prevSession) =>
           prevSession === undefined
             ? undefined
@@ -83,7 +86,7 @@ export const useSession = (sessionId: string | undefined): UseSessionResults => 
       setIsLoading(true)
 
       try {
-        const response = await sendLlmMessage(sessionId, currentStep.path, {
+        const response = await sendLlmMessage(sessionId!, currentStep.path, {
           content: sanitizedMessage,
         })
         setSession((prevSession) =>
