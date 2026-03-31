@@ -1,27 +1,28 @@
 import { confidenceLevels, sessionId, useSessionResults } from '@test/__mocks__'
 import '@testing-library/jest-dom'
 import { render, screen, waitFor } from '@testing-library/react'
+import { useRouter } from 'next/router'
 import React from 'react'
 
-import SessionPage, { Head } from './[sessionId]'
+import SessionPage from '@pages/c/[sessionId]'
 import ChatContainer from '@components/chat-container'
 import ChatWindow from '@components/chat-window'
-import PrivacyLink from '@components/privacy-link'
 import { useSession } from '@hooks/useSession'
 
 jest.mock('@components/chat-container')
 jest.mock('@components/chat-window')
-jest.mock('@components/privacy-link')
 jest.mock('@hooks/useSession')
+jest.mock('next/router', () => ({
+  useRouter: jest.fn().mockReturnValue({ query: { sessionId } }),
+}))
 
-describe('Channel page', () => {
+describe('Session page', () => {
   const onChangeConfidence = jest.fn()
   const sendChatMessage = jest.fn()
 
   beforeAll(() => {
     jest.mocked(ChatContainer).mockImplementation(({ children }) => children)
     jest.mocked(ChatWindow).mockReturnValue(<>ChatWindow</>)
-    jest.mocked(PrivacyLink).mockReturnValue(<>PrivacyLink</>)
   })
 
   beforeEach(() => {
@@ -29,7 +30,7 @@ describe('Channel page', () => {
   })
 
   it('renders chat container', async () => {
-    render(<SessionPage params={{ sessionId }} />)
+    render(<SessionPage />)
 
     await waitFor(() =>
       expect(ChatContainer).toHaveBeenCalledWith(
@@ -38,13 +39,13 @@ describe('Channel page', () => {
           initialConfidence: useSessionResults.confidence,
           onConfidenceChange: onChangeConfidence,
         }),
-        {},
+        undefined,
       ),
     )
   })
 
   it('renders claim + breadcrumbs', async () => {
-    render(<SessionPage params={{ sessionId }} />)
+    render(<SessionPage />)
 
     expect(await screen.findByText(useSessionResults.claim)).toBeInTheDocument()
     expect(screen.getByText('Introduction')).toBeInTheDocument()
@@ -55,7 +56,7 @@ describe('Channel page', () => {
   })
 
   it('renders chat window', () => {
-    render(<SessionPage params={{ sessionId }} />)
+    render(<SessionPage />)
 
     expect(ChatWindow).toHaveBeenCalledWith(
       {
@@ -65,18 +66,12 @@ describe('Channel page', () => {
         isTyping: useSessionResults.isLoading,
         sendChatMessage,
       },
-      {},
+      undefined,
     )
   })
 
-  it('renders PrivacyLink', () => {
-    render(<SessionPage params={{ sessionId }} />)
-
-    expect(PrivacyLink).toHaveBeenCalledTimes(0)
-  })
-
-  it('renders Head', () => {
-    render(<Head />)
+  it('renders title', () => {
+    render(<SessionPage />)
 
     expect(document.title).toEqual('StreetLogic AI | Chat')
   })
@@ -85,8 +80,15 @@ describe('Channel page', () => {
     jest
       .mocked(useSession)
       .mockReturnValue({ ...useSessionResults, errorMessage: 'A big fat error', onChangeConfidence, sendChatMessage })
-    render(<SessionPage params={{ sessionId }} />)
+    render(<SessionPage />)
 
     expect(screen.getByText(/A big fat error/)).toBeInTheDocument()
+  })
+
+  it('renders nothing when sessionId is undefined', () => {
+    jest.mocked(useRouter).mockReturnValue({ query: {} } as any)
+    const { container } = render(<SessionPage />)
+
+    expect(container).toBeEmptyDOMElement()
   })
 })

@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import { render } from '@testing-library/react'
 import React from 'react'
 
-import BadRequest, { Head } from './400'
+import BadRequest from '@pages/400'
 import ServerErrorMessage from '@components/server-error-message'
 
 jest.mock('@components/server-error-message')
@@ -18,13 +18,13 @@ describe('400 error page', () => {
 
     expect(ServerErrorMessage).toHaveBeenCalledWith(
       expect.objectContaining({ title: expectedTitle }),
-      expect.anything(),
+      undefined,
     )
     expect(ServerErrorMessage).toHaveBeenCalledTimes(1)
   })
 
-  it('renders Head', () => {
-    render(<Head />)
+  it('renders title', () => {
+    render(<BadRequest />)
 
     expect(document.title).toEqual('StreetLogic AI | 400: Bad Request')
   })

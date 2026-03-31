@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import { render } from '@testing-library/react'
 import React from 'react'
 
-import PrivacyPage, { Head } from './privacy-policy'
+import PrivacyPage from '@pages/privacy-policy'
 import PrivacyPolicy from '@components/privacy-policy'
 
 jest.mock('@components/privacy-policy')
@@ -18,8 +18,8 @@ describe('Privacy page', () => {
     expect(PrivacyPolicy).toHaveBeenCalledTimes(1)
   })
 
-  it('renders Head', () => {
-    render(<Head />)
+  it('renders title', () => {
+    render(<PrivacyPage />)
 
     expect(document.title).toEqual('StreetLogic AI | Privacy Policy')
   })

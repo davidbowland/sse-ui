@@ -2,12 +2,14 @@ import { assistantMessage, dividers, userMessage } from '@test/__mocks__'
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import * as gatsby from 'gatsby'
+import { useRouter } from 'next/router'
 import React, { act } from 'react'
 
 import ChatWindow from './index'
 
-jest.mock('gatsby')
+jest.mock('next/router', () => ({
+  useRouter: jest.fn().mockReturnValue({ push: jest.fn() }),
+}))
 
 describe('chat-window', () => {
   const finished = false
@@ -146,6 +148,6 @@ describe('chat-window', () => {
     await act(() => userEvent.click(newClaimButton))
 
     expect(screen.queryByText(/Send/, { selector: 'button' })).not.toBeInTheDocument()
-    expect(gatsby.navigate).toHaveBeenCalledWith('/')
+    expect(jest.mocked(useRouter)().push).toHaveBeenCalledWith('/')
   })
 })

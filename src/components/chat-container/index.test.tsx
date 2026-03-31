@@ -2,12 +2,14 @@ import { confidenceLevels } from '@test/__mocks__'
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import * as gatsby from 'gatsby'
+import { useRouter } from 'next/router'
 import React, { act } from 'react'
 
 import ChatContainer from './index'
 
-jest.mock('gatsby')
+jest.mock('next/router', () => ({
+  useRouter: jest.fn().mockReturnValue({ push: jest.fn() }),
+}))
 
 describe('chat-container', () => {
   const initialConfidence = 'agree'
@@ -61,6 +63,6 @@ describe('chat-container', () => {
     const newClaimButton = screen.getByText(/New claim/, { selector: 'button' })
     await act(() => userEvent.click(newClaimButton))
 
-    expect(gatsby.navigate).toHaveBeenCalledWith('/')
+    expect(jest.mocked(useRouter)().push).toHaveBeenCalledWith('/')
   })
 })

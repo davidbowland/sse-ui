@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom'
-import { render } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import React from 'react'
 
-import NotFound, { Head } from './404'
+import NotFound from '@pages/404'
 import ServerErrorMessage from '@components/server-error-message'
 
 jest.mock('@components/server-error-message')
@@ -20,32 +20,33 @@ describe('404 error page', () => {
     window.location.pathname = '/an-invalid-page'
   })
 
-  it('renders ServerErrorMessage', () => {
-    const expectedTitle = '404: Not Found'
+  it('renders ServerErrorMessage', async () => {
     render(<NotFound />)
 
+    await waitFor(() => expect(ServerErrorMessage).toHaveBeenCalledTimes(1))
     expect(ServerErrorMessage).toHaveBeenCalledWith(
-      expect.objectContaining({ title: expectedTitle }),
-      expect.anything(),
+      expect.objectContaining({ title: '404: Not Found' }),
+      undefined,
     )
-    expect(ServerErrorMessage).toHaveBeenCalledTimes(1)
   })
 
-  it('renders nothing for session paths', () => {
+  it('renders nothing for session paths', async () => {
     window.location.pathname = '/c/aeiou'
     render(<NotFound />)
 
+    await waitFor(() => expect(screen.queryByText('ServerErrorMessage')).not.toBeInTheDocument())
     expect(ServerErrorMessage).toHaveBeenCalledTimes(0)
   })
 
-  it('renders ServerErrorMessage when the path name extends beyond sessionId', () => {
+  it('renders ServerErrorMessage when the path name extends beyond sessionId', async () => {
     window.location.pathname = '/c/aeiou/y'
     render(<NotFound />)
-    expect(ServerErrorMessage).toHaveBeenCalledTimes(1)
+
+    await waitFor(() => expect(ServerErrorMessage).toHaveBeenCalledTimes(1))
   })
 
-  it('renders Head', () => {
-    render(<Head />)
+  it('renders title', () => {
+    render(<NotFound />)
 
     expect(document.title).toEqual('StreetLogic AI | 404: Not Found')
   })

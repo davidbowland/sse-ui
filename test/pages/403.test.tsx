@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom'
-import { render } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import React from 'react'
 
-import Forbidden, { Head } from './403'
+import Forbidden from '@pages/403'
 import ServerErrorMessage from '@components/server-error-message'
 
 jest.mock('@components/server-error-message')
@@ -20,32 +20,33 @@ describe('403 error page', () => {
     window.location.pathname = '/an-invalid-page'
   })
 
-  it('renders ServerErrorMessage', () => {
-    const expectedTitle = '403: Forbidden'
+  it('renders ServerErrorMessage', async () => {
     render(<Forbidden />)
 
+    await waitFor(() => expect(ServerErrorMessage).toHaveBeenCalledTimes(1))
     expect(ServerErrorMessage).toHaveBeenCalledWith(
-      expect.objectContaining({ title: expectedTitle }),
-      expect.anything(),
+      expect.objectContaining({ title: '403: Forbidden' }),
+      undefined,
     )
-    expect(ServerErrorMessage).toHaveBeenCalledTimes(1)
   })
 
-  it('renders nothing for session paths', () => {
+  it('renders nothing for session paths', async () => {
     window.location.pathname = '/c/aeiou'
     render(<Forbidden />)
 
+    await waitFor(() => expect(screen.queryByText('ServerErrorMessage')).not.toBeInTheDocument())
     expect(ServerErrorMessage).toHaveBeenCalledTimes(0)
   })
 
-  it('renders ServerErrorMessage when the path name extends beyond sessionId', () => {
+  it('renders ServerErrorMessage when the path name extends beyond sessionId', async () => {
     window.location.pathname = '/c/aeiou/y'
     render(<Forbidden />)
-    expect(ServerErrorMessage).toHaveBeenCalledTimes(1)
+
+    await waitFor(() => expect(ServerErrorMessage).toHaveBeenCalledTimes(1))
   })
 
-  it('renders Head', () => {
-    render(<Head />)
+  it('renders title', () => {
+    render(<Forbidden />)
 
     expect(document.title).toEqual('StreetLogic AI | 403: Forbidden')
   })
