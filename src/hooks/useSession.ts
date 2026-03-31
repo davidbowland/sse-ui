@@ -18,7 +18,7 @@ export interface UseSessionResults {
   sendChatMessage: (message: string) => Promise<void>
 }
 
-export const useSession = (sessionId: string): UseSessionResults => {
+export const useSession = (sessionId: string | undefined): UseSessionResults => {
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [session, setSession] = useState<Session | undefined>(undefined)
@@ -49,7 +49,10 @@ export const useSession = (sessionId: string): UseSessionResults => {
 
       setIsLoading(true)
       try {
-        const { confidence, dividers, newConversation, overrideStep } = await changeConfidence(sessionId, newConfidence)
+        const { confidence, dividers, newConversation, overrideStep } = await changeConfidence(
+          sessionId!,
+          newConfidence,
+        )
         setSession((prevSession) =>
           prevSession === undefined
             ? undefined
@@ -83,7 +86,7 @@ export const useSession = (sessionId: string): UseSessionResults => {
       setIsLoading(true)
 
       try {
-        const response = await sendLlmMessage(sessionId, currentStep.path, {
+        const response = await sendLlmMessage(sessionId!, currentStep.path, {
           content: sanitizedMessage,
         })
         setSession((prevSession) =>
@@ -117,6 +120,8 @@ export const useSession = (sessionId: string): UseSessionResults => {
   }, [currentStep])
 
   useEffect(() => {
+    if (!sessionId) return
+
     setIsLoading(true)
     setSession(undefined)
 

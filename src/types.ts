@@ -1,4 +1,4 @@
-export { Theme } from '@mui/material/styles'
+export type { Theme } from '@mui/material/styles'
 
 // Chatting
 
@@ -22,6 +22,16 @@ export interface Dividers {
   }
 }
 
+// Transcription
+
+export interface TranscriptionEvent {
+  alternatives: { confidence: number; text: string }[]
+  confidence: number
+  isFinal: boolean
+  text: string
+  timestamp: number
+}
+
 // Claims
 
 export interface SuggestedClaims {
@@ -35,6 +45,14 @@ export interface ValidationResult {
 
 export interface ValidatedClaim {
   inappropriate: boolean
+}
+
+// Confidence action enum
+
+export enum ConfidenceAction {
+  AUTO_SEND = 'AUTO_SEND',
+  ALLOW_EDIT = 'ALLOW_EDIT',
+  FORCE_TEXT_MODE = 'FORCE_TEXT_MODE',
 }
 
 // Confidence levels

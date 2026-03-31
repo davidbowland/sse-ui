@@ -1,4 +1,4 @@
-import { navigate } from 'gatsby'
+import { useRouter } from 'next/router'
 import React, { ForwardedRef, forwardRef, useCallback, useEffect, useRef, useState } from 'react'
 
 import AddCommentIcon from '@mui/icons-material/AddComment'
@@ -27,6 +27,7 @@ export interface ChatWindowProps {
 
 const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: ChatWindowProps): React.ReactNode => {
   const [message, setMessage] = useState<string>('')
+  const router = useRouter()
 
   const messageRef = useRef<HTMLDivElement>(null)
 
@@ -41,7 +42,7 @@ const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: 
     return (
       <Box sx={{ textAlign: 'center' }}>
         <Button
-          onClick={() => navigate('/')}
+          onClick={() => router.push('/')}
           startIcon={<AddCommentIcon />}
           sx={{ maxWidth: 350, width: '100%' }}
           variant="contained"
@@ -60,7 +61,9 @@ const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: 
             label="Message"
             maxRows={4}
             multiline
-            onInput={(e: React.ChangeEvent<HTMLInputElement>) => setMessage(e.target.value.replace(/\n/g, ''))}
+            onInput={(e: React.FormEvent<HTMLDivElement>) =>
+              setMessage((e.target as HTMLInputElement).value.replace(/\n/g, ''))
+            }
             onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && sendMessage()}
             sx={{ width: '100%' }}
             value={message.slice(0, MAX_CHAT_LENGTH)}

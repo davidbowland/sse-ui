@@ -1,9 +1,9 @@
+import Index from '@pages/index'
 import { sessionId } from '@test/__mocks__'
 import '@testing-library/jest-dom'
 import { render } from '@testing-library/react'
 import React from 'react'
 
-import Index, { Head } from './index'
 import ClaimPrompt from '@components/claim-prompt'
 import PrivacyLink from '@components/privacy-link'
 import * as sse from '@services/sse'
@@ -11,7 +11,9 @@ import * as sse from '@services/sse'
 jest.mock('@components/claim-prompt')
 jest.mock('@components/privacy-link')
 jest.mock('@services/sse')
-jest.mock('gatsby')
+jest.mock('next/router', () => ({
+  useRouter: jest.fn().mockReturnValue({ push: jest.fn() }),
+}))
 
 describe('Index page', () => {
   const mockOnClaimSelect = jest.fn()
@@ -26,6 +28,8 @@ describe('Index page', () => {
   })
 
   beforeEach(() => {
+    jest.clearAllMocks()
+    document.title = ''
     Object.defineProperty(window, 'location', {
       configurable: true,
       value: { search: '' },
@@ -52,25 +56,25 @@ describe('Index page', () => {
 
     render(<Index />)
 
-    expect(ClaimPrompt).toHaveBeenCalledTimes(1)
-    expect(ClaimPrompt).toHaveBeenCalledWith(
+    expect(ClaimPrompt).toHaveBeenLastCalledWith(
       expect.objectContaining({ initialClaim: 'Pickles are lazy cucumbers' }),
-      {},
+      undefined,
     )
   })
 
-  it('invokes createSession on new session.', async () => {
+  it('invokes createSession on new session', async () => {
     const claim = 'mah claim'
     const confidence = 'strongly agree'
     const language = 'es-PA'
     render(<Index />)
-    mockOnClaimSelect(claim, confidence, language)
+    await mockOnClaimSelect(claim, confidence, language)
 
     expect(sse.createSession).toHaveBeenCalledWith(claim, confidence, language)
   })
 
-  it('renders Head', () => {
-    render(<Head />)
+  it('renders title', () => {
+    render(<Index />)
+
     expect(document.title).toEqual('StreetLogic AI')
   })
 })

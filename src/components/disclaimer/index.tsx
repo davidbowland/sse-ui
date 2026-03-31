@@ -1,4 +1,4 @@
-import { Link } from 'gatsby'
+import Link from 'next/link'
 import React, { useCallback, useState } from 'react'
 import Cookies from 'universal-cookie'
 
@@ -34,7 +34,7 @@ const Disclaimer = (): React.ReactNode => {
                     don&apos;t have information to sell -- and WE DO NOT USE YOUR INTERACTIONS TO TRAIN AI MODELS.
                   </Typography>
                   <Typography variant="body2">
-                    See our <Link to="/privacy-policy">privacy policy</Link> for more information.
+                    See our <Link href="/privacy-policy">privacy policy</Link> for more information.
                   </Typography>
                 </Stack>
               </Grid>
