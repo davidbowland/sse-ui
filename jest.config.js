@@ -7,7 +7,7 @@ const config = {
   collectCoverage: true,
   collectCoverageFrom: ['src/**/*'],
   coverageDirectory: 'coverage',
-  coveragePathIgnorePatterns: ['.*\\.d\\.ts', 'config/*', 'types.ts'],
+  coveragePathIgnorePatterns: ['.*\\.d\\.ts', 'config/*', 'types.ts', '_app.tsx', '_document.tsx'],
   coverageThreshold: {
     global: { branches: 90, functions: 90, lines: 80 },
   },

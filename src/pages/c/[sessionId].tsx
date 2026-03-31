@@ -1,7 +1,6 @@
 import type { GetStaticPaths, GetStaticProps } from 'next'
 import Head from 'next/head'
-import { useRouter } from 'next/router'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
@@ -21,8 +20,12 @@ const selectedSx = { color: 'text.primary', fontStyle: 'italic', fontWeight: 700
 const unselectedSx = {}
 
 const SessionPage = (): React.ReactNode => {
-  const { query } = useRouter()
-  const sessionId = query.sessionId as string | undefined
+  const [sessionId, setSessionId] = useState<string | undefined>(undefined)
+
+  useEffect(() => {
+    const match = window.location.pathname.match(/\/c\/([^/]+)/)
+    if (match) setSessionId(match[1])
+  }, [])
 
   const {
     chatStep,
@@ -115,10 +118,12 @@ const SessionPage = (): React.ReactNode => {
   )
 }
 
-export const getStaticPaths: GetStaticPaths = () => ({
-  fallback: false,
-  paths: [{ params: { sessionId: '__placeholder__' } }],
-})
+export const getStaticPaths: GetStaticPaths = () => {
+  if (process.env.NODE_ENV === 'development') {
+    return { fallback: 'blocking', paths: [] }
+  }
+  return { fallback: false, paths: [{ params: { sessionId: '__placeholder__' } }] }
+}
 
 export const getStaticProps: GetStaticProps = () => ({ props: {} })
 

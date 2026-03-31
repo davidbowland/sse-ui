@@ -46,7 +46,7 @@
   "overrides": [
     {
       "env": { "node": true },
-      "files": ["scripts/**/*.js"],
+      "files": ["scripts/**/*.js", "next.config.js"],
       "rules": { "@typescript-eslint/no-var-requires": "off" }
     },
     {
