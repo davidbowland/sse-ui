@@ -12,6 +12,11 @@ describe('Privacy page', () => {
     jest.mocked(PrivacyPolicy).mockReturnValue(<>PrivacyPolicy</>)
   })
 
+  beforeEach(() => {
+    jest.clearAllMocks()
+    document.title = ''
+  })
+
   it('renderes PrivacyPolicy', () => {
     render(<PrivacyPage />)
 

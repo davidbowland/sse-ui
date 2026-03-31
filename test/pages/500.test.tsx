@@ -12,6 +12,11 @@ describe('500 error page', () => {
     jest.mocked(ServerErrorMessage).mockReturnValue(<>ServerErrorMessage</>)
   })
 
+  beforeEach(() => {
+    jest.clearAllMocks()
+    document.title = ''
+  })
+
   it('renders ServerErrorMessage', () => {
     const expectedTitle = '500: Internal Server Error'
     render(<InternalServerError />)

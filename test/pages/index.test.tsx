@@ -28,6 +28,8 @@ describe('Index page', () => {
   })
 
   beforeEach(() => {
+    jest.clearAllMocks()
+    document.title = ''
     Object.defineProperty(window, 'location', {
       configurable: true,
       value: { search: '' },

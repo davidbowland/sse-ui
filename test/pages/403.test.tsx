@@ -17,6 +17,8 @@ describe('403 error page', () => {
   })
 
   beforeEach(() => {
+    jest.clearAllMocks()
+    document.title = ''
     window.location.pathname = '/an-invalid-page'
   })
 

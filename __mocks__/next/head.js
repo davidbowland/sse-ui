@@ -8,7 +8,7 @@ const Head = ({ children }) => {
     if (titleEl && titleEl.props && titleEl.props.children) {
       document.title = titleEl.props.children
     }
-  })
+  }, [])
   return null
 }
 

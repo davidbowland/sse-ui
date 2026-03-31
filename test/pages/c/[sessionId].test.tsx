@@ -26,7 +26,13 @@ describe('Session page', () => {
   })
 
   beforeEach(() => {
+    jest.clearAllMocks()
+    document.title = ''
     jest.mocked(useSession).mockReturnValue({ ...useSessionResults, onChangeConfidence, sendChatMessage })
+  })
+
+  afterEach(() => {
+    jest.mocked(useRouter).mockReturnValue({ query: { sessionId } } as any)
   })
 
   it('renders chat container', async () => {

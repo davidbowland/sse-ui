@@ -12,6 +12,11 @@ describe('400 error page', () => {
     jest.mocked(ServerErrorMessage).mockReturnValue(<>ServerErrorMessage</>)
   })
 
+  beforeEach(() => {
+    jest.clearAllMocks()
+    document.title = ''
+  })
+
   it('renders ServerErrorMessage', () => {
     const expectedTitle = '400: Bad Request'
     render(<BadRequest />)
