@@ -1,4 +1,4 @@
-import { navigate } from 'gatsby'
+import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 
 import AddCommentIcon from '@mui/icons-material/AddComment'
@@ -32,6 +32,7 @@ const ChatContainer = ({
   onConfidenceChange,
 }: ChatContainerProps): React.ReactNode => {
   const [confidence, setConfidence] = useState<string | undefined>(initialConfidence)
+  const router = useRouter()
 
   const onChangeOptionList = (value: string) => {
     setConfidence(value)
@@ -87,7 +88,7 @@ const ChatContainer = ({
               <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center' }}>
                 <Box>
                   <Button
-                    onClick={() => navigate('/')}
+                    onClick={() => router.push('/')}
                     startIcon={<AddCommentIcon />}
                     sx={{ maxWidth: 250, width: '100%' }}
                     variant="contained"
