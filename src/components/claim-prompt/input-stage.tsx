@@ -37,8 +37,8 @@ const InputStage = ({
     [onLanguageChange, browserLanguage],
   )
 
-  const handleClaimInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setClaimInput(e.target.value)
+  const handleClaimInput = useCallback((e: React.FormEvent<HTMLDivElement>) => {
+    setClaimInput((e.target as HTMLInputElement).value)
   }, [])
 
   const handleKeyUp = useCallback(
