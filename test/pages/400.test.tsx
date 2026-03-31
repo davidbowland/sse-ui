@@ -1,8 +1,8 @@
+import BadRequest from '@pages/400'
 import '@testing-library/jest-dom'
 import { render } from '@testing-library/react'
 import React from 'react'
 
-import BadRequest from '@pages/400'
 import ServerErrorMessage from '@components/server-error-message'
 
 jest.mock('@components/server-error-message')
@@ -21,10 +21,7 @@ describe('400 error page', () => {
     const expectedTitle = '400: Bad Request'
     render(<BadRequest />)
 
-    expect(ServerErrorMessage).toHaveBeenCalledWith(
-      expect.objectContaining({ title: expectedTitle }),
-      undefined,
-    )
+    expect(ServerErrorMessage).toHaveBeenCalledWith(expect.objectContaining({ title: expectedTitle }), undefined)
     expect(ServerErrorMessage).toHaveBeenCalledTimes(1)
   })
 

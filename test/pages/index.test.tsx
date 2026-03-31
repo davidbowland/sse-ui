@@ -1,9 +1,9 @@
+import Index from '@pages/index'
 import { sessionId } from '@test/__mocks__'
 import '@testing-library/jest-dom'
 import { render } from '@testing-library/react'
 import React from 'react'
 
-import Index from '@pages/index'
 import ClaimPrompt from '@components/claim-prompt'
 import PrivacyLink from '@components/privacy-link'
 import * as sse from '@services/sse'

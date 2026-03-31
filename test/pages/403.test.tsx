@@ -1,8 +1,8 @@
+import Forbidden from '@pages/403'
 import '@testing-library/jest-dom'
 import { render, screen, waitFor } from '@testing-library/react'
 import React from 'react'
 
-import Forbidden from '@pages/403'
 import ServerErrorMessage from '@components/server-error-message'
 
 jest.mock('@components/server-error-message')
@@ -26,10 +26,7 @@ describe('403 error page', () => {
     render(<Forbidden />)
 
     await waitFor(() => expect(ServerErrorMessage).toHaveBeenCalledTimes(1))
-    expect(ServerErrorMessage).toHaveBeenCalledWith(
-      expect.objectContaining({ title: '403: Forbidden' }),
-      undefined,
-    )
+    expect(ServerErrorMessage).toHaveBeenCalledWith(expect.objectContaining({ title: '403: Forbidden' }), undefined)
   })
 
   it('renders nothing for session paths', async () => {

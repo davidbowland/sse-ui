@@ -61,7 +61,9 @@ const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: 
             label="Message"
             maxRows={4}
             multiline
-            onInput={(e: React.FormEvent<HTMLDivElement>) => setMessage((e.target as HTMLInputElement).value.replace(/\n/g, ''))}
+            onInput={(e: React.FormEvent<HTMLDivElement>) =>
+              setMessage((e.target as HTMLInputElement).value.replace(/\n/g, ''))
+            }
             onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && sendMessage()}
             sx={{ width: '100%' }}
             value={message.slice(0, MAX_CHAT_LENGTH)}

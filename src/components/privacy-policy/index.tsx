@@ -88,8 +88,8 @@ const PrivacyPolicy = (): React.ReactNode => {
       <Typography variant="h6">CONTACT US</Typography>
       <Typography variant="body1">
         For more information about our privacy practices, if you have questions, or if you would like to make a
-        complaint, please contact us by e-mail at <Link href="mailto:privacy@dbowland.com">privacy@dbowland.com</Link> or
-        by mail using the details provided below:
+        complaint, please contact us by e-mail at <Link href="mailto:privacy@dbowland.com">privacy@dbowland.com</Link>{' '}
+        or by mail using the details provided below:
       </Typography>
       <Typography variant="body1">dbowland.com Privacy Department, P.O. Box 81226, Seattle, WA, 98108-1226</Typography>
     </Stack>

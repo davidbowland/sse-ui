@@ -1,10 +1,10 @@
+import SessionPage from '@pages/c/[sessionId]'
 import { confidenceLevels, sessionId, useSessionResults } from '@test/__mocks__'
 import '@testing-library/jest-dom'
 import { render, screen, waitFor } from '@testing-library/react'
 import { useRouter } from 'next/router'
 import React from 'react'
 
-import SessionPage from '@pages/c/[sessionId]'
 import ChatContainer from '@components/chat-container'
 import ChatWindow from '@components/chat-window'
 import { useSession } from '@hooks/useSession'

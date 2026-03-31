@@ -1,8 +1,8 @@
+import NotFound from '@pages/404'
 import '@testing-library/jest-dom'
 import { render, screen, waitFor } from '@testing-library/react'
 import React from 'react'
 
-import NotFound from '@pages/404'
 import ServerErrorMessage from '@components/server-error-message'
 
 jest.mock('@components/server-error-message')
@@ -26,10 +26,7 @@ describe('404 error page', () => {
     render(<NotFound />)
 
     await waitFor(() => expect(ServerErrorMessage).toHaveBeenCalledTimes(1))
-    expect(ServerErrorMessage).toHaveBeenCalledWith(
-      expect.objectContaining({ title: '404: Not Found' }),
-      undefined,
-    )
+    expect(ServerErrorMessage).toHaveBeenCalledWith(expect.objectContaining({ title: '404: Not Found' }), undefined)
   })
 
   it('renders nothing for session paths', async () => {
