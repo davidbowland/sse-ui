@@ -2,6 +2,7 @@ import SessionPage from '@pages/c/[sessionId]'
 import { confidenceLevels, sessionId, useSessionResults } from '@test/__mocks__'
 import '@testing-library/jest-dom'
 import { render, screen, waitFor } from '@testing-library/react'
+import { useRouter } from 'next/router'
 import React from 'react'
 
 import ChatContainer from '@components/chat-container'
@@ -11,6 +12,9 @@ import { useSession } from '@hooks/useSession'
 jest.mock('@components/chat-container')
 jest.mock('@components/chat-window')
 jest.mock('@hooks/useSession')
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}))
 
 describe('Session page', () => {
   const onChangeConfidence = jest.fn()
@@ -25,6 +29,7 @@ describe('Session page', () => {
     jest.clearAllMocks()
     document.title = ''
     jest.mocked(useSession).mockReturnValue({ ...useSessionResults, onChangeConfidence, sendChatMessage })
+    jest.mocked(useRouter).mockReturnValue({ asPath: `/c/${sessionId}` } as any)
     Object.defineProperty(window, 'location', {
       value: { pathname: `/c/${sessionId}` },
       writable: true,
@@ -91,6 +96,7 @@ describe('Session page', () => {
   })
 
   it('renders nothing when sessionId is undefined', () => {
+    jest.mocked(useRouter).mockReturnValue({ asPath: '/c/' } as any)
     Object.defineProperty(window, 'location', {
       value: { pathname: '/c/' },
       writable: true,

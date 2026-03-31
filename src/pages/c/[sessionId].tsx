@@ -1,5 +1,6 @@
 import type { GetStaticPaths, GetStaticProps } from 'next'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import React, { useEffect, useRef, useState } from 'react'
 
 import Alert from '@mui/material/Alert'
@@ -20,12 +21,13 @@ const selectedSx = { color: 'text.primary', fontStyle: 'italic', fontWeight: 700
 const unselectedSx = {}
 
 const SessionPage = (): React.ReactNode => {
+  const router = useRouter()
   const [sessionId, setSessionId] = useState<string | undefined>(undefined)
 
   useEffect(() => {
     const match = window.location.pathname.match(/\/c\/([^/]+)/)
     if (match) setSessionId(match[1])
-  }, [])
+  }, [router.asPath])
 
   const {
     chatStep,
