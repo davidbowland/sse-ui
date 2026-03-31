@@ -22,6 +22,12 @@ describe('useSession', () => {
     console.error = jest.fn()
   })
 
+  it('does not fetch when sessionId is undefined', () => {
+    renderHook(() => useSession(undefined))
+
+    expect(sse.fetchSession).not.toHaveBeenCalled()
+  })
+
   it('fetches a session by ID and returns it', async () => {
     const { result } = renderHook(() => useSession(sessionId))
 
