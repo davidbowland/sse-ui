@@ -48,6 +48,10 @@
       "env": { "node": true },
       "files": ["scripts/**/*.js"],
       "rules": { "@typescript-eslint/no-var-requires": "off" }
+    },
+    {
+      "files": ["**/*.test.ts", "**/*.test.tsx"],
+      "rules": { "@typescript-eslint/no-var-requires": "off" }
     }
   ],
   "settings": {
