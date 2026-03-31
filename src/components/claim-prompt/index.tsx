@@ -29,9 +29,14 @@ type ClaimPromptStage = 'input' | 'generating' | 'selecting' | 'confidence' | 's
 const ClaimPrompt = ({ initialClaim, onClaimSelect, skipFirstScroll }: ClaimPromptProps): React.ReactNode => {
   const [claimInput, setClaimInput] = useState<string>(initialClaim ?? '')
   const [inputErrorMessage, setInputErrorMessage] = useState<string | undefined>(undefined)
-  const [language, setLanguage] = useState<string>(
-    (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('language')) || 'en-US',
-  )
+  const [language, setLanguage] = useState<string>('en-US')
+
+  useEffect(() => {
+    const urlLanguage = new URLSearchParams(window.location.search).get('language')
+    if (urlLanguage) {
+      setLanguage(urlLanguage)
+    }
+  }, [])
   const [promptStage, setPromptStage] = useState<ClaimPromptStage>('input')
   const [skipScroll, setSkipScroll] = useState<boolean>(skipFirstScroll ?? false)
   const stageRef = useRef<HTMLDivElement>(null)
