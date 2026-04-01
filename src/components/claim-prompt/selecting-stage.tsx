@@ -1,17 +1,7 @@
+import { Circle, CircleDot } from 'lucide-react'
 import React, { useCallback, useEffect, useState } from 'react'
 
-import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked'
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemButton from '@mui/material/ListItemButton'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import ListItemText from '@mui/material/ListItemText'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
-
+import { PrimaryButton, SecondaryButton, SelectionList, SelectionListItem } from './elements'
 import TwoButtons from './two-buttons'
 
 export interface SelectingStageProps {
@@ -38,38 +28,26 @@ const SelectingStage = ({
   }, [suggestedClaims])
 
   return (
-    <Stack spacing={2} sx={{ margin: 'auto', maxWidth: 'm', textAlign: 'center', width: '100%' }}>
-      <Box>
-        <Typography variant="h4">Select a claim</Typography>
-      </Box>
-      <Box>
-        <List sx={{ bgcolor: 'background.paper', margin: 'auto', maxWidth: 800 }}>
+    <div className="mx-auto flex w-full flex-col gap-4 text-center">
+      <div>
+        <h4 className="text-3xl font-normal">Select a claim</h4>
+      </div>
+      <div>
+        <SelectionList>
           {suggestedClaims.map((claim, index) => (
-            <ListItem disablePadding key={index}>
-              <ListItemButton onClick={() => setSelectedIndex(index)} selected={selectedIndex === index}>
-                <ListItemIcon>
-                  {selectedIndex === index ? <RadioButtonCheckedIcon /> : <RadioButtonUncheckedIcon />}
-                </ListItemIcon>
-                <ListItemText primary={claim} />
-              </ListItemButton>
-            </ListItem>
+            <SelectionListItem isSelected={selectedIndex === index} key={index} onClick={() => setSelectedIndex(index)}>
+              <span className="mr-3">{selectedIndex === index ? <CircleDot size={20} /> : <Circle size={20} />}</span>
+              {claim}
+            </SelectionListItem>
           ))}
-        </List>
-      </Box>
+        </SelectionList>
+      </div>
       <TwoButtons
-        button1={
-          <Button onClick={onBack} sx={{ width: '100%' }} variant="outlined">
-            Back
-          </Button>
-        }
-        button2={
-          <Button onClick={handleAcceptClaim} sx={{ width: '100%' }} variant="contained">
-            Select
-          </Button>
-        }
+        button1={<SecondaryButton onPress={onBack}>Back</SecondaryButton>}
+        button2={<PrimaryButton onPress={handleAcceptClaim}>Select</PrimaryButton>}
         hasExtraPadding
       />
-    </Stack>
+    </div>
   )
 }
 
