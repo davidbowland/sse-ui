@@ -1,7 +1,5 @@
 import React from 'react'
 
-import Grid from '@mui/material/Grid'
-
 export interface TwoButtonsProps {
   button1: React.ReactNode
   button2: React.ReactNode
@@ -9,19 +7,24 @@ export interface TwoButtonsProps {
 }
 
 const TwoButtons = ({ button1, button2, hasExtraPadding }: TwoButtonsProps): React.ReactNode => {
-  const padding = hasExtraPadding ? { paddingRight: { sm: 'initial', xs: 6 } } : {}
   return (
-    <Grid container spacing={3}>
-      <Grid item md={2} order={{ xs: 1 }} sm={1} xs={0}></Grid>
-      <Grid item md={3} order={{ sm: 2, xs: 4 }} sm={4} sx={padding} xs={12}>
+    <div className="grid grid-cols-12 gap-6">
+      <div className="col-span-0 sm:col-span-1 md:col-span-2" />
+      <div
+        className={`col-span-12 sm:col-span-4 md:col-span-3 ${hasExtraPadding ? 'sm:pr-0 pr-24' : ''}`}
+        style={{ order: 2 }}
+      >
         {button1}
-      </Grid>
-      <Grid item order={{ xs: 3 }} sm={2} xs={0}></Grid>
-      <Grid item md={3} order={{ sm: 4, xs: 2 }} sm={4} sx={padding} xs={12}>
+      </div>
+      <div className="col-span-0 sm:col-span-2" />
+      <div
+        className={`col-span-12 sm:col-span-4 md:col-span-3 ${hasExtraPadding ? 'sm:pr-0 pr-24' : ''}`}
+        style={{ order: 1 }}
+      >
         {button2}
-      </Grid>
-      <Grid item md={2} order={{ xs: 5 }} sm={1} xs={0}></Grid>
-    </Grid>
+      </div>
+      <div className="col-span-0 sm:col-span-1 md:col-span-2" />
+    </div>
   )
 }
 
