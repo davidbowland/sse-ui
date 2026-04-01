@@ -13,6 +13,15 @@ const config = {
   },
   moduleNameMapper: {
     '@heroui/react': '<rootDir>/__mocks__/@heroui/react.js',
+    '@mui/icons-material/(.*)': '<rootDir>/__mocks__/mui-component-mock.js',
+    '@mui/material/Select': '<rootDir>/__mocks__/mui-select-mock.js',
+    '@mui/material/MenuItem': '<rootDir>/__mocks__/mui-menuitem-mock.js',
+    '@mui/material/Button': '<rootDir>/__mocks__/mui-button-mock.js',
+    '@mui/material/TextField': '<rootDir>/__mocks__/mui-textfield-mock.js',
+    '@mui/material/ListItemText': '<rootDir>/__mocks__/mui-listitemtext-mock.js',
+    '@mui/material/ListItemButton': '<rootDir>/__mocks__/mui-listitembutton-mock.js',
+    '@mui/material/Switch': '<rootDir>/__mocks__/mui-switch-mock.js',
+    '@mui/material/(.*)': '<rootDir>/__mocks__/mui-component-mock.js',
     '.+\\.(css|styl|less|sass|scss)$': 'identity-obj-proxy',
     '.+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga|pdf|yaml)$':
       '<rootDir>/__mocks__/file-mock.js',
