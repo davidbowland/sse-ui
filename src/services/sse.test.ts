@@ -9,6 +9,7 @@ import {
   suggestedClaims,
   validationResult,
 } from '@test/__mocks__'
+import axiosRetry from 'axios-retry'
 
 import {
   changeConfidence,
@@ -28,7 +29,14 @@ jest.mock('axios', () => ({
     post: (...args: any[]) => mockPost(...args),
   })),
 }))
-jest.mock('axios-retry', () => jest.fn())
+jest.mock('axios-retry', () => {
+  const mockFn = jest.fn((_axiosInstance: any, config: any) => {
+    ;(global as any).__axiosRetryConfig = config
+  })
+  ;(mockFn as any).isNetworkOrIdempotentRequestError = jest.fn()
+  ;(mockFn as any).exponentialDelay = jest.fn()
+  return mockFn
+})
 
 describe('sse', () => {
   const claim = sessionContext.claim
@@ -103,6 +111,43 @@ describe('sse', () => {
 
       expect(mockPost).toHaveBeenCalledWith(`/sessions/${sessionId}/llm-message`, llmRequest)
       expect(result).toEqual(llmResponse)
+    })
+  })
+
+  describe('retryCondition', () => {
+    let retryCondition: (error: any) => boolean
+
+    beforeAll(() => {
+      // axiosRetry is called at module load time; the config is stored in global to survive clearMocks
+      retryCondition = (global as any).__axiosRetryConfig.retryCondition
+    })
+
+    it('returns true for network or idempotent request errors', () => {
+      jest.mocked(axiosRetry).isNetworkOrIdempotentRequestError.mockReturnValueOnce(true)
+      const error = { code: 'ENOTFOUND' } as any
+
+      const result = retryCondition(error)
+
+      expect(result).toBe(true)
+      expect(axiosRetry.isNetworkOrIdempotentRequestError).toHaveBeenCalledWith(error)
+    })
+
+    it('returns true for ECONNABORTED errors', () => {
+      jest.mocked(axiosRetry).isNetworkOrIdempotentRequestError.mockReturnValueOnce(false)
+      const error = { code: 'ECONNABORTED' } as any
+
+      const result = retryCondition(error)
+
+      expect(result).toBe(true)
+    })
+
+    it('returns false for other errors', () => {
+      jest.mocked(axiosRetry).isNetworkOrIdempotentRequestError.mockReturnValueOnce(false)
+      const error = { code: 'EOTHER' } as any
+
+      const result = retryCondition(error)
+
+      expect(result).toBe(false)
     })
   })
 })

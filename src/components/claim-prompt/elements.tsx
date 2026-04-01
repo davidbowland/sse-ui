@@ -87,7 +87,7 @@ export const PrimaryButton = ({
   disabled?: boolean
   onPress: () => void
 }): React.ReactNode => (
-  <Button className="w-full" disabled={disabled} onPress={onPress} variant="primary">
+  <Button className="w-full" isDisabled={disabled} onPress={onPress} variant="primary">
     {children}
   </Button>
 )

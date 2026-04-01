@@ -72,7 +72,6 @@ const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: 
             <Input
               aria-label="Message"
               className="w-full"
-              label="Message"
               onChange={(e) => setMessage(e.target.value.replace(/\n/g, '').slice(0, MAX_CHAT_LENGTH))}
               onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && sendMessage()}
               value={message}

@@ -1,4 +1,4 @@
-import { Button, Select, SelectItem } from '@heroui/react'
+import { Button, ListBoxItem, Select } from '@heroui/react'
 import { MessageCircle, MessageSquarePlus } from 'lucide-react'
 import React from 'react'
 
@@ -52,14 +52,13 @@ export const ConfidenceSelect = ({
   <Select
     aria-label="Confidence"
     className="mx-auto min-w-full sm:min-w-[600px]"
-    label="Confidence"
     onSelectionChange={(key) => onChange(String(key))}
     selectedKey={value}
   >
     {confidenceLevels.map((level) => (
-      <SelectItem key={level.value} value={level.value}>
+      <ListBoxItem id={level.value} key={level.value}>
         {level.label}
-      </SelectItem>
+      </ListBoxItem>
     ))}
   </Select>
 )

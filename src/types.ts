@@ -1,5 +1,3 @@
-export type { Theme } from '@mui/material/styles'
-
 // Chatting
 
 export type ChatRole = 'assistant' | 'user'

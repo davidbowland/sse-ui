@@ -135,4 +135,27 @@ describe('useSession', () => {
       expect(result.current.errorMessage).toEqual('We apologize, but there was an error sending your chat message.'),
     )
   })
+
+  it('does not change confidence when same confidence is selected', async () => {
+    const { result } = renderHook(() => useSession(sessionId))
+
+    await waitFor(() => expect(result.current.confidence).toEqual('strongly agree'))
+    await result.current.onChangeConfidence('strongly agree')
+
+    expect(sse.changeConfidence).not.toHaveBeenCalled()
+  })
+
+  it('keeps isLoading true when response has newConversation true', async () => {
+    jest
+      .mocked(sse)
+      .sendLlmMessage.mockResolvedValueOnce({ ...llmResponse, currentStep: 'probe confidence', newConversation: true })
+    jest.mocked(sse).sendLlmMessage.mockResolvedValueOnce({ ...llmResponse, newConversation: false })
+    const { result } = renderHook(() => useSession(sessionId))
+
+    await waitFor(() => expect(result.current.chatStep).toEqual('probe confidence'))
+    result.current.sendChatMessage('test message')
+
+    // isLoading remains true while newConversation is true (auto-sends next message)
+    await waitFor(() => expect(result.current.isLoading).toBe(false))
+  })
 })

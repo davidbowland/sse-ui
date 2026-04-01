@@ -1,4 +1,4 @@
-import { Input, Switch } from '@heroui/react'
+import { FieldError, Input, Label, Switch, TextField } from '@heroui/react'
 import React, { useCallback, useState } from 'react'
 
 import { PrimaryButton, SecondaryButton } from './elements'
@@ -50,15 +50,16 @@ const InputStage = ({
       <div className="pb-6">
         <h4 className="text-3xl font-normal">Submit claim</h4>
       </div>
-      <Input
+      <TextField
         className="mb-6 w-full"
-        errorMessage={errorMessage}
         isInvalid={errorMessage !== undefined}
-        label="Truth claim"
-        onChange={(e) => setClaimInput(e.target.value)}
-        onKeyUp={handleKeyUp}
+        onChange={setClaimInput}
         value={claimInput}
-      />
+      >
+        <Label>Truth claim</Label>
+        <Input onKeyUp={handleKeyUp} />
+        {errorMessage && <FieldError>{errorMessage}</FieldError>}
+      </TextField>
       <TwoButtons
         button1={<SecondaryButton onPress={onSuggestionsRequested}>Suggest claims</SecondaryButton>}
         button2={<PrimaryButton onPress={submitClaim}>Submit</PrimaryButton>}
@@ -72,7 +73,7 @@ const InputStage = ({
             <Switch
               aria-label="Chat language switch"
               isSelected={language === browserLanguage}
-              onValueChange={handleLanguageChange}
+              onChange={handleLanguageChange}
             />
             {browserLanguage}
           </div>

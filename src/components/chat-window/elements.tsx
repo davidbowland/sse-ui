@@ -58,7 +58,7 @@ export const MessageLine = ({
 }: {
   children: React.ReactNode
   isLast: boolean
-  innerRef?: React.RefObject<HTMLParagraphElement>
+  innerRef?: React.RefObject<HTMLParagraphElement | null>
 }): React.ReactNode => (
   <p className="py-[0.1rem] text-sm sm:text-base md:text-base" ref={isLast ? innerRef : undefined}>
     {children}
