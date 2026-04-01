@@ -1,0 +1,9 @@
+@import '@heroui/styles';
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+}
