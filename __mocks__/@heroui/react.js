@@ -69,6 +69,11 @@ const Select = ({ children, onSelectionChange, selectedKey, 'aria-label': ariaLa
     children,
   )
 
+const SelectTrigger = () => null
+const SelectValue = () => null
+const SelectIndicator = () => null
+const SelectPopover = ({ children }) => React.createElement(React.Fragment, null, children)
+
 const ListBoxItem = ({ children, id, ...props }) => React.createElement('option', { value: id, ...props }, children)
 
 const SelectItem = ({ children, value, ...props }) => React.createElement('option', { value, ...props }, children)
@@ -118,7 +123,11 @@ module.exports = {
   Label,
   ListBoxItem,
   Select,
+  SelectIndicator,
   SelectItem,
+  SelectPopover,
+  SelectTrigger,
+  SelectValue,
   Separator,
   Skeleton,
   Spinner,

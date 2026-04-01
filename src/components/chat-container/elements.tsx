@@ -1,6 +1,7 @@
-import { Button, ListBoxItem, Select } from '@heroui/react'
+import { Button, ListBoxItem, Select, SelectIndicator, SelectPopover, SelectTrigger, SelectValue } from '@heroui/react'
 import { MessageCircle, MessageSquarePlus } from 'lucide-react'
 import React from 'react'
+import { ListBox } from 'react-aria-components'
 
 import { ConfidenceLevel } from '@types'
 
@@ -55,10 +56,18 @@ export const ConfidenceSelect = ({
     onSelectionChange={(key) => onChange(String(key))}
     selectedKey={value}
   >
-    {confidenceLevels.map((level) => (
-      <ListBoxItem id={level.value} key={level.value}>
-        {level.label}
-      </ListBoxItem>
-    ))}
+    <SelectTrigger>
+      <SelectValue />
+      <SelectIndicator />
+    </SelectTrigger>
+    <SelectPopover>
+      <ListBox>
+        {confidenceLevels.map((level) => (
+          <ListBoxItem id={level.value} key={level.value}>
+            {level.label}
+          </ListBoxItem>
+        ))}
+      </ListBox>
+    </SelectPopover>
   </Select>
 )

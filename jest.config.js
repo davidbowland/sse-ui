@@ -13,6 +13,7 @@ const config = {
   },
   moduleNameMapper: {
     '@heroui/react': '<rootDir>/__mocks__/@heroui/react.js',
+    'react-aria-components': '<rootDir>/__mocks__/react-aria-components.js',
     '@mui/icons-material/(.*)': '<rootDir>/__mocks__/mui-component-mock.js',
     '@mui/material/Select': '<rootDir>/__mocks__/mui-select-mock.js',
     '@mui/material/MenuItem': '<rootDir>/__mocks__/mui-menuitem-mock.js',
