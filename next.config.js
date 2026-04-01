@@ -11,9 +11,6 @@ if (process.env.DEVELOPMENT === 'true') {
 }
 
 const nextConfig = {
-  compiler: {
-    styledComponents: true,
-  },
   ...(process.env.NODE_ENV !== 'development' && { output: 'export' }),
   pageExtensions: ['ts', 'tsx'],
   trailingSlash: true,
