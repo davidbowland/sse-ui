@@ -1,24 +1,13 @@
+import { AlertContent, AlertDescription, AlertRoot, Card, CardContent, Skeleton } from '@heroui/react'
+import { ChevronRight } from 'lucide-react'
 import type { GetStaticPaths, GetStaticProps } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useEffect, useRef, useState } from 'react'
 
-import Alert from '@mui/material/Alert'
-import Box from '@mui/material/Box'
-import Breadcrumbs from '@mui/material/Breadcrumbs'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import Grid from '@mui/material/Grid'
-import Skeleton from '@mui/material/Skeleton'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
-
 import ChatContainer from '@components/chat-container'
 import ChatWindow from '@components/chat-window'
 import { useSession } from '@hooks/useSession'
-
-const selectedSx = { color: 'text.primary', fontStyle: 'italic', fontWeight: 700 }
-const unselectedSx = {}
 
 const SessionPage = (): React.ReactNode => {
   const router = useRouter()
@@ -66,44 +55,55 @@ const SessionPage = (): React.ReactNode => {
           key={claim}
           onConfidenceChange={onChangeConfidence}
         >
-          <Grid container sx={{ padding: { sm: '50px', xs: '25px 10px' } }}>
-            <Grid item sx={{ m: 'auto', maxWidth: 1200, width: '100%' }}>
-              <Stack spacing={1}>
-                <Box sx={{ paddingBottom: 1 }}>
+          <div className="px-[10px] py-[25px] sm:px-[50px] sm:py-[50px]">
+            <div className="mx-auto w-full max-w-[1200px]">
+              <div className="flex flex-col gap-2">
+                <div className="pb-2">
                   {errorMessage ? (
-                    <Alert ref={errorMessageRef} severity="error" sx={{ margin: 'auto', maxWidth: 600 }}>
-                      {errorMessage} Please refresh to try again. Chat sessions expire after 24 hours.
-                    </Alert>
+                    <AlertRoot ref={errorMessageRef} status="danger">
+                      <AlertContent>
+                        <AlertDescription>
+                          {errorMessage} Please refresh to try again. Chat sessions expire after 24 hours.
+                        </AlertDescription>
+                      </AlertContent>
+                    </AlertRoot>
                   ) : (
-                    <Card sx={{ backgroundColor: '#6373fa', margin: 'auto', textAlign: 'center' }}>
+                    <Card className="mx-auto text-center" style={{ backgroundColor: '#6373fa' }}>
                       <CardContent>
-                        <Typography gutterBottom sx={{ color: 'text.secondary' }} variant="h6">
-                          Claim:
-                        </Typography>
-                        <Typography variant="h5">
+                        <p className="mb-1 text-sm text-default-500">Claim:</p>
+                        <h5 className="text-2xl font-normal">
                           {claim ? (
                             claim
                           ) : (
                             <>
-                              <Skeleton />
-                              <Skeleton sx={{ display: { md: 'none', xs: 'block' }, width: '100%' }} />
-                              <Skeleton sx={{ display: { sm: 'none', xs: 'block' }, width: '100%' }} />
+                              <Skeleton className="h-6 w-full" />
+                              <Skeleton className="hidden h-6 w-full md:block" />
+                              <Skeleton className="hidden h-6 w-full sm:block" />
                             </>
                           )}
-                        </Typography>
+                        </h5>
                       </CardContent>
                     </Card>
                   )}
-                </Box>
-                <Box sx={{ textAlign: 'center', width: '100%' }}>
-                  <Breadcrumbs aria-label="Breadcrumbs" sx={{ display: 'inline-block' }}>
-                    {conversationSteps.map((step, index) => (
-                      <Typography key={index} sx={chatStep === step.value ? selectedSx : unselectedSx} variant="body1">
-                        {step.label}
-                      </Typography>
-                    ))}
-                  </Breadcrumbs>
-                </Box>
+                </div>
+                <div className="w-full text-center">
+                  <nav aria-label="Breadcrumbs" className="inline-block">
+                    <ol className="m-0 flex list-none items-center gap-1 p-0">
+                      {conversationSteps.map((step, index) => (
+                        <React.Fragment key={index}>
+                          {index > 0 && (
+                            <li aria-hidden="true" className="flex items-center">
+                              <ChevronRight size={16} />
+                            </li>
+                          )}
+                          <li>
+                            <span className={chatStep === step.value ? 'font-bold italic' : ''}>{step.label}</span>
+                          </li>
+                        </React.Fragment>
+                      ))}
+                    </ol>
+                  </nav>
+                </div>
                 <ChatWindow
                   dividers={dividers}
                   finished={finished}
@@ -111,9 +111,9 @@ const SessionPage = (): React.ReactNode => {
                   isTyping={isLoading}
                   sendChatMessage={sendChatMessage}
                 />
-              </Stack>
-            </Grid>
-          </Grid>
+              </div>
+            </div>
+          </div>
         </ChatContainer>
       </main>
     </>
