@@ -1,22 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
-import NavigateNextIcon from '@mui/icons-material/NavigateNext'
-import Alert from '@mui/material/Alert'
-import Box from '@mui/material/Box'
-import Breadcrumbs from '@mui/material/Breadcrumbs'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
-
 import ConfidenceStage from './confidence-stage'
+import { BreadcrumbItem, BreadcrumbNav, BreadcrumbSeparator, ErrorAlert } from './elements'
 import GeneratingStage from './generating-stage'
 import InputStage from './input-stage'
 import SelectingStage from './selecting-stage'
 import SubmittedStage from './submitted-stage'
 import { useConfidenceLevels } from '@hooks/useConfidenceLevels'
 import { useSuggestedClaims } from '@hooks/useSuggestedClaims'
-
-const selectedSx = { color: 'text.primary', fontStyle: 'italic', fontWeight: 700 }
-const unselectedSx = {}
 
 export interface ClaimPromptProps {
   initialClaim?: string
@@ -39,7 +30,7 @@ const ClaimPrompt = ({ initialClaim, onClaimSelect, skipFirstScroll }: ClaimProm
   }, [])
   const [promptStage, setPromptStage] = useState<ClaimPromptStage>('input')
   const [skipScroll, setSkipScroll] = useState<boolean>(skipFirstScroll ?? false)
-  const stageRef = useRef<HTMLDivElement>(null)
+  const stageRef = useRef<HTMLElement>(null)
 
   const { confidenceLevels, errorMessage: confidenceLevelsErrorMessage } = useConfidenceLevels()
   const {
@@ -130,36 +121,25 @@ const ClaimPrompt = ({ initialClaim, onClaimSelect, skipFirstScroll }: ClaimProm
 
   const hasErrorMessage = confidenceLevelsErrorMessage || suggestedClaimsErrorMessage
   return (
-    <Stack spacing={4} sx={{ margin: 'auto', maxWidth: 1000, width: '100%' }}>
+    <div className="mx-auto flex w-full max-w-[1000px] flex-col gap-8">
       {hasErrorMessage && (
-        <Alert severity="error" sx={{ margin: 'auto', maxWidth: 600 }}>
+        <ErrorAlert>
           {confidenceLevelsErrorMessage} {suggestedClaimsErrorMessage} Please refresh to try again.
-        </Alert>
+        </ErrorAlert>
       )}
-      <Box sx={{ width: '100%' }}>
-        <Breadcrumbs
-          aria-label="Breadcrumbs"
-          ref={stageRef}
-          separator={<NavigateNextIcon fontSize="small" />}
-          sx={{ display: 'inline-block', padding: '0 1rem' }}
-        >
-          <Typography sx={promptStage === 'input' ? selectedSx : unselectedSx} variant="body1">
-            Submit claim
-          </Typography>
-          <Typography sx={promptStage === 'generating' ? selectedSx : unselectedSx} variant="body1">
-            Generate claims
-          </Typography>
-          <Typography sx={promptStage === 'selecting' ? selectedSx : unselectedSx} variant="body1">
-            Select claim
-          </Typography>
-          <Typography sx={promptStage === 'confidence' ? selectedSx : unselectedSx} variant="body1">
-            Select your stance
-          </Typography>
-          <Typography sx={promptStage === 'submitted' ? selectedSx : unselectedSx} variant="body1">
-            Chat begins
-          </Typography>
-        </Breadcrumbs>
-      </Box>
+      <div className="w-full">
+        <BreadcrumbNav ref={stageRef}>
+          <BreadcrumbItem isActive={promptStage === 'input'}>Submit claim</BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem isActive={promptStage === 'generating'}>Generate claims</BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem isActive={promptStage === 'selecting'}>Select claim</BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem isActive={promptStage === 'confidence'}>Select your stance</BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem isActive={promptStage === 'submitted'}>Chat begins</BreadcrumbItem>
+        </BreadcrumbNav>
+      </div>
       {promptStage === 'input' && (
         <InputStage
           errorMessage={inputErrorMessage}
@@ -190,7 +170,7 @@ const ClaimPrompt = ({ initialClaim, onClaimSelect, skipFirstScroll }: ClaimProm
         />
       )}
       {promptStage === 'submitted' && <SubmittedStage />}
-    </Stack>
+    </div>
   )
 }
 
