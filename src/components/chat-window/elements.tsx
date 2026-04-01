@@ -58,7 +58,7 @@ export const MessageLine = ({
 }: {
   children: React.ReactNode
   isLast: boolean
-  innerRef?: React.RefObject<HTMLDivElement>
+  innerRef?: React.RefObject<HTMLParagraphElement>
 }): React.ReactNode => (
   <p className="py-[0.1rem] text-sm sm:text-base md:text-base" ref={isLast ? innerRef : undefined}>
     {children}
@@ -74,8 +74,8 @@ export const NewClaimButton = ({ onPress }: { onPress: () => void }): React.Reac
   </div>
 )
 
-export const SendButton = ({ disabled, onPress }: { disabled: boolean; onPress: () => void }): React.ReactNode => (
-  <Button className="h-full w-full" disabled={disabled} onPress={onPress} variant="primary">
+export const SendButton = ({ isDisabled, onPress }: { isDisabled: boolean; onPress: () => void }): React.ReactNode => (
+  <Button className="h-full w-full" isDisabled={isDisabled} onPress={onPress} variant="primary">
     <Send className="mr-2" size={16} />
     Send
   </Button>

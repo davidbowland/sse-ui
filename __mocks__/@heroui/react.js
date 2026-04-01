@@ -2,8 +2,8 @@ const React = require('react')
 
 const passThrough = ({ children, className, ...props }) => React.createElement('div', { className, ...props }, children)
 
-const Button = ({ children, onPress, isIconOnly, variant, size, ...props }) =>
-  React.createElement('button', { onClick: onPress, ...props }, children)
+const Button = ({ children, onPress, isIconOnly, variant, size, isDisabled, disabled, ...props }) =>
+  React.createElement('button', { onClick: onPress, disabled: isDisabled ?? disabled, ...props }, children)
 
 const Card = passThrough
 const CardContent = passThrough

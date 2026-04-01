@@ -27,7 +27,8 @@ const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: 
   const [message, setMessage] = useState<string>('')
   const router = useRouter()
 
-  const messageRef = useRef<HTMLDivElement>(null)
+  const messageBubbleRef = useRef<HTMLDivElement>(null)
+  const messageRef = useRef<HTMLParagraphElement>(null)
 
   const sendMessage = useCallback(() => {
     if (!isTyping && message.trim().length) {
@@ -37,8 +38,8 @@ const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: 
   }, [sendChatMessage, message, isTyping])
 
   const scrollIntoView = () => {
-    if (messageRef.current) {
-      messageRef.current.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
+    if (messageBubbleRef.current) {
+      messageBubbleRef.current.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
     }
   }
 
@@ -52,7 +53,7 @@ const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: 
         {history.map((msg: ChatMessage, index: number) => (
           <div key={index}>
             {dividers[index] && <DividerWithLabel label={dividers[index].label} />}
-            <MessageBubble ref={index === history.length - 1 ? messageRef : undefined} role={msg.role}>
+            <MessageBubble ref={index === history.length - 1 ? messageBubbleRef : undefined} role={msg.role}>
               {msg.content.split('\n').map((line, lineNum) => (
                 <MessageLine innerRef={messageRef} isLast={index === history.length - 1 && lineNum === 0} key={lineNum}>
                   {line}
@@ -78,7 +79,7 @@ const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: 
             />
           </div>
           <div className="col-span-12 p-2 sm:col-span-3">
-            <SendButton disabled={finished || isTyping || !message.length} onPress={sendMessage} />
+            <SendButton isDisabled={finished || isTyping || !message.length} onPress={sendMessage} />
           </div>
         </div>
       )}
