@@ -1,25 +1,13 @@
+import { Spinner } from '@heroui/react'
 import React from 'react'
-
-import Box from '@mui/material/Box'
-import LinearProgress from '@mui/material/LinearProgress'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
-
-export interface GeneratingStageProps {
-  ref: React.RefObject<HTMLDivElement>
-}
 
 const GeneratingStage = (): React.ReactNode => {
   return (
-    <Stack spacing={4} sx={{ margin: 'auto', maxWidth: 'm', padding: 3, textAlign: 'center', width: '100%' }}>
-      <Typography variant="h4">Generating claims to discuss</Typography>
-      <Typography fontStyle="italic" variant="body2">
-        This may take a few seconds
-      </Typography>
-      <Box>
-        <LinearProgress sx={{ margin: 'auto', maxWidth: 600 }} />
-      </Box>
-    </Stack>
+    <div className="mx-auto flex w-full max-w-xl flex-col items-center gap-8 px-3 py-6 text-center">
+      <h4 className="text-3xl font-normal">Generating claims to discuss</h4>
+      <p className="text-sm italic">This may take a few seconds</p>
+      <Spinner />
+    </div>
   )
 }
 
