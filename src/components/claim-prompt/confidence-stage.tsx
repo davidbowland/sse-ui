@@ -1,20 +1,15 @@
+import { Circle, CircleDot } from 'lucide-react'
 import React, { useCallback, useState } from 'react'
 
-import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked'
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
-import Alert from '@mui/material/Alert'
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemButton from '@mui/material/ListItemButton'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import ListItemText from '@mui/material/ListItemText'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
-
+import {
+  ClaimCard,
+  ClaimCardLabel,
+  ErrorAlert,
+  PrimaryButton,
+  SecondaryButton,
+  SelectionList,
+  SelectionListItem,
+} from './elements'
 import TwoButtons from './two-buttons'
 import { ConfidenceLevel } from '@types'
 
@@ -40,57 +35,41 @@ const ConfidenceStage = ({
   }, [onAcceptConfidence, confidenceLevels, selectedIndex])
 
   return (
-    <Stack spacing={4} sx={{ margin: 'auto', maxWidth: 'm', textAlign: 'center', width: '100%' }}>
-      <Box>
-        <Typography variant="h4">What is your stance?</Typography>
-      </Box>
-      {errorMessage && (
-        <Alert severity="error" sx={{ margin: 'auto', maxWidth: 600 }}>
-          {errorMessage}
-        </Alert>
-      )}
-      <Box>
-        <Card sx={{ backgroundColor: '#6373fa', margin: 'auto', width: 'md' }}>
-          <CardContent>
-            <Typography gutterBottom sx={{ color: 'text.secondary' }} variant="h6">
-              Claim:
-            </Typography>
-            <Typography variant="h5">{claim}</Typography>
-          </CardContent>
-        </Card>
-      </Box>
-      <Box>
+    <div className="mx-auto flex w-full flex-col gap-8 text-center">
+      <div>
+        <h4 className="text-3xl font-normal">What is your stance?</h4>
+      </div>
+      {errorMessage && <ErrorAlert>{errorMessage}</ErrorAlert>}
+      <div>
+        <ClaimCard>
+          <ClaimCardLabel>Claim:</ClaimCardLabel>
+          <h5 className="text-2xl font-normal">{claim}</h5>
+        </ClaimCard>
+      </div>
+      <div>
         {confidenceLevels.length === 0 ? (
-          <Typography variant="body1">Error loading confidence levels. Please refresh to try again.</Typography>
+          <p>Error loading confidence levels. Please refresh to try again.</p>
         ) : (
-          <List sx={{ bgcolor: 'background.paper', margin: 'auto', maxWidth: 300 }}>
+          <SelectionList>
             {confidenceLevels.map((level, index) => (
-              <ListItem disablePadding key={index}>
-                <ListItemButton onClick={() => setSelectedIndex(index)} selected={selectedIndex === index}>
-                  <ListItemIcon>
-                    {selectedIndex === index ? <RadioButtonCheckedIcon /> : <RadioButtonUncheckedIcon />}
-                  </ListItemIcon>
-                  <ListItemText primary={level.label} />
-                </ListItemButton>
-              </ListItem>
+              <SelectionListItem
+                isSelected={selectedIndex === index}
+                key={index}
+                onClick={() => setSelectedIndex(index)}
+              >
+                <span className="mr-3">{selectedIndex === index ? <CircleDot size={20} /> : <Circle size={20} />}</span>
+                {level.label}
+              </SelectionListItem>
             ))}
-          </List>
+          </SelectionList>
         )}
-      </Box>
+      </div>
       <TwoButtons
-        button1={
-          <Button onClick={onBack} sx={{ width: '100%' }} variant="outlined">
-            Back
-          </Button>
-        }
-        button2={
-          <Button onClick={handleAcceptConfidence} sx={{ width: '100%' }} variant="contained">
-            Select
-          </Button>
-        }
+        button1={<SecondaryButton onPress={onBack}>Back</SecondaryButton>}
+        button2={<PrimaryButton onPress={handleAcceptConfidence}>Select</PrimaryButton>}
         hasExtraPadding
       />
-    </Stack>
+    </div>
   )
 }
 
