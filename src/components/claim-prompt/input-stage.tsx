@@ -1,12 +1,7 @@
+import { Input, Switch } from '@heroui/react'
 import React, { useCallback, useState } from 'react'
 
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import Stack from '@mui/material/Stack'
-import Switch from '@mui/material/Switch'
-import TextField from '@mui/material/TextField'
-import Typography from '@mui/material/Typography'
-
+import { PrimaryButton, SecondaryButton } from './elements'
 import TwoButtons from './two-buttons'
 import { useBrowserLanguage } from '@hooks/useBrowserLanguage'
 
@@ -31,15 +26,11 @@ const InputStage = ({
   const { browserLanguage } = useBrowserLanguage()
 
   const handleLanguageChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      onLanguageChange(e.target.checked ? browserLanguage : 'en-US')
+    (checked: boolean) => {
+      onLanguageChange(checked ? browserLanguage : 'en-US')
     },
     [onLanguageChange, browserLanguage],
   )
-
-  const handleClaimInput = useCallback((e: React.FormEvent<HTMLDivElement>) => {
-    setClaimInput((e.target as HTMLInputElement).value)
-  }, [])
 
   const handleKeyUp = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -54,55 +45,40 @@ const InputStage = ({
     onClaimSubmit(claimInput.trim())
   }, [onClaimSubmit, claimInput])
 
-  const generateLanguageSelector = () => {
-    return (
-      <Box>
-        <Typography variant="h5">Chat language</Typography>
-        <Typography variant="body2">
-          en-US
-          <Switch
-            aria-label="Chat language switch"
-            checked={language === browserLanguage}
-            onChange={handleLanguageChange}
-          />
-          {browserLanguage}
-        </Typography>
-      </Box>
-    )
-  }
-
   return (
-    <Stack sx={{ margin: 'auto', maxWidth: 'l', padding: 2, textAlign: 'center', width: '100%' }}>
-      <Box sx={{ paddingBottom: 3 }}>
-        <Typography variant="h4">Submit claim</Typography>
-      </Box>
-      <TextField
-        error={errorMessage !== undefined}
-        helperText={errorMessage}
+    <div className="mx-auto flex w-full flex-col gap-0 px-2 text-center">
+      <div className="pb-6">
+        <h4 className="text-3xl font-normal">Submit claim</h4>
+      </div>
+      <Input
+        className="mb-6 w-full"
+        errorMessage={errorMessage}
+        isInvalid={errorMessage !== undefined}
         label="Truth claim"
-        onInput={handleClaimInput}
+        onChange={(e) => setClaimInput(e.target.value)}
         onKeyUp={handleKeyUp}
-        sx={{ paddingBottom: 3, width: '100%' }}
         value={claimInput}
-        variant="outlined"
       />
       <TwoButtons
-        button1={
-          <Button color="secondary" onClick={onSuggestionsRequested} sx={{ width: '100%' }} variant="contained">
-            Suggest claims
-          </Button>
-        }
-        button2={
-          <Button onClick={submitClaim} sx={{ width: '100%' }} variant="contained">
-            Submit
-          </Button>
-        }
+        button1={<SecondaryButton onPress={onSuggestionsRequested}>Suggest claims</SecondaryButton>}
+        button2={<PrimaryButton onPress={submitClaim}>Submit</PrimaryButton>}
       />
-      <Typography sx={{ paddingBottom: 4, paddingTop: 4 }} variant="body2">
-        Suggested claims are only updated a few times per day
-      </Typography>
-      {browserLanguage !== 'en-US' && browserLanguage && generateLanguageSelector()}
-    </Stack>
+      <p className="pb-8 pt-8 text-sm">Suggested claims are only updated a few times per day</p>
+      {browserLanguage !== 'en-US' && browserLanguage && (
+        <div>
+          <h5 className="text-2xl font-normal">Chat language</h5>
+          <div className="text-sm">
+            en-US
+            <Switch
+              aria-label="Chat language switch"
+              isSelected={language === browserLanguage}
+              onValueChange={handleLanguageChange}
+            />
+            {browserLanguage}
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
 

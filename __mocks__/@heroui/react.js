@@ -18,7 +18,18 @@ const Skeleton = ({ className, ...props }) => React.createElement('div', { class
 
 const Spinner = ({ ...props }) => React.createElement('div', { role: 'status', ...props })
 
-const Input = ({ label, 'aria-label': ariaLabel, value, onChange, onKeyUp, multiline, maxRows, ...props }) =>
+const Input = ({
+  label,
+  'aria-label': ariaLabel,
+  value,
+  onChange,
+  onKeyUp,
+  multiline,
+  maxRows,
+  errorMessage,
+  isInvalid,
+  ...props
+}) =>
   React.createElement(
     'div',
     null,
@@ -31,6 +42,7 @@ const Input = ({ label, 'aria-label': ariaLabel, value, onChange, onKeyUp, multi
       onKeyUp,
       ...props,
     }),
+    errorMessage && React.createElement('span', null, errorMessage),
   )
 
 const Select = ({ children, onSelectionChange, selectedKey, label, 'aria-label': ariaLabel, ...props }) =>
