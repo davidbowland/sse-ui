@@ -30,7 +30,6 @@ describe('chat-container', () => {
   })
 
   it.each([0, 1])('invokes onConfidenceChange on confidence change', async (index: number) => {
-    const newConfidence = 'strongly agree'
     render(
       <ChatContainer
         confidenceLevels={confidenceLevels}
@@ -41,12 +40,10 @@ describe('chat-container', () => {
       </ChatContainer>,
     )
 
-    const confidenceOptionList = screen.getAllByText(/Agree/)[index]
-    await act(() => userEvent.click(confidenceOptionList))
-    const confidenceOptionItem = await screen.findByText(newConfidence, { exact: false })
-    await act(() => userEvent.click(confidenceOptionItem))
+    const selects = screen.getAllByRole('combobox')
+    await act(() => userEvent.selectOptions(selects[index], 'strongly agree'))
 
-    expect(onConfidenceChange).toHaveBeenCalledWith(newConfidence)
+    expect(onConfidenceChange).toHaveBeenCalledWith('strongly agree')
   })
 
   it('navigates when clicking new claim button', async () => {
