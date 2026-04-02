@@ -52,7 +52,11 @@ const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: 
       <ChatHistoryCard>
         {history.map((msg: ChatMessage, index: number) => (
           <div key={index}>
-            {dividers[index] && <DividerWithLabel label={dividers[index].label} />}
+            {dividers[index] && (
+              <div className="py-2">
+                <DividerWithLabel label={dividers[index].label} />
+              </div>
+            )}
             <MessageBubble ref={index === history.length - 1 ? messageBubbleRef : undefined} role={msg.role}>
               {msg.content.split('\n').map((line, lineNum) => (
                 <MessageLine innerRef={messageRef} isLast={index === history.length - 1 && lineNum === 0} key={lineNum}>

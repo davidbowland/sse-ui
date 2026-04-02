@@ -19,7 +19,8 @@ type ClaimPromptStage = 'input' | 'generating' | 'selecting' | 'confidence' | 's
 
 const stageToStep = (stage: ClaimPromptStage): number => {
   if (stage === 'selecting') return 2
-  if (stage === 'confidence' || stage === 'submitted') return 3
+  if (stage === 'confidence') return 3
+  if (stage === 'submitted') return 4
   return 1
 }
 

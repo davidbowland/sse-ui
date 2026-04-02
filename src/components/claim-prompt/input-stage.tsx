@@ -18,7 +18,7 @@ const EXAMPLE_CLAIMS = [
   'e.g., Intuition is a reliable guide to truth',
 ]
 
-const CYCLE_MS = 6000
+const CYCLE_MS = 6_000
 const FADE_MS = 350
 
 export interface InputStageProps {

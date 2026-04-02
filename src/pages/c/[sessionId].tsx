@@ -117,7 +117,7 @@ const SessionPage = (): React.ReactNode => {
                                   style={{ backgroundColor: 'var(--color-border)' }}
                                 />
                               )}
-                              <li className="flex flex-col items-center gap-1.5">
+                              <li className="flex w-[80px] flex-col items-center gap-1.5 sm:w-[100px]">
                                 <span
                                   className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold transition-all duration-200"
                                   style={
