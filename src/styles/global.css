@@ -1,5 +1,10 @@
 @import '@heroui/styles';
 
+@theme {
+  --breakpoint-steps-labels: 750px;
+  --breakpoint-steps-lines: 500px;
+}
+
 /* ─── Design Tokens ─────────────────────────────────────────── */
 :root {
   --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;

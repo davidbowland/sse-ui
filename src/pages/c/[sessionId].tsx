@@ -103,8 +103,8 @@ const SessionPage = (): React.ReactNode => {
                 {/* Conversation step progress */}
                 {conversationSteps.length > 0 && (
                   <div className="w-full text-center">
-                    <nav aria-label="Conversation progress" className="inline-block">
-                      <ol className="flex items-center justify-center gap-2 sm:gap-3">
+                    <nav aria-label="Conversation progress" className="w-full overflow-hidden">
+                      <ol className="flex items-center justify-center gap-1 steps-lines:gap-3">
                         {conversationSteps.map((step, index) => {
                           const isActive = chatStep === step.value
                           const isDone = currentStepIndex > index
@@ -113,11 +113,11 @@ const SessionPage = (): React.ReactNode => {
                               {index > 0 && (
                                 <li
                                   aria-hidden="true"
-                                  className="h-px w-5 flex-shrink-0 sm:w-8"
+                                  className="hidden h-px w-5 flex-shrink-0 steps-lines:block steps-lines:w-8"
                                   style={{ backgroundColor: 'var(--color-border)' }}
                                 />
                               )}
-                              <li className="flex w-[80px] flex-col items-center gap-1.5 sm:w-[100px]">
+                              <li className="flex w-auto flex-col items-center gap-1.5 steps-labels:w-[100px]">
                                 <span
                                   className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold transition-all duration-200"
                                   style={
@@ -137,7 +137,7 @@ const SessionPage = (): React.ReactNode => {
                                   {isDone ? '✓' : index + 1}
                                 </span>
                                 <span
-                                  className="hidden text-xs sm:block"
+                                  className="hidden text-xs steps-labels:block"
                                   style={{
                                     color: isActive ? 'var(--color-text)' : 'var(--color-text-muted)',
                                     fontWeight: isActive ? '500' : '400',
