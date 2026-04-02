@@ -1,17 +1,18 @@
 import Link from 'next/link'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import Cookies from 'universal-cookie'
 
-import Button from '@mui/material/Button'
-import Drawer from '@mui/material/Drawer'
-import Grid from '@mui/material/Grid'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
+import { AcceptButton, DisclaimerContent, DisclaimerOverlay, DisclaimerText, DisclaimerTitle } from './elements'
 
 const Disclaimer = (): React.ReactNode => {
-  const cookies = new Cookies()
+  const cookies = useRef(new Cookies()).current
+  const [open, setOpen] = useState(true)
 
-  const [open, setOpen] = useState(cookies.get('disclaimer_accept') !== 'true')
+  useEffect(() => {
+    if (cookies.get('disclaimer_accept') === 'true') {
+      setOpen(false)
+    }
+  }, [])
 
   const closeDrawer = useCallback((): void => {
     setOpen(false)
@@ -19,35 +20,25 @@ const Disclaimer = (): React.ReactNode => {
   }, [])
 
   return (
-    <>
-      {open && (
-        <Drawer anchor="bottom" variant="permanent">
-          <Stack spacing={1} sx={{ p: 2 }}>
-            <Typography variant="h6">Cookie and Privacy Disclosure</Typography>
-            <Grid container justifyContent="center" sx={{ width: '100%' }}>
-              <Grid item md sm={12}>
-                <Stack spacing={1}>
-                  <Typography variant="body2">
-                    This site only uses essential cookies such as those used to keep you logged in. We collect no
-                    personally identifiable information and no contact information. Depending on your activity, your IP
-                    address may appear in our logs for up to 90 days. We never sell your information -- we intentionally
-                    don&apos;t have information to sell -- and WE DO NOT USE YOUR INTERACTIONS TO TRAIN AI MODELS.
-                  </Typography>
-                  <Typography variant="body2">
-                    See our <Link href="/privacy-policy">privacy policy</Link> for more information.
-                  </Typography>
-                </Stack>
-              </Grid>
-              <Grid item lg={2} md={3} sm={6} sx={{ p: 1, textAlign: 'center' }} xs={12}>
-                <Button fullWidth onClick={closeDrawer} variant="contained">
-                  Accept &amp; continue
-                </Button>
-              </Grid>
-            </Grid>
-          </Stack>
-        </Drawer>
-      )}
-    </>
+    <DisclaimerOverlay isOpen={open}>
+      <DisclaimerTitle>Cookie and Privacy Disclosure</DisclaimerTitle>
+      <DisclaimerContent>
+        <div className="flex flex-1 flex-col gap-2">
+          <DisclaimerText>
+            This site only uses essential cookies such as those used to keep you logged in. We collect no personally
+            identifiable information and no contact information. Depending on your activity, your IP address may appear
+            in our logs for up to 90 days. We never sell your information -- we intentionally don&apos;t have
+            information to sell -- and WE DO NOT USE YOUR INTERACTIONS TO TRAIN AI MODELS.
+          </DisclaimerText>
+          <DisclaimerText>
+            See our <Link href="/privacy-policy">privacy policy</Link> for more information.
+          </DisclaimerText>
+        </div>
+        <div className="p-2 text-center">
+          <AcceptButton onPress={closeDrawer} />
+        </div>
+      </DisclaimerContent>
+    </DisclaimerOverlay>
   )
 }
 

@@ -9,12 +9,16 @@ import {
   suggestedClaims,
   validationResult,
 } from '@test/__mocks__'
+import axiosRetry from 'axios-retry'
 
 import {
   changeConfidence,
   createSession,
   fetchConfidenceLevels,
   fetchSession,
+  isStillLoading,
+  mergeConfidenceResponse,
+  mergeMessageResponse,
   sendLlmMessage,
   suggestClaims,
   validateClaim,
@@ -28,7 +32,14 @@ jest.mock('axios', () => ({
     post: (...args: any[]) => mockPost(...args),
   })),
 }))
-jest.mock('axios-retry', () => jest.fn())
+jest.mock('axios-retry', () => {
+  const mockFn = jest.fn((_axiosInstance: any, config: any) => {
+    ;(global as any).__axiosRetryConfig = config
+  })
+  ;(mockFn as any).isNetworkOrIdempotentRequestError = jest.fn()
+  ;(mockFn as any).exponentialDelay = jest.fn()
+  return mockFn
+})
 
 describe('sse', () => {
   const claim = sessionContext.claim
@@ -103,6 +114,81 @@ describe('sse', () => {
 
       expect(mockPost).toHaveBeenCalledWith(`/sessions/${sessionId}/llm-message`, llmRequest)
       expect(result).toEqual(llmResponse)
+    })
+  })
+
+  describe('retryCondition', () => {
+    let retryCondition: (error: any) => boolean
+
+    beforeAll(() => {
+      // axiosRetry is called at module load time; the config is stored in global to survive clearMocks
+      retryCondition = (global as any).__axiosRetryConfig.retryCondition
+    })
+
+    it('returns true for network or idempotent request errors', () => {
+      jest.mocked(axiosRetry).isNetworkOrIdempotentRequestError.mockReturnValueOnce(true)
+      const error = { code: 'ENOTFOUND' } as any
+
+      const result = retryCondition(error)
+
+      expect(result).toBe(true)
+      expect(axiosRetry.isNetworkOrIdempotentRequestError).toHaveBeenCalledWith(error)
+    })
+
+    it('returns true for ECONNABORTED errors', () => {
+      jest.mocked(axiosRetry).isNetworkOrIdempotentRequestError.mockReturnValueOnce(false)
+      const error = { code: 'ECONNABORTED' } as any
+
+      const result = retryCondition(error)
+
+      expect(result).toBe(true)
+    })
+
+    it('returns false for other errors', () => {
+      jest.mocked(axiosRetry).isNetworkOrIdempotentRequestError.mockReturnValueOnce(false)
+      const error = { code: 'EOTHER' } as any
+
+      const result = retryCondition(error)
+
+      expect(result).toBe(false)
+    })
+  })
+
+  describe('isStillLoading', () => {
+    it('returns true when loadingTimeout is in the future', () => {
+      expect(isStillLoading(Date.now() + 60_000)).toBe(true)
+    })
+
+    it('returns false when loadingTimeout is in the past', () => {
+      expect(isStillLoading(Date.now() - 1_000)).toBe(false)
+    })
+
+    it('returns false when loadingTimeout is undefined', () => {
+      expect(isStillLoading(undefined)).toBe(false)
+    })
+  })
+
+  describe('mergeMessageResponse', () => {
+    it('merges LLM response into session', () => {
+      const result = mergeMessageResponse(session, llmResponse)
+
+      expect(result.history).toEqual(llmResponse.history)
+      expect(result.currentStep).toEqual(llmResponse.currentStep)
+      expect(result.dividers).toEqual(llmResponse.dividers)
+      expect(result.newConversation).toEqual(llmResponse.newConversation)
+      expect(result.context).toEqual(session.context)
+    })
+  })
+
+  describe('mergeConfidenceResponse', () => {
+    it('merges confidence response into session', () => {
+      const result = mergeConfidenceResponse(session, confidenceChangeResponse)
+
+      expect(result.context.confidence).toEqual(confidenceChangeResponse.confidence)
+      expect(result.dividers).toEqual(confidenceChangeResponse.dividers)
+      expect(result.newConversation).toEqual(confidenceChangeResponse.newConversation)
+      expect(result.overrideStep).toEqual(confidenceChangeResponse.overrideStep)
+      expect(result.context.claim).toEqual(session.context.claim)
     })
   })
 })

@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React, { act } from 'react'
 import Cookies from 'universal-cookie'
@@ -22,7 +22,8 @@ describe('disclaimer component', () => {
   it('loads under normal circumstances', async () => {
     render(<Disclaimer />)
 
-    expect(await screen.findByText(/Accept & continue/i)).toBeVisible()
+    expect(await screen.findByText(/Accept & continue/i)).toBeInTheDocument()
+    expect(screen.getByTestId('disclaimer-overlay')).not.toHaveClass('hidden')
   })
 
   it('closes when button clicked', async () => {
@@ -38,14 +39,16 @@ describe('disclaimer component', () => {
       sameSite: 'strict',
       secure: true,
     })
-    expect(screen.queryByText(/Cookie and Privacy Disclosure/i)).not.toBeInTheDocument()
+    expect(screen.getByTestId('disclaimer-overlay')).toHaveClass('hidden')
   })
 
   it('loads closed when cookie is set', async () => {
     mockCookieGet.mockReturnValueOnce('true')
     render(<Disclaimer />)
 
-    expect(mockCookieGet).toHaveBeenCalledWith('disclaimer_accept')
-    expect(screen.queryByText(/Cookie and Privacy Disclosure/i)).not.toBeInTheDocument()
+    await waitFor(() => {
+      expect(mockCookieGet).toHaveBeenCalledWith('disclaimer_accept')
+      expect(screen.getByTestId('disclaimer-overlay')).toHaveClass('hidden')
+    })
   })
 })

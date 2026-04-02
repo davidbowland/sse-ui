@@ -1,13 +1,13 @@
 import Link from 'next/link'
 import React from 'react'
 
-import Typography from '@mui/material/Typography'
+import { PrivacyLinkContainer } from './elements'
 
 const PrivacyLink = (): React.ReactNode => {
   return (
-    <Typography component="div" sx={{ p: 2, textAlign: 'center' }} variant="caption">
+    <PrivacyLinkContainer>
       <Link href="/privacy-policy">Privacy policy</Link>
-    </Typography>
+    </PrivacyLinkContainer>
   )
 }
 

@@ -1,14 +1,25 @@
-import React, { useCallback, useState } from 'react'
+import { Switch } from '@heroui/react'
+import React, { useCallback, useEffect, useState } from 'react'
 
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import Stack from '@mui/material/Stack'
-import Switch from '@mui/material/Switch'
-import TextField from '@mui/material/TextField'
-import Typography from '@mui/material/Typography'
-
+import { PrimaryButton, SecondaryButton } from './elements'
 import TwoButtons from './two-buttons'
 import { useBrowserLanguage } from '@hooks/useBrowserLanguage'
+
+const EXAMPLE_CLAIMS = [
+  'e.g., Climate change is primarily human-caused',
+  'e.g., Free will is an illusion',
+  'e.g., God exists',
+  'e.g., Science is the best path to truth',
+  'e.g., Democracy is the best form of government',
+  'e.g., Danny Trejo is a good role model',
+  'e.g., Consciousness is purely physical',
+  'e.g., Moral facts are objective',
+  'e.g., Expertise is generally trustworthy',
+  'e.g., Intuition is a reliable guide to truth',
+]
+
+const CYCLE_MS = 6_000
+const FADE_MS = 350
 
 export interface InputStageProps {
   errorMessage?: string
@@ -30,16 +41,27 @@ const InputStage = ({
   const [claimInput, setClaimInput] = useState<string>(initialClaim)
   const { browserLanguage } = useBrowserLanguage()
 
+  const [exampleIndex, setExampleIndex] = useState(0)
+  const [exampleVisible, setExampleVisible] = useState(true)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setExampleVisible(false)
+      const fadeTimer = setTimeout(() => {
+        setExampleIndex((prev) => (prev + 1) % EXAMPLE_CLAIMS.length)
+        setExampleVisible(true)
+      }, FADE_MS)
+      return () => clearTimeout(fadeTimer)
+    }, CYCLE_MS)
+    return () => clearInterval(interval)
+  }, [])
+
   const handleLanguageChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      onLanguageChange(e.target.checked ? browserLanguage : 'en-US')
+    (checked: boolean) => {
+      onLanguageChange(checked ? browserLanguage : 'en-US')
     },
     [onLanguageChange, browserLanguage],
   )
-
-  const handleClaimInput = useCallback((e: React.FormEvent<HTMLDivElement>) => {
-    setClaimInput((e.target as HTMLInputElement).value)
-  }, [])
 
   const handleKeyUp = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -54,55 +76,90 @@ const InputStage = ({
     onClaimSubmit(claimInput.trim())
   }, [onClaimSubmit, claimInput])
 
-  const generateLanguageSelector = () => {
-    return (
-      <Box>
-        <Typography variant="h5">Chat language</Typography>
-        <Typography variant="body2">
-          en-US
-          <Switch
-            aria-label="Chat language switch"
-            checked={language === browserLanguage}
-            onChange={handleLanguageChange}
-          />
-          {browserLanguage}
-        </Typography>
-      </Box>
-    )
-  }
-
   return (
-    <Stack sx={{ margin: 'auto', maxWidth: 'l', padding: 2, textAlign: 'center', width: '100%' }}>
-      <Box sx={{ paddingBottom: 3 }}>
-        <Typography variant="h4">Submit claim</Typography>
-      </Box>
-      <TextField
-        error={errorMessage !== undefined}
-        helperText={errorMessage}
-        label="Truth claim"
-        onInput={handleClaimInput}
-        onKeyUp={handleKeyUp}
-        sx={{ paddingBottom: 3, width: '100%' }}
-        value={claimInput}
-        variant="outlined"
-      />
+    <div className="mx-auto flex w-full flex-col items-center gap-0 px-2 text-center">
+      <div className="pb-6">
+        <h4
+          className="text-3xl font-normal italic"
+          style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}
+        >
+          What do you believe?
+        </h4>
+      </div>
+
+      {/* Custom input with animated placeholder */}
+      <div className="mb-6 w-full text-left">
+        <label
+          className="mb-1.5 block text-sm font-medium"
+          htmlFor="truth-claim"
+          style={{ color: 'var(--color-text-muted)', fontFamily: 'var(--font-ui)' }}
+        >
+          Truth claim
+        </label>
+        <div className="relative">
+          <input
+            autoComplete="off"
+            className="w-full rounded-lg border px-4 py-3 text-sm outline-none transition-colors"
+            id="truth-claim"
+            onChange={(e) => setClaimInput(e.target.value)}
+            onKeyUp={handleKeyUp}
+            style={{
+              backgroundColor: 'var(--color-surface)',
+              borderColor: errorMessage ? '#ef4444' : 'var(--color-border)',
+              color: 'var(--color-text)',
+              fontFamily: 'var(--font-ui)',
+              caretColor: 'var(--color-brand)',
+            }}
+            value={claimInput}
+          />
+          {!claimInput && (
+            <span
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm italic"
+              style={{
+                color: 'var(--color-text-muted)',
+                opacity: exampleVisible ? 0.65 : 0,
+                transition: `opacity ${FADE_MS}ms ease`,
+                fontFamily: 'var(--font-ui)',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                maxWidth: 'calc(100% - 2rem)',
+                paddingRight: '0.25rem',
+              }}
+            >
+              {EXAMPLE_CLAIMS[exampleIndex]}
+            </span>
+          )}
+        </div>
+        {errorMessage && (
+          <p className="mt-1.5 text-sm" style={{ color: '#ef4444', fontFamily: 'var(--font-ui)' }}>
+            {errorMessage}
+          </p>
+        )}
+      </div>
+
       <TwoButtons
-        button1={
-          <Button color="secondary" onClick={onSuggestionsRequested} sx={{ width: '100%' }} variant="contained">
-            Suggest claims
-          </Button>
-        }
-        button2={
-          <Button onClick={submitClaim} sx={{ width: '100%' }} variant="contained">
-            Submit
-          </Button>
-        }
+        button1={<SecondaryButton onPress={onSuggestionsRequested}>Suggest claims</SecondaryButton>}
+        button2={<PrimaryButton onPress={submitClaim}>Submit</PrimaryButton>}
       />
-      <Typography sx={{ paddingBottom: 4, paddingTop: 4 }} variant="body2">
+      <p className="pb-8 pt-8 text-sm" style={{ color: 'var(--color-text-muted)' }}>
         Suggested claims are only updated a few times per day
-      </Typography>
-      {browserLanguage !== 'en-US' && browserLanguage && generateLanguageSelector()}
-    </Stack>
+      </p>
+      {browserLanguage !== 'en-US' && browserLanguage && (
+        <div>
+          <h5 className="text-2xl font-normal">Chat language</h5>
+          <div className="text-sm">
+            en-US
+            <Switch
+              aria-label="Chat language switch"
+              isSelected={language === browserLanguage}
+              onChange={handleLanguageChange}
+            />
+            {browserLanguage}
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
 

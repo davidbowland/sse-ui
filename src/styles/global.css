@@ -1,0 +1,55 @@
+@import '@heroui/styles';
+
+@theme {
+  --breakpoint-steps-labels: 750px;
+  --breakpoint-steps-lines: 500px;
+}
+
+/* ─── Design Tokens ─────────────────────────────────────────── */
+:root {
+  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-ui: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+
+  /* Light mode */
+  --color-bg: #faf8f5;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f5f3ef;
+  --color-border: #e2dfd8;
+  --color-brand: #6373fa;
+  --color-brand-dim: rgba(99, 115, 250, 0.12);
+  --color-text: #1a1825;
+  --color-text-muted: #6b6a7e;
+  --color-assistant-bg: #edf0fd;
+  --color-assistant-text: #1a1825;
+  --color-user-bg: #eeece7;
+  --color-user-text: #1a1825;
+}
+
+.dark {
+  --color-bg: #0e0e16;
+  --color-surface: #14141f;
+  --color-surface-alt: #1a1a28;
+  --color-border: #26263a;
+  --color-brand: #7c6af9;
+  --color-brand-dim: rgba(124, 106, 249, 0.15);
+  --color-text: #efece6;
+  --color-text-muted: #7e7e9a;
+  --color-assistant-bg: #1c1c32;
+  --color-assistant-text: #efece6;
+  --color-user-bg: #1e1e2e;
+  --color-user-text: #efece6;
+}
+
+/* ─── Base ───────────────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-ui);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}

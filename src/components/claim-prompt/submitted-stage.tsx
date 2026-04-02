@@ -1,9 +1,5 @@
+import { Spinner } from '@heroui/react'
 import React, { useMemo } from 'react'
-
-import Box from '@mui/material/Box'
-import LinearProgress from '@mui/material/LinearProgress'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 
 const SUBTITLE_OPTIONS = [
   'This oughta be fun',
@@ -39,15 +35,11 @@ const SubmittedStage = (): React.ReactNode => {
   const subtitle = useMemo(() => getRandomSubtitle(), [SUBTITLE_OPTIONS])
 
   return (
-    <Stack spacing={4} sx={{ margin: 'auto', maxWidth: 'm', padding: 3, textAlign: 'center', width: '100%' }}>
-      <Typography variant="h4">Creating chat session</Typography>
-      <Typography fontStyle="italic" variant="body2">
-        {subtitle}
-      </Typography>
-      <Box>
-        <LinearProgress sx={{ margin: 'auto', maxWidth: 600 }} />
-      </Box>
-    </Stack>
+    <div className="mx-auto flex w-full max-w-xl flex-col items-center gap-8 px-3 py-6 text-center">
+      <h4 className="text-3xl font-normal">Creating chat session</h4>
+      <p className="text-sm italic">{subtitle}</p>
+      <Spinner />
+    </div>
   )
 }
 
