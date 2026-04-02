@@ -64,6 +64,7 @@ export interface ConfidenceLevel {
 export interface ConfidenceChangeResponse {
   confidence: string
   dividers: Dividers
+  loadingTimeout?: number
   newConversation: boolean
   overrideStep: ConversationStep
 }
@@ -78,6 +79,7 @@ export interface LLMResponse {
   currentStep: string
   dividers: Dividers
   history: ChatMessage[]
+  loadingTimeout?: number
   newConversation: boolean
   overrideStep?: ConversationStep
 }
@@ -105,6 +107,7 @@ export interface Session {
   dividers: Dividers
   expiration: number
   history: ChatMessage[]
+  loadingTimeout?: number
   newConversation: boolean
   originalConfidence: string
   overrideStep?: ConversationStep

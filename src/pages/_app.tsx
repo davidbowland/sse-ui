@@ -1,9 +1,18 @@
 import '@fontsource/roboto'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { AppProps } from 'next/app'
 import React, { useEffect } from 'react'
 
 import '../styles/global.css'
 import Disclaimer from '@components/disclaimer'
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    },
+  },
+})
 
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
@@ -16,9 +25,9 @@ export default function App({ Component, pageProps }: AppProps) {
   }, [])
 
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <Component {...pageProps} />
       <Disclaimer />
-    </>
+    </QueryClientProvider>
   )
 }

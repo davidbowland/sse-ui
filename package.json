@@ -31,6 +31,7 @@
     "@aws-amplify/ui-react": "^5.3.3",
     "@fontsource/roboto": "^5.2.10",
     "@heroui/react": "^3.0.1",
+    "@tanstack/react-query": "^5.96.1",
     "aws-amplify": "^5.3.33",
     "axios": "^1.14.0",
     "axios-retry": "^4.5.0",

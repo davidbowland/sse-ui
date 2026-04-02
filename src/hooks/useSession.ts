@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { changeConfidence, fetchSession, sendLlmMessage } from '@services/sse'
+import { useSessionQuery } from './useSessionQuery'
+import { changeConfidence, isStillLoading, sendLlmMessage } from '@services/sse'
 import { ChatMessage, ConfidenceLevel, ConversationStep, Dividers, Session } from '@types'
 
 export interface UseSessionResults {
@@ -20,8 +21,30 @@ export interface UseSessionResults {
 
 export const useSession = (sessionId: string | undefined): UseSessionResults => {
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(!!sessionId)
   const [session, setSession] = useState<Session | undefined>(undefined)
+  const lastAppliedSessionRef = useRef<Session | undefined>(undefined)
+
+  const { session: fetchedSession, error: fetchError, startPolling } = useSessionQuery(sessionId)
+
+  useEffect(() => {
+    if (
+      fetchedSession &&
+      fetchedSession !== lastAppliedSessionRef.current &&
+      !isStillLoading(fetchedSession.loadingTimeout)
+    ) {
+      lastAppliedSessionRef.current = fetchedSession
+      setSession(fetchedSession)
+      setIsLoading(fetchedSession.newConversation)
+    }
+  }, [fetchedSession])
+
+  useEffect(() => {
+    if (fetchError) {
+      console.error('Error fetching chat session', { error: fetchError })
+      setErrorMessage('We apologize, but we were unable to load your chat session.')
+    }
+  }, [fetchError])
 
   const currentStep = useMemo(
     () => session?.overrideStep ?? session?.conversationSteps.find((step) => step.value === session.currentStep),
@@ -49,30 +72,35 @@ export const useSession = (sessionId: string | undefined): UseSessionResults => 
 
       setIsLoading(true)
       try {
-        const { confidence, dividers, newConversation, overrideStep } = await changeConfidence(
+        const { confidence, dividers, loadingTimeout, newConversation, overrideStep } = await changeConfidence(
           sessionId!,
           newConfidence,
         )
-        setSession((prevSession) =>
-          prevSession === undefined
-            ? undefined
-            : {
-                ...prevSession,
-                context: {
-                  ...prevSession.context,
-                  confidence,
+
+        if (loadingTimeout && loadingTimeout > Date.now()) {
+          startPolling()
+        } else {
+          setSession((prevSession) =>
+            prevSession === undefined
+              ? undefined
+              : {
+                  ...prevSession,
+                  context: {
+                    ...prevSession.context,
+                    confidence,
+                  },
+                  dividers,
+                  newConversation,
+                  overrideStep,
                 },
-                dividers,
-                newConversation,
-                overrideStep,
-              },
-        )
+          )
+        }
       } catch (error: unknown) {
         console.error('Error changing confidence', { error })
         setErrorMessage('We apologize, but there was an error changing your confidence level.')
       }
     },
-    [sessionId, session?.context.confidence],
+    [sessionId, session?.context.confidence, startPolling],
   )
 
   const sendChatMessage = useCallback(
@@ -89,25 +117,30 @@ export const useSession = (sessionId: string | undefined): UseSessionResults => 
         const response = await sendLlmMessage(sessionId!, currentStep.path, {
           content: sanitizedMessage,
         })
-        setSession((prevSession) =>
-          prevSession === undefined
-            ? undefined
-            : {
-                ...prevSession,
-                ...response,
-                overrideStep: response.overrideStep,
-              },
-        )
 
-        if (!response.newConversation) {
-          setIsLoading(false)
+        if (response.loadingTimeout && response.loadingTimeout > Date.now()) {
+          startPolling()
+        } else {
+          setSession((prevSession) =>
+            prevSession === undefined
+              ? undefined
+              : {
+                  ...prevSession,
+                  ...response,
+                  overrideStep: response.overrideStep,
+                },
+          )
+
+          if (!response.newConversation) {
+            setIsLoading(false)
+          }
         }
       } catch (error: unknown) {
         console.error('Error sending message', { error })
         setErrorMessage('We apologize, but there was an error sending your chat message.')
       }
     },
-    [currentStep, sessionId],
+    [currentStep, sessionId, startPolling],
   )
 
   useEffect(() => {
@@ -118,23 +151,6 @@ export const useSession = (sessionId: string | undefined): UseSessionResults => 
       sendChatMessage(`I ${text} with the claim: ${session.context.claim}`, true)
     }
   }, [currentStep])
-
-  useEffect(() => {
-    if (!sessionId) return
-
-    setIsLoading(true)
-    setSession(undefined)
-
-    fetchSession(sessionId)
-      .then((session) => {
-        setSession(session)
-        setIsLoading(session.newConversation)
-      })
-      .catch((error: unknown) => {
-        console.error('Error fetching chat session', { error })
-        setErrorMessage('We apologize, but we were unable to load your chat session.')
-      })
-  }, [sessionId])
 
   if (session === undefined) {
     return {

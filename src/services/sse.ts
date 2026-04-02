@@ -69,6 +69,15 @@ export const validateClaim = async (claim: string, language: string): Promise<Va
   return response.data
 }
 
+// Polling
+
+const POLL_INTERVAL_MS = 2_000
+
+export const isStillLoading = (loadingTimeout?: number): boolean =>
+  loadingTimeout !== undefined && loadingTimeout > Date.now()
+
+export { POLL_INTERVAL_MS }
+
 // LLM prompts
 
 export const sendLlmMessage = async (sessionId: SessionId, path: string, request: LLMRequest): Promise<LLMResponse> => {

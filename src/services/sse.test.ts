@@ -16,6 +16,7 @@ import {
   createSession,
   fetchConfidenceLevels,
   fetchSession,
+  isStillLoading,
   sendLlmMessage,
   suggestClaims,
   validateClaim,
@@ -148,6 +149,20 @@ describe('sse', () => {
       const result = retryCondition(error)
 
       expect(result).toBe(false)
+    })
+  })
+
+  describe('isStillLoading', () => {
+    it('returns true when loadingTimeout is in the future', () => {
+      expect(isStillLoading(Date.now() + 60_000)).toBe(true)
+    })
+
+    it('returns false when loadingTimeout is in the past', () => {
+      expect(isStillLoading(Date.now() - 1_000)).toBe(false)
+    })
+
+    it('returns false when loadingTimeout is undefined', () => {
+      expect(isStillLoading(undefined)).toBe(false)
     })
   })
 })
