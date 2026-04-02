@@ -1,4 +1,3 @@
-import { Separator } from '@heroui/react'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 
@@ -51,14 +50,6 @@ const ChatContainer = ({
         </NewClaimSection>
       </NavBar>
       <div>{children}</div>
-      <div className="sm:hidden px-6 text-center">
-        <Separator />
-        <div className="pt-8">
-          {confidenceLevels.length > 0 && (
-            <ConfidenceSelect confidenceLevels={confidenceLevels} onChange={onChangeOptionList} value={confidence} />
-          )}
-        </div>
-      </div>
       <div className="pt-24 text-center">
         <PrivacyLink />
       </div>

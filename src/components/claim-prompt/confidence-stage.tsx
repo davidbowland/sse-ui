@@ -1,4 +1,3 @@
-import { Circle, CircleDot } from 'lucide-react'
 import React, { useCallback, useState } from 'react'
 
 import {
@@ -37,13 +36,17 @@ const ConfidenceStage = ({
   return (
     <div className="mx-auto flex w-full flex-col gap-8 text-center">
       <div>
-        <h4 className="text-3xl font-normal">What is your stance?</h4>
+        <h4 className="text-3xl font-normal" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>
+          Select your stance
+        </h4>
       </div>
       {errorMessage && <ErrorAlert>{errorMessage}</ErrorAlert>}
       <div>
         <ClaimCard>
           <ClaimCardLabel>Claim:</ClaimCardLabel>
-          <h5 className="text-2xl font-normal">{claim}</h5>
+          <h5 className="text-2xl font-normal italic" style={{ fontFamily: 'var(--font-display)' }}>
+            {claim}
+          </h5>
         </ClaimCard>
       </div>
       <div>
@@ -57,7 +60,6 @@ const ConfidenceStage = ({
                 key={index}
                 onClick={() => setSelectedIndex(index)}
               >
-                <span className="mr-3">{selectedIndex === index ? <CircleDot size={20} /> : <Circle size={20} />}</span>
                 {level.label}
               </SelectionListItem>
             ))}
@@ -67,7 +69,6 @@ const ConfidenceStage = ({
       <TwoButtons
         button1={<SecondaryButton onPress={onBack}>Back</SecondaryButton>}
         button2={<PrimaryButton onPress={handleAcceptConfidence}>Select</PrimaryButton>}
-        hasExtraPadding
       />
     </div>
   )

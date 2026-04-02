@@ -29,6 +29,8 @@
   },
   "dependencies": {
     "@aws-amplify/ui-react": "^5.3.3",
+    "@fontsource/cormorant-garamond": "^5.2.11",
+    "@fontsource/dm-sans": "^5.2.8",
     "@fontsource/roboto": "^5.2.10",
     "@heroui/react": "^3.0.1",
     "@tanstack/react-query": "^5.96.1",

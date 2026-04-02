@@ -1,8 +1,7 @@
-import { AlertContent, AlertDescription, AlertRoot, Button, Card, CardContent } from '@heroui/react'
-import { ChevronRight } from 'lucide-react'
+import { AlertContent, AlertDescription, AlertRoot, Button } from '@heroui/react'
 import React from 'react'
 
-// Alert
+// ─── Alert ───────────────────────────────────────────────────
 
 export const ErrorAlert = ({ children }: { children: React.ReactNode }): React.ReactNode => (
   <AlertRoot className="mx-auto max-w-[600px]" status="danger">
@@ -12,22 +11,85 @@ export const ErrorAlert = ({ children }: { children: React.ReactNode }): React.R
   </AlertRoot>
 )
 
-// Claim card
+// ─── Claim card ──────────────────────────────────────────────
 
 export const ClaimCard = ({ children }: { children: React.ReactNode }): React.ReactNode => (
-  <Card className="mx-auto" style={{ backgroundColor: '#6373fa' }}>
-    <CardContent>{children}</CardContent>
-  </Card>
+  <div
+    className="mx-auto max-w-[800px] rounded-xl px-6 py-5 text-center text-white"
+    style={{
+      background: 'linear-gradient(135deg, var(--color-brand) 0%, #4a5de8 100%)',
+      boxShadow: '0 4px 24px rgba(99, 115, 250, 0.3)',
+    }}
+  >
+    {children}
+  </div>
 )
 
 export const ClaimCardLabel = ({ children }: { children: React.ReactNode }): React.ReactNode => (
-  <p className="mb-1 text-sm text-default-500">{children}</p>
+  <p className="mb-1 text-xs font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.6)' }}>
+    {children}
+  </p>
 )
 
-// Selection list
+// ─── Step indicator (replaces breadcrumbs) ───────────────────
+
+const STEP_LABELS = ['Enter claim', 'Choose claim', 'Set confidence']
+
+export const StepIndicator = React.forwardRef<HTMLElement, { currentStep: number }>(({ currentStep }, ref) => (
+  <nav aria-label="Progress" className="flex w-full justify-center" ref={ref}>
+    <ol className="flex items-center gap-2 sm:gap-3">
+      {STEP_LABELS.map((label, i) => {
+        const stepNum = i + 1
+        const isActive = stepNum === currentStep
+        const isDone = stepNum < currentStep
+        return (
+          <React.Fragment key={stepNum}>
+            {i > 0 && (
+              <li
+                aria-hidden="true"
+                className="h-px w-6 flex-shrink-0 sm:w-10"
+                style={{ backgroundColor: 'var(--color-border)' }}
+              />
+            )}
+            <li className="flex flex-col items-center gap-1.5">
+              <span
+                className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold transition-all duration-200"
+                style={
+                  isActive
+                    ? { backgroundColor: 'var(--color-brand)', color: '#fff' }
+                    : isDone
+                      ? { backgroundColor: 'var(--color-brand-dim)', color: 'var(--color-brand)' }
+                      : {
+                          backgroundColor: 'rgba(128,128,128,0.12)',
+                          color: 'var(--color-text-muted)',
+                        }
+                }
+              >
+                {isDone ? '✓' : stepNum}
+              </span>
+              <span
+                className="hidden text-xs sm:block"
+                style={{
+                  color: isActive ? 'var(--color-text)' : 'var(--color-text-muted)',
+                  fontWeight: isActive ? '500' : '400',
+                  fontFamily: 'var(--font-ui)',
+                }}
+              >
+                {label}
+              </span>
+            </li>
+          </React.Fragment>
+        )
+      })}
+    </ol>
+  </nav>
+))
+StepIndicator.displayName = 'StepIndicator'
+
+// ─── Selection list ──────────────────────────────────────────
 
 export const SelectionList = ({ children }: { children: React.ReactNode }): React.ReactNode => (
-  <ul className="mx-auto max-w-[800px] list-none p-0">{children}</ul>
+  <ul className="mx-auto flex max-w-[800px] list-none flex-col gap-2 p-0">{children}</ul>
 )
 
 export const SelectionListItem = ({
@@ -41,42 +103,28 @@ export const SelectionListItem = ({
 }): React.ReactNode => (
   <li>
     <button
-      className={`flex w-full items-center rounded px-4 py-2 text-left ${isSelected ? 'bg-default-200' : 'hover:bg-default-100'}`}
+      className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm transition-all duration-150"
       onClick={onClick}
+      style={{
+        backgroundColor: isSelected ? 'var(--color-brand-dim)' : 'transparent',
+        border: `1.5px solid ${isSelected ? 'var(--color-brand)' : 'var(--color-border)'}`,
+        color: 'var(--color-text)',
+        fontFamily: 'var(--font-ui)',
+      }}
     >
-      {children}
+      <span
+        className="h-3 w-3 flex-shrink-0 rounded-full transition-all duration-150"
+        style={{
+          backgroundColor: isSelected ? 'var(--color-brand)' : 'transparent',
+          border: `2px solid ${isSelected ? 'var(--color-brand)' : 'var(--color-text-muted)'}`,
+        }}
+      />
+      <span className="flex-1">{children}</span>
     </button>
   </li>
 )
 
-// Breadcrumb nav
-
-export const BreadcrumbNav = React.forwardRef<HTMLElement, { children: React.ReactNode }>(({ children }, ref) => (
-  <nav aria-label="Breadcrumbs" className="inline-block px-4" ref={ref}>
-    <ol className="m-0 flex list-none items-center gap-1 p-0">{children}</ol>
-  </nav>
-))
-BreadcrumbNav.displayName = 'BreadcrumbNav'
-
-export const BreadcrumbItem = ({
-  children,
-  isActive,
-}: {
-  children: React.ReactNode
-  isActive: boolean
-}): React.ReactNode => (
-  <li>
-    <span className={isActive ? 'font-bold italic' : ''}>{children}</span>
-  </li>
-)
-
-export const BreadcrumbSeparator = (): React.ReactNode => (
-  <li aria-hidden="true" className="flex items-center">
-    <ChevronRight size={16} />
-  </li>
-)
-
-// Primary / secondary buttons (full width)
+// ─── Buttons ─────────────────────────────────────────────────
 
 export const PrimaryButton = ({
   children,

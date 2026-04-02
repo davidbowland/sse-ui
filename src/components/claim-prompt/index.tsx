@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 import ConfidenceStage from './confidence-stage'
-import { BreadcrumbItem, BreadcrumbNav, BreadcrumbSeparator, ErrorAlert } from './elements'
+import { ErrorAlert, StepIndicator } from './elements'
 import GeneratingStage from './generating-stage'
 import InputStage from './input-stage'
 import SelectingStage from './selecting-stage'
@@ -16,6 +16,12 @@ export interface ClaimPromptProps {
 }
 
 type ClaimPromptStage = 'input' | 'generating' | 'selecting' | 'confidence' | 'submitted'
+
+const stageToStep = (stage: ClaimPromptStage): number => {
+  if (stage === 'selecting') return 2
+  if (stage === 'confidence' || stage === 'submitted') return 3
+  return 1
+}
 
 const ClaimPrompt = ({ initialClaim, onClaimSelect, skipFirstScroll }: ClaimPromptProps): React.ReactNode => {
   const [claimInput, setClaimInput] = useState<string>(initialClaim ?? '')
@@ -128,17 +134,7 @@ const ClaimPrompt = ({ initialClaim, onClaimSelect, skipFirstScroll }: ClaimProm
         </ErrorAlert>
       )}
       <div className="w-full">
-        <BreadcrumbNav ref={stageRef}>
-          <BreadcrumbItem isActive={promptStage === 'input'}>Submit claim</BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem isActive={promptStage === 'generating'}>Generate claims</BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem isActive={promptStage === 'selecting'}>Select claim</BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem isActive={promptStage === 'confidence'}>Select your stance</BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem isActive={promptStage === 'submitted'}>Chat begins</BreadcrumbItem>
-        </BreadcrumbNav>
+        <StepIndicator currentStep={stageToStep(promptStage)} ref={stageRef} />
       </div>
       {promptStage === 'input' && (
         <InputStage

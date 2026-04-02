@@ -29,7 +29,7 @@ describe('chat-container', () => {
     expect(screen.getByText(/fnord/)).toBeInTheDocument()
   })
 
-  it.each([0, 1])('invokes onConfidenceChange on confidence change', async (index: number) => {
+  it.each([0])('invokes onConfidenceChange on confidence change', async (index: number) => {
     render(
       <ChatContainer
         confidenceLevels={confidenceLevels}

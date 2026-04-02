@@ -1,4 +1,3 @@
-import { Separator } from '@heroui/react'
 import { MessageCircle } from 'lucide-react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -30,43 +29,53 @@ const Index = (): React.ReactNode => {
       <Head>
         <title>StreetLogic AI</title>
       </Head>
-      <main style={{ minHeight: '90vh' }}>
+      <main style={{ minHeight: '90vh', backgroundColor: 'var(--color-bg)' }}>
         <div className="px-[10px] py-[25px] sm:px-[50px] sm:py-[50px]">
           <div className="mx-auto w-full max-w-[1200px]">
-            <div className="flex min-h-[80vh] flex-col gap-6 text-center">
-              <h2
-                className="px-[0.1rem] font-bold tracking-[0.2rem]"
-                style={{ fontSize: 'clamp(44px, 6vw, 64px)', fontVariant: 'small-caps' }}
-              >
-                <MessageCircle className="mr-4 inline" size={36} />
-                StreetLogic AI
-              </h2>
-              <h4 className="px-2 text-3xl font-normal">Explore your confidence in what you believe</h4>
-              <div>
-                <p className="mx-auto max-w-[800px] px-4">
-                  A truth claim can be as simple as{' '}
-                  <span className="font-bold italic text-default-500">my city is the best city to live in</span>, as
-                  silly as <span className="font-bold italic text-default-500">Danny Trejo is a good role model</span>,
-                  or as profound as <span className="font-bold italic text-default-500">God exists</span>. Enter a truth
-                  claim below to get started or have some claims suggested for you.
+            <div className="flex min-h-[80vh] flex-col gap-8 text-center">
+              {/* Hero */}
+              <div className="flex flex-col items-center gap-3">
+                <div className="flex items-center gap-3">
+                  <MessageCircle size={32} style={{ color: 'var(--color-brand)' }} />
+                  <h1
+                    className="font-semibold tracking-[0.15em]"
+                    style={{
+                      fontSize: 'clamp(36px, 5vw, 58px)',
+                      fontVariant: 'small-caps',
+                      fontFamily: 'var(--font-display)',
+                      color: 'var(--color-text)',
+                    }}
+                  >
+                    StreetLogic AI
+                  </h1>
+                </div>
+                <p
+                  className="max-w-[520px] text-lg font-light"
+                  style={{ color: 'var(--color-text-muted)', fontFamily: 'var(--font-ui)' }}
+                >
+                  Explore your confidence in what you believe — through conversation.
                 </p>
               </div>
-              <div>
-                <p className="mx-auto max-w-[800px] px-4">
-                  If this is your first time here, it&apos;s recommended that you start with suggested claims.
-                </p>
-              </div>
-              <Separator />
-              <div style={{ minHeight: '90vh' }}>
+
+              {/* Divider */}
+              <div
+                className="mx-auto w-16"
+                style={{ height: '2px', backgroundColor: 'var(--color-brand)', opacity: 0.4 }}
+              />
+
+              {/* Claim prompt */}
+              <div style={{ minHeight: '70vh' }}>
                 <ClaimPrompt initialClaim={initialClaim} onClaimSelect={onClaimSelect} skipFirstScroll />
               </div>
-              <div>
-                <p className="mx-auto max-w-[800px] px-4">
-                  We do not use your interactions with this site to train AI models. We store claims, chat history, and
-                  associated information for roughly 24-48 hours&nbsp;-- allowing you to resume a conversation or refer
-                  back to it&nbsp;-- then permanently delete the conversation.
-                </p>
-              </div>
+
+              {/* Privacy note */}
+              <p
+                className="mx-auto max-w-[640px] px-4 text-xs"
+                style={{ color: 'var(--color-text-muted)', fontFamily: 'var(--font-ui)' }}
+              >
+                We do not use your interactions to train AI models. Conversations are stored for 24–48 hours then
+                permanently deleted.
+              </p>
             </div>
             <PrivacyLink />
           </div>

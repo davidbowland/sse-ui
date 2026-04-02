@@ -6,8 +6,14 @@ import { ListBox } from 'react-aria-components'
 import { ConfidenceLevel } from '@types'
 
 export const NavBar = ({ children }: { children: React.ReactNode }): React.ReactNode => (
-  <nav className="bg-primary px-4 py-2 text-primary-foreground">
-    <div className="grid grid-cols-12 items-center gap-2 p-2 text-center">{children}</div>
+  <nav
+    className="px-4 py-3"
+    style={{
+      backgroundColor: 'var(--color-surface)',
+      borderBottom: '1px solid var(--color-border)',
+    }}
+  >
+    <div className="grid grid-cols-12 items-center gap-2 p-1 text-center">{children}</div>
   </nav>
 )
 
@@ -16,20 +22,31 @@ export const BrandSection = ({ children }: { children: React.ReactNode }): React
 )
 
 export const BrandTitle = (): React.ReactNode => (
-  <div className="flex items-center justify-center">
-    <MessageCircle className="mr-2" size={20} />
-    <span className="text-sm font-bold tracking-widest" style={{ fontVariant: 'small-caps' }}>
+  <div className="flex items-center justify-center gap-2">
+    <MessageCircle size={18} style={{ color: 'var(--color-brand)' }} />
+    <span
+      className="text-sm font-semibold tracking-widest"
+      style={{ fontVariant: 'small-caps', color: 'var(--color-text)', fontFamily: 'var(--font-ui)' }}
+    >
       StreetLogic AI
     </span>
   </div>
 )
 
 export const ConfidenceSection = ({ children }: { children: React.ReactNode }): React.ReactNode => (
-  <div className="col-span-12 lg:col-span-8 lg:order-2 order-3">{children}</div>
+  <div className="order-3 col-span-12 lg:order-2 lg:col-span-8">
+    <p
+      className="mb-1 text-center text-xs font-medium uppercase tracking-widest"
+      style={{ color: 'var(--color-text-muted)' }}
+    >
+      Your current stance
+    </p>
+    {children}
+  </div>
 )
 
 export const NewClaimSection = ({ children }: { children: React.ReactNode }): React.ReactNode => (
-  <div className="col-span-12 flex flex-col justify-center sm:col-span-6 sm:pr-2 lg:col-span-2 lg:order-3 order-2">
+  <div className="order-2 col-span-12 flex flex-col justify-center sm:col-span-6 sm:pr-2 lg:order-3 lg:col-span-2">
     {children}
   </div>
 )

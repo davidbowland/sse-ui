@@ -1,5 +1,4 @@
-import { AlertContent, AlertDescription, AlertRoot, Card, CardContent, Skeleton } from '@heroui/react'
-import { ChevronRight } from 'lucide-react'
+import { AlertContent, AlertDescription, AlertRoot, Skeleton } from '@heroui/react'
 import type { GetStaticPaths, GetStaticProps } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -43,12 +42,14 @@ const SessionPage = (): React.ReactNode => {
 
   if (!sessionId) return null
 
+  const currentStepIndex = conversationSteps.findIndex((s) => s.value === chatStep)
+
   return (
     <>
       <Head>
         <title>StreetLogic AI | Chat</title>
       </Head>
-      <main style={{ minHeight: '90vh' }}>
+      <main style={{ minHeight: '90vh', backgroundColor: 'var(--color-bg)' }}>
         <ChatContainer
           confidenceLevels={confidenceLevels}
           initialConfidence={confidence}
@@ -57,8 +58,9 @@ const SessionPage = (): React.ReactNode => {
         >
           <div className="px-[10px] py-[25px] sm:px-[50px] sm:py-[50px]">
             <div className="mx-auto w-full max-w-[1200px]">
-              <div className="flex flex-col gap-2">
-                <div className="pb-2">
+              <div className="flex flex-col gap-4">
+                {/* Claim card or error */}
+                <div>
                   {errorMessage ? (
                     <AlertRoot ref={errorMessageRef} status="danger">
                       <AlertContent>
@@ -68,42 +70,91 @@ const SessionPage = (): React.ReactNode => {
                       </AlertContent>
                     </AlertRoot>
                   ) : (
-                    <Card className="mx-auto text-center" style={{ backgroundColor: '#6373fa' }}>
-                      <CardContent>
-                        <p className="mb-1 text-sm text-default-500">Claim:</p>
-                        <h5 className="text-2xl font-normal">
-                          {claim ? (
-                            claim
-                          ) : (
-                            <>
-                              <Skeleton className="h-6 w-full" />
-                              <Skeleton className="hidden h-6 w-full md:block" />
-                              <Skeleton className="hidden h-6 w-full sm:block" />
-                            </>
-                          )}
+                    <div
+                      className="mx-auto max-w-[800px] rounded-xl px-6 py-5 text-center text-white"
+                      style={{
+                        background: 'linear-gradient(135deg, var(--color-brand) 0%, #4a5de8 100%)',
+                        boxShadow: '0 4px 24px rgba(99, 115, 250, 0.25)',
+                      }}
+                    >
+                      <p
+                        className="mb-2 text-xs font-semibold uppercase tracking-widest"
+                        style={{ color: 'rgba(255,255,255,0.6)' }}
+                      >
+                        Claim
+                      </p>
+                      {claim ? (
+                        <h5
+                          className="text-2xl font-normal italic"
+                          style={{ fontFamily: 'var(--font-display)', color: '#fff' }}
+                        >
+                          {claim}
                         </h5>
-                      </CardContent>
-                    </Card>
+                      ) : (
+                        <div className="flex flex-col gap-2">
+                          <Skeleton className="h-6 w-full" />
+                          <Skeleton className="hidden h-6 w-full md:block" />
+                        </div>
+                      )}
+                    </div>
                   )}
                 </div>
-                <div className="w-full text-center">
-                  <nav aria-label="Breadcrumbs" className="inline-block">
-                    <ol className="m-0 flex list-none items-center gap-1 p-0">
-                      {conversationSteps.map((step, index) => (
-                        <React.Fragment key={index}>
-                          {index > 0 && (
-                            <li aria-hidden="true" className="flex items-center">
-                              <ChevronRight size={16} />
-                            </li>
-                          )}
-                          <li>
-                            <span className={chatStep === step.value ? 'font-bold italic' : ''}>{step.label}</span>
-                          </li>
-                        </React.Fragment>
-                      ))}
-                    </ol>
-                  </nav>
-                </div>
+
+                {/* Conversation step progress */}
+                {conversationSteps.length > 0 && (
+                  <div className="w-full text-center">
+                    <nav aria-label="Conversation progress" className="inline-block">
+                      <ol className="flex items-center justify-center gap-2 sm:gap-3">
+                        {conversationSteps.map((step, index) => {
+                          const isActive = chatStep === step.value
+                          const isDone = currentStepIndex > index
+                          return (
+                            <React.Fragment key={index}>
+                              {index > 0 && (
+                                <li
+                                  aria-hidden="true"
+                                  className="h-px w-5 flex-shrink-0 sm:w-8"
+                                  style={{ backgroundColor: 'var(--color-border)' }}
+                                />
+                              )}
+                              <li className="flex flex-col items-center gap-1.5">
+                                <span
+                                  className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold transition-all duration-200"
+                                  style={
+                                    isActive
+                                      ? { backgroundColor: 'var(--color-brand)', color: '#fff' }
+                                      : isDone
+                                        ? {
+                                            backgroundColor: 'var(--color-brand-dim)',
+                                            color: 'var(--color-brand)',
+                                          }
+                                        : {
+                                            backgroundColor: 'rgba(128,128,128,0.12)',
+                                            color: 'var(--color-text-muted)',
+                                          }
+                                  }
+                                >
+                                  {isDone ? '✓' : index + 1}
+                                </span>
+                                <span
+                                  className="hidden text-xs sm:block"
+                                  style={{
+                                    color: isActive ? 'var(--color-text)' : 'var(--color-text-muted)',
+                                    fontWeight: isActive ? '500' : '400',
+                                    fontFamily: 'var(--font-ui)',
+                                  }}
+                                >
+                                  {step.label}
+                                </span>
+                              </li>
+                            </React.Fragment>
+                          )
+                        })}
+                      </ol>
+                    </nav>
+                  </div>
+                )}
+
                 <ChatWindow
                   dividers={dividers}
                   finished={finished}

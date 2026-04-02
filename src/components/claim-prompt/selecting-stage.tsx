@@ -1,4 +1,3 @@
-import { Circle, CircleDot } from 'lucide-react'
 import React, { useCallback, useEffect, useState } from 'react'
 
 import { PrimaryButton, SecondaryButton, SelectionList, SelectionListItem } from './elements'
@@ -30,13 +29,14 @@ const SelectingStage = ({
   return (
     <div className="mx-auto flex w-full flex-col gap-4 text-center">
       <div>
-        <h4 className="text-3xl font-normal">Select a claim</h4>
+        <h4 className="text-3xl font-normal" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>
+          Select a claim
+        </h4>
       </div>
       <div>
         <SelectionList>
           {suggestedClaims.map((claim, index) => (
             <SelectionListItem isSelected={selectedIndex === index} key={index} onClick={() => setSelectedIndex(index)}>
-              <span className="mr-3">{selectedIndex === index ? <CircleDot size={20} /> : <Circle size={20} />}</span>
               {claim}
             </SelectionListItem>
           ))}
@@ -45,7 +45,6 @@ const SelectingStage = ({
       <TwoButtons
         button1={<SecondaryButton onPress={onBack}>Back</SecondaryButton>}
         button2={<PrimaryButton onPress={handleAcceptClaim}>Select</PrimaryButton>}
-        hasExtraPadding
       />
     </div>
   )
