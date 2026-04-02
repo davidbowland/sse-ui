@@ -37,7 +37,7 @@ const STEP_LABELS = ['Enter claim', 'Choose claim', 'Set confidence']
 
 export const StepIndicator = React.forwardRef<HTMLElement, { currentStep: number }>(({ currentStep }, ref) => (
   <nav aria-label="Progress" className="flex w-full justify-center" ref={ref}>
-    <ol className="flex items-center gap-2 sm:gap-3">
+    <ol className="flex items-center">
       {STEP_LABELS.map((label, i) => {
         const stepNum = i + 1
         const isActive = stepNum === currentStep
@@ -51,7 +51,7 @@ export const StepIndicator = React.forwardRef<HTMLElement, { currentStep: number
                 style={{ backgroundColor: 'var(--color-border)' }}
               />
             )}
-            <li className="flex flex-col items-center gap-1.5">
+            <li className="flex w-[80px] flex-col items-center gap-1.5 sm:w-[100px]">
               <span
                 className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold transition-all duration-200"
                 style={
@@ -68,7 +68,7 @@ export const StepIndicator = React.forwardRef<HTMLElement, { currentStep: number
                 {isDone ? '✓' : stepNum}
               </span>
               <span
-                className="hidden text-xs sm:block"
+                className="hidden text-center text-xs sm:block"
                 style={{
                   color: isActive ? 'var(--color-text)' : 'var(--color-text-muted)',
                   fontWeight: isActive ? '500' : '400',

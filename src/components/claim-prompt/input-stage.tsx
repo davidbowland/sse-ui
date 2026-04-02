@@ -122,7 +122,9 @@ const InputStage = ({
                 fontFamily: 'var(--font-ui)',
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
+                textOverflow: 'ellipsis',
                 maxWidth: 'calc(100% - 2rem)',
+                paddingRight: '0.25rem',
               }}
             >
               {EXAMPLE_CLAIMS[exampleIndex]}
