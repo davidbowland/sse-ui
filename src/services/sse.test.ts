@@ -17,6 +17,8 @@ import {
   fetchConfidenceLevels,
   fetchSession,
   isStillLoading,
+  mergeConfidenceResponse,
+  mergeMessageResponse,
   sendLlmMessage,
   suggestClaims,
   validateClaim,
@@ -163,6 +165,30 @@ describe('sse', () => {
 
     it('returns false when loadingTimeout is undefined', () => {
       expect(isStillLoading(undefined)).toBe(false)
+    })
+  })
+
+  describe('mergeMessageResponse', () => {
+    it('merges LLM response into session', () => {
+      const result = mergeMessageResponse(session, llmResponse)
+
+      expect(result.history).toEqual(llmResponse.history)
+      expect(result.currentStep).toEqual(llmResponse.currentStep)
+      expect(result.dividers).toEqual(llmResponse.dividers)
+      expect(result.newConversation).toEqual(llmResponse.newConversation)
+      expect(result.context).toEqual(session.context)
+    })
+  })
+
+  describe('mergeConfidenceResponse', () => {
+    it('merges confidence response into session', () => {
+      const result = mergeConfidenceResponse(session, confidenceChangeResponse)
+
+      expect(result.context.confidence).toEqual(confidenceChangeResponse.confidence)
+      expect(result.dividers).toEqual(confidenceChangeResponse.dividers)
+      expect(result.newConversation).toEqual(confidenceChangeResponse.newConversation)
+      expect(result.overrideStep).toEqual(confidenceChangeResponse.overrideStep)
+      expect(result.context.claim).toEqual(session.context.claim)
     })
   })
 })

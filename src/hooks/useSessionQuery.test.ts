@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { session, sessionId } from '@test/__mocks__'
-import { renderHook, waitFor, act } from '@testing-library/react'
+import { renderHook, waitFor } from '@testing-library/react'
 import React from 'react'
 
 import { useSessionQuery } from './useSessionQuery'
@@ -57,7 +57,6 @@ describe('useSessionQuery', () => {
     renderHook(() => useSessionQuery(sessionId), { wrapper: createWrapper() })
 
     await waitFor(() => expect(sse.fetchSession).toHaveBeenCalledTimes(1))
-    // Should not refetch since there's no loadingTimeout
     expect(sse.fetchSession).toHaveBeenCalledTimes(1)
   })
 
@@ -69,26 +68,5 @@ describe('useSessionQuery', () => {
 
     await waitFor(() => expect(sse.fetchSession).toHaveBeenCalledTimes(1))
     expect(sse.fetchSession).toHaveBeenCalledTimes(1)
-  })
-
-  it('invalidates query when startPolling is called', async () => {
-    jest.mocked(sse.fetchSession).mockResolvedValue({ ...session, loadingTimeout: undefined })
-
-    const { result } = renderHook(() => useSessionQuery(sessionId), { wrapper: createWrapper() })
-
-    await waitFor(() => expect(result.current.session).toBeDefined())
-    const callCount = jest.mocked(sse.fetchSession).mock.calls.length
-
-    act(() => result.current.startPolling())
-
-    await waitFor(() => expect(sse.fetchSession).toHaveBeenCalledTimes(callCount + 1))
-  })
-
-  it('does not start polling when sessionId is undefined', () => {
-    const { result } = renderHook(() => useSessionQuery(undefined), { wrapper: createWrapper() })
-
-    act(() => result.current.startPolling())
-
-    expect(sse.fetchSession).not.toHaveBeenCalled()
   })
 })

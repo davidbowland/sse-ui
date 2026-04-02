@@ -1,7 +1,14 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useCallback, useEffect, useMemo } from 'react'
 
-import { useSessionQuery } from './useSessionQuery'
-import { changeConfidence, isStillLoading, sendLlmMessage } from '@services/sse'
+import { SESSION_QUERY_KEY, useSessionQuery } from './useSessionQuery'
+import {
+  changeConfidence as changeConfidenceApi,
+  isStillLoading,
+  mergeConfidenceResponse,
+  mergeMessageResponse,
+  sendLlmMessage,
+} from '@services/sse'
 import { ChatMessage, ConfidenceLevel, ConversationStep, Dividers, Session } from '@types'
 
 export interface UseSessionResults {
@@ -19,132 +26,123 @@ export interface UseSessionResults {
   sendChatMessage: (message: string) => Promise<void>
 }
 
+const EMPTY_RESULT: UseSessionResults = {
+  chatStep: undefined,
+  claim: undefined,
+  confidence: undefined,
+  confidenceLevels: [],
+  conversationSteps: [],
+  dividers: {},
+  errorMessage: undefined,
+  finished: true,
+  history: [],
+  isLoading: false,
+  onChangeConfidence: async () => {},
+  sendChatMessage: async () => {},
+}
+
 export const useSession = (sessionId: string | undefined): UseSessionResults => {
-  const [errorMessage, setErrorMessage] = useState<string | undefined>()
-  const [isLoading, setIsLoading] = useState<boolean>(!!sessionId)
-  const [session, setSession] = useState<Session | undefined>(undefined)
-  const lastAppliedSessionRef = useRef<Session | undefined>(undefined)
+  const queryClient = useQueryClient()
+  const { session, error: fetchError } = useSessionQuery(sessionId)
 
-  const { session: fetchedSession, error: fetchError, startPolling } = useSessionQuery(sessionId)
+  const getSession = useCallback(
+    (): Session | undefined => queryClient.getQueryData([SESSION_QUERY_KEY, sessionId]),
+    [queryClient, sessionId],
+  )
 
-  useEffect(() => {
-    if (
-      fetchedSession &&
-      fetchedSession !== lastAppliedSessionRef.current &&
-      !isStillLoading(fetchedSession.loadingTimeout)
-    ) {
-      lastAppliedSessionRef.current = fetchedSession
-      setSession(fetchedSession)
-      setIsLoading(fetchedSession.newConversation)
-    }
-  }, [fetchedSession])
+  const handleMutationSuccess = useCallback(
+    (updatedSession: Session): void => {
+      queryClient.setQueryData([SESSION_QUERY_KEY, sessionId], updatedSession)
+    },
+    [queryClient, sessionId],
+  )
 
-  useEffect(() => {
-    if (fetchError) {
-      console.error('Error fetching chat session', { error: fetchError })
-      setErrorMessage('We apologize, but we were unable to load your chat session.')
-    }
-  }, [fetchError])
+  const messageMutation = useMutation({
+    mutationFn: ({ path, content }: { path: string; content: string; isAutoSend?: boolean }) =>
+      sendLlmMessage(sessionId!, path, { content }),
+    onSuccess: (response) => {
+      const current = getSession()
+      if (current) {
+        handleMutationSuccess(mergeMessageResponse(current, response))
+      }
+    },
+    onError: (error) => {
+      console.error('Error sending message', { error })
+    },
+  })
+
+  const confidenceMutation = useMutation({
+    mutationFn: (newConfidence: string) => changeConfidenceApi(sessionId!, newConfidence),
+    onSuccess: (response) => {
+      const current = getSession()
+      if (current) {
+        handleMutationSuccess(mergeConfidenceResponse(current, response))
+      }
+    },
+    onError: (error) => {
+      console.error('Error changing confidence', { error })
+    },
+  })
 
   const currentStep = useMemo(
     () => session?.overrideStep ?? session?.conversationSteps.find((step) => step.value === session.currentStep),
     [session],
   )
 
-  const addMessageToHistory = (message: ChatMessage): void => {
-    setSession((prevSession) => {
-      if (prevSession === undefined) {
-        return undefined
-      }
+  const isLoading = useMemo(() => {
+    if (!session) return !!sessionId
+    if (isStillLoading(session.loadingTimeout)) return true
+    if (messageMutation.isPending || confidenceMutation.isPending) return true
+    return session.newConversation
+  }, [session, sessionId, messageMutation.isPending, confidenceMutation.isPending])
 
-      return {
-        ...prevSession,
-        history: [...prevSession.history, message],
-      }
-    })
-  }
+  const errorMessage = useMemo(() => {
+    if (fetchError) return 'We apologize, but we were unable to load your chat session.'
+    if (messageMutation.error) return 'We apologize, but there was an error sending your chat message.'
+    if (confidenceMutation.error) return 'We apologize, but there was an error changing your confidence level.'
+    return undefined
+  }, [fetchError, messageMutation.error, confidenceMutation.error])
 
-  const onChangeConfidence = useCallback(
-    async (newConfidence: string): Promise<void> => {
-      if (!session || newConfidence === session?.context.confidence) {
-        return
-      }
+  // Derive history: append pending user message if the server hasn't included it yet
+  const history = useMemo(() => {
+    if (!session) return []
+    const serverHistory = session.history
+    const pending = messageMutation.variables
+    if (!pending || pending.isAutoSend) return serverHistory
 
-      setIsLoading(true)
-      try {
-        const { confidence, dividers, loadingTimeout, newConversation, overrideStep } = await changeConfidence(
-          sessionId!,
-          newConfidence,
-        )
+    const isPendingOrPolling = messageMutation.isPending || isStillLoading(session.loadingTimeout)
+    if (!isPendingOrPolling) return serverHistory
 
-        if (loadingTimeout && loadingTimeout > Date.now()) {
-          startPolling()
-        } else {
-          setSession((prevSession) =>
-            prevSession === undefined
-              ? undefined
-              : {
-                  ...prevSession,
-                  context: {
-                    ...prevSession.context,
-                    confidence,
-                  },
-                  dividers,
-                  newConversation,
-                  overrideStep,
-                },
-          )
-        }
-      } catch (error: unknown) {
-        console.error('Error changing confidence', { error })
-        setErrorMessage('We apologize, but there was an error changing your confidence level.')
-      }
-    },
-    [sessionId, session?.context.confidence, startPolling],
-  )
+    const pendingMessage: ChatMessage = { content: pending.content, role: 'user' }
+    const alreadyInHistory = serverHistory.some((msg) => msg.role === 'user' && msg.content === pending.content)
+    return alreadyInHistory ? serverHistory : [...serverHistory, pendingMessage]
+  }, [session, messageMutation.variables, messageMutation.isPending])
 
   const sendChatMessage = useCallback(
     async (message: string, newConversation?: boolean): Promise<void> => {
       const sanitizedMessage = message.trim().replace(/\r|\n/g, '')
-      if (!currentStep) {
-        return
-      } else if (!newConversation) {
-        addMessageToHistory({ content: sanitizedMessage, role: 'user' })
-      }
-      setIsLoading(true)
+      if (!currentStep) return
 
-      try {
-        const response = await sendLlmMessage(sessionId!, currentStep.path, {
-          content: sanitizedMessage,
-        })
-
-        if (response.loadingTimeout && response.loadingTimeout > Date.now()) {
-          startPolling()
-        } else {
-          setSession((prevSession) =>
-            prevSession === undefined
-              ? undefined
-              : {
-                  ...prevSession,
-                  ...response,
-                  overrideStep: response.overrideStep,
-                },
-          )
-
-          if (!response.newConversation) {
-            setIsLoading(false)
-          }
-        }
-      } catch (error: unknown) {
-        console.error('Error sending message', { error })
-        setErrorMessage('We apologize, but there was an error sending your chat message.')
-      }
+      messageMutation.mutate({
+        path: currentStep.path,
+        content: sanitizedMessage,
+        isAutoSend: !!newConversation,
+      })
     },
-    [currentStep, sessionId, startPolling],
+    [currentStep, messageMutation],
   )
 
+  const onChangeConfidence = useCallback(
+    async (newConfidence: string): Promise<void> => {
+      if (!session || newConfidence === session.context.confidence) return
+      confidenceMutation.mutate(newConfidence)
+    },
+    [session?.context.confidence, confidenceMutation],
+  )
+
+  // Auto-send when newConversation is true
   useEffect(() => {
-    if (session?.newConversation && currentStep) {
+    if (session?.newConversation && currentStep && !messageMutation.isPending) {
       const text =
         session.context.possibleConfidenceLevels.find((level) => level.value === session.context.confidence)?.text ??
         session.context.confidence
@@ -152,21 +150,8 @@ export const useSession = (sessionId: string | undefined): UseSessionResults => 
     }
   }, [currentStep])
 
-  if (session === undefined) {
-    return {
-      chatStep: undefined,
-      claim: undefined,
-      confidence: undefined,
-      confidenceLevels: [],
-      conversationSteps: [],
-      dividers: {},
-      errorMessage,
-      finished: true,
-      history: [],
-      isLoading,
-      onChangeConfidence,
-      sendChatMessage,
-    }
+  if (!session) {
+    return { ...EMPTY_RESULT, errorMessage, isLoading, onChangeConfidence, sendChatMessage }
   }
 
   const finished = !!currentStep?.isFinalStep && !session.newConversation
@@ -179,7 +164,7 @@ export const useSession = (sessionId: string | undefined): UseSessionResults => 
     dividers: session.dividers,
     errorMessage,
     finished,
-    history: session.history,
+    history,
     isLoading,
     onChangeConfidence,
     sendChatMessage,

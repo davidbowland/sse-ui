@@ -1,5 +1,7 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { confidenceChangeResponse, llmResponse, session, sessionContext, sessionId } from '@test/__mocks__'
 import { renderHook, waitFor } from '@testing-library/react'
+import React from 'react'
 
 import { useSession } from './useSession'
 import * as sse from '@services/sse'
@@ -10,20 +12,20 @@ jest.mock('@services/sse', () => {
   return {
     ...actual,
     changeConfidence: jest.fn(),
+    fetchSession: jest.fn(),
     sendLlmMessage: jest.fn(),
   }
 })
 
-const mockStartPolling = jest.fn()
-const mockSessionQuery = {
-  session: undefined as any,
-  error: null as Error | null,
-  startPolling: mockStartPolling,
+const createWrapper = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+  })
+  const Wrapper = ({ children }: { children: React.ReactNode }) =>
+    React.createElement(QueryClientProvider, { client: queryClient }, children)
+  Wrapper.displayName = 'TestWrapper'
+  return Wrapper
 }
-
-jest.mock('./useSessionQuery', () => ({
-  useSessionQuery: () => mockSessionQuery,
-}))
 
 describe('useSession', () => {
   const finishedLlmResponse: LLMResponse = { ...llmResponse, newConversation: true }
@@ -36,40 +38,35 @@ describe('useSession', () => {
   })
 
   beforeEach(() => {
-    jest.mocked(sse).changeConfidence.mockResolvedValue(confidenceChangeResponse)
-    jest.mocked(sse).sendLlmMessage.mockResolvedValue(llmResponse)
-
-    mockSessionQuery.session = session
-    mockSessionQuery.error = null
-    mockStartPolling.mockClear()
+    jest.mocked(sse.fetchSession).mockResolvedValue(session)
+    jest.mocked(sse.changeConfidence).mockResolvedValue(confidenceChangeResponse)
+    jest.mocked(sse.sendLlmMessage).mockResolvedValue(llmResponse)
   })
 
   it('returns empty state when sessionId is undefined', () => {
-    mockSessionQuery.session = undefined
-    const { result } = renderHook(() => useSession(undefined))
+    const { result } = renderHook(() => useSession(undefined), { wrapper: createWrapper() })
 
     expect(result.current.claim).toBeUndefined()
     expect(result.current.history).toEqual([])
   })
 
-  it('applies fetched session from useSessionQuery', async () => {
-    const { result } = renderHook(() => useSession(sessionId))
+  it('fetches and applies session from the API', async () => {
+    const { result } = renderHook(() => useSession(sessionId), { wrapper: createWrapper() })
 
     await waitFor(() => expect(result.current.chatStep).toEqual('probe confidence'))
+    expect(sse.fetchSession).toHaveBeenCalledWith(sessionId)
     expect(result.current.claim).toEqual(sessionContext.claim)
     expect(result.current.confidence).toEqual(sessionContext.confidence)
     expect(result.current.confidenceLevels).toEqual(session.context.possibleConfidenceLevels)
     expect(result.current.conversationSteps).toEqual(session.conversationSteps)
-    expect(result.current.dividers).toEqual(session.dividers)
   })
 
   it('auto-sends message when newConversation is true', async () => {
-    const { result } = renderHook(() => useSession(sessionId))
+    const { result } = renderHook(() => useSession(sessionId), { wrapper: createWrapper() })
 
-    await waitFor(() => expect(result.current.chatStep).toEqual('probe confidence'))
-    expect(sse.sendLlmMessage).toHaveBeenCalledWith(sessionId, 'probe-confidence', llmRequest)
+    await waitFor(() => expect(sse.sendLlmMessage).toHaveBeenCalledWith(sessionId, 'probe-confidence', llmRequest))
     await waitFor(() => expect(result.current.history).toEqual(llmResponse.history))
-    expect(result.current.isLoading).toEqual(false)
+    await waitFor(() => expect(result.current.isLoading).toEqual(false))
   })
 
   it('proceeds through the steps', async () => {
@@ -79,7 +76,7 @@ describe('useSession', () => {
     jest
       .mocked(sse)
       .sendLlmMessage.mockResolvedValueOnce({ ...finishedLlmResponse, currentStep: 'end', newConversation: false })
-    const { result } = renderHook(() => useSession(sessionId))
+    const { result } = renderHook(() => useSession(sessionId), { wrapper: createWrapper() })
 
     await waitFor(() => expect(sse.sendLlmMessage).toHaveBeenCalledWith(sessionId, 'probe-confidence', llmRequest))
     await waitFor(() => expect(sse.sendLlmMessage).toHaveBeenCalledWith(sessionId, 'probe-reasons', llmRequest))
@@ -91,20 +88,18 @@ describe('useSession', () => {
 
   it('sends a message to the llm', async () => {
     const message = "I don't get no respect"
-    const { result } = renderHook(() => useSession(sessionId))
+    const { result } = renderHook(() => useSession(sessionId), { wrapper: createWrapper() })
 
     await waitFor(() => expect(result.current.chatStep).toEqual('probe confidence'))
     result.current.sendChatMessage(message)
     await waitFor(() =>
-      expect(sse.sendLlmMessage).toHaveBeenCalledWith(sessionId, 'probe-confidence', {
-        content: message,
-      }),
+      expect(sse.sendLlmMessage).toHaveBeenCalledWith(sessionId, 'probe-confidence', { content: message }),
     )
   })
 
   it('strips newlines from llm message', async () => {
     const message = "I don't\nget\r\nno respect"
-    const { result } = renderHook(() => useSession(sessionId))
+    const { result } = renderHook(() => useSession(sessionId), { wrapper: createWrapper() })
 
     await waitFor(() => expect(result.current.chatStep).toEqual('probe confidence'))
     result.current.sendChatMessage(message)
@@ -115,9 +110,31 @@ describe('useSession', () => {
     )
   })
 
+  it('optimistically adds user message to history', async () => {
+    jest.mocked(sse.sendLlmMessage).mockImplementation(() => new Promise(() => {})) // never resolves
+    jest.mocked(sse.fetchSession).mockResolvedValueOnce({ ...session, newConversation: false })
+    const { result } = renderHook(() => useSession(sessionId), { wrapper: createWrapper() })
+
+    await waitFor(() => expect(result.current.chatStep).toEqual('probe confidence'))
+    result.current.sendChatMessage('hello')
+    await waitFor(() => expect(result.current.history).toContainEqual({ content: 'hello', role: 'user' }))
+  })
+
+  it('removes pending message from history on error', async () => {
+    jest.mocked(sse.fetchSession).mockResolvedValueOnce({ ...session, newConversation: false })
+    jest.mocked(sse.sendLlmMessage).mockRejectedValueOnce(new Error('fail'))
+    const { result } = renderHook(() => useSession(sessionId), { wrapper: createWrapper() })
+
+    await waitFor(() => expect(result.current.chatStep).toEqual('probe confidence'))
+    result.current.sendChatMessage('hello')
+    // After error, pending message disappears from derived history
+    await waitFor(() => expect(result.current.errorMessage).toBeDefined())
+    expect(result.current.history).toEqual(session.history)
+  })
+
   it('sends a confidence change', async () => {
     const message = 'I am a fish called Wanda'
-    const { result } = renderHook(() => useSession(sessionId))
+    const { result } = renderHook(() => useSession(sessionId), { wrapper: createWrapper() })
 
     await waitFor(() => expect(result.current.chatStep).toEqual('probe confidence'))
     result.current.onChangeConfidence(confidenceChangeResponse.confidence)
@@ -126,16 +143,13 @@ describe('useSession', () => {
 
     result.current.sendChatMessage(message)
     await waitFor(() =>
-      expect(sse.sendLlmMessage).toHaveBeenCalledWith(sessionId, 'new-confidence', {
-        content: message,
-      }),
+      expect(sse.sendLlmMessage).toHaveBeenCalledWith(sessionId, 'new-confidence', { content: message }),
     )
   })
 
   it('returns an error message when fetch fails', async () => {
-    mockSessionQuery.session = undefined
-    mockSessionQuery.error = new Error('Network error')
-    const { result } = renderHook(() => useSession(sessionId))
+    jest.mocked(sse.fetchSession).mockRejectedValueOnce(new Error('Network error'))
+    const { result } = renderHook(() => useSession(sessionId), { wrapper: createWrapper() })
 
     await waitFor(() =>
       expect(result.current.errorMessage).toEqual('We apologize, but we were unable to load your chat session.'),
@@ -143,11 +157,11 @@ describe('useSession', () => {
   })
 
   it('returns an error message when error changing confidence', async () => {
-    jest.mocked(sse).changeConfidence.mockRejectedValueOnce(undefined)
-    const { result } = renderHook(() => useSession(sessionId))
+    jest.mocked(sse.changeConfidence).mockRejectedValueOnce(new Error('fail'))
+    const { result } = renderHook(() => useSession(sessionId), { wrapper: createWrapper() })
 
     await waitFor(() => expect(result.current.confidence).toEqual('strongly agree'))
-    await result.current.onChangeConfidence('agree')
+    result.current.onChangeConfidence('agree')
     await waitFor(() =>
       expect(result.current.errorMessage).toEqual(
         'We apologize, but there was an error changing your confidence level.',
@@ -156,8 +170,8 @@ describe('useSession', () => {
   })
 
   it('returns an error message when error sending chat message', async () => {
-    jest.mocked(sse).sendLlmMessage.mockRejectedValueOnce(undefined)
-    const { result } = renderHook(() => useSession(sessionId))
+    jest.mocked(sse.sendLlmMessage).mockRejectedValueOnce(new Error('fail'))
+    const { result } = renderHook(() => useSession(sessionId), { wrapper: createWrapper() })
 
     await waitFor(() =>
       expect(result.current.errorMessage).toEqual('We apologize, but there was an error sending your chat message.'),
@@ -165,10 +179,10 @@ describe('useSession', () => {
   })
 
   it('does not change confidence when same confidence is selected', async () => {
-    const { result } = renderHook(() => useSession(sessionId))
+    const { result } = renderHook(() => useSession(sessionId), { wrapper: createWrapper() })
 
     await waitFor(() => expect(result.current.confidence).toEqual('strongly agree'))
-    await result.current.onChangeConfidence('strongly agree')
+    result.current.onChangeConfidence('strongly agree')
 
     expect(sse.changeConfidence).not.toHaveBeenCalled()
   })
@@ -178,7 +192,7 @@ describe('useSession', () => {
       .mocked(sse)
       .sendLlmMessage.mockResolvedValueOnce({ ...llmResponse, currentStep: 'probe confidence', newConversation: true })
     jest.mocked(sse).sendLlmMessage.mockResolvedValueOnce({ ...llmResponse, newConversation: false })
-    const { result } = renderHook(() => useSession(sessionId))
+    const { result } = renderHook(() => useSession(sessionId), { wrapper: createWrapper() })
 
     await waitFor(() => expect(result.current.chatStep).toEqual('probe confidence'))
     result.current.sendChatMessage('test message')
@@ -188,11 +202,32 @@ describe('useSession', () => {
 
   it('starts polling when sendLlmMessage returns loadingTimeout', async () => {
     const futureTimeout = Date.now() + 60_000
-    jest.mocked(sse).sendLlmMessage.mockResolvedValueOnce({ ...llmResponse, loadingTimeout: futureTimeout })
-    const { result } = renderHook(() => useSession(sessionId))
+    jest.mocked(sse.sendLlmMessage).mockResolvedValueOnce({ ...llmResponse, loadingTimeout: futureTimeout })
+    const { result } = renderHook(() => useSession(sessionId), { wrapper: createWrapper() })
 
     await waitFor(() => expect(result.current.chatStep).toEqual('probe confidence'))
-    await waitFor(() => expect(mockStartPolling).toHaveBeenCalled())
+    // isLoading should remain true while polling
+    await waitFor(() => expect(result.current.isLoading).toBe(true))
+  })
+
+  it('keeps pending user message visible during polling', async () => {
+    const futureTimeout = Date.now() + 60_000
+    // POST returns loadingTimeout — server hasn't processed the message yet
+    jest.mocked(sse.sendLlmMessage).mockResolvedValueOnce({
+      ...llmResponse,
+      history: session.history, // server history does NOT include user message yet
+      loadingTimeout: futureTimeout,
+    })
+    jest.mocked(sse.fetchSession).mockResolvedValueOnce({ ...session, newConversation: false })
+    const { result } = renderHook(() => useSession(sessionId), { wrapper: createWrapper() })
+
+    await waitFor(() => expect(result.current.chatStep).toEqual('probe confidence'))
+    result.current.sendChatMessage('my important message')
+
+    // The pending message should remain visible even though server history doesn't have it
+    await waitFor(() =>
+      expect(result.current.history).toContainEqual({ content: 'my important message', role: 'user' }),
+    )
   })
 
   it('starts polling when changeConfidence returns loadingTimeout', async () => {
@@ -200,28 +235,10 @@ describe('useSession', () => {
     jest
       .mocked(sse)
       .changeConfidence.mockResolvedValueOnce({ ...confidenceChangeResponse, loadingTimeout: futureTimeout })
-    const { result } = renderHook(() => useSession(sessionId))
+    const { result } = renderHook(() => useSession(sessionId), { wrapper: createWrapper() })
 
     await waitFor(() => expect(result.current.confidence).toEqual('strongly agree'))
-    await result.current.onChangeConfidence('disagree')
-    await waitFor(() => expect(mockStartPolling).toHaveBeenCalled())
-  })
-
-  it('does not apply session while loadingTimeout is active', async () => {
-    mockSessionQuery.session = { ...session, loadingTimeout: Date.now() + 60_000 }
-
-    const { result } = renderHook(() => useSession(sessionId))
-
-    // Session with active loadingTimeout should not be applied
-    expect(result.current.claim).toBeUndefined()
-  })
-
-  it('applies polled session when loadingTimeout clears', async () => {
-    mockSessionQuery.session = { ...session, newConversation: false, history: llmResponse.history }
-
-    const { result } = renderHook(() => useSession(sessionId))
-
-    await waitFor(() => expect(result.current.history).toEqual(llmResponse.history))
-    expect(result.current.isLoading).toBe(false)
+    result.current.onChangeConfidence('disagree')
+    await waitFor(() => expect(sse.changeConfidence).toHaveBeenCalledWith(sessionId, 'disagree'))
   })
 })

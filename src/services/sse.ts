@@ -69,9 +69,28 @@ export const validateClaim = async (claim: string, language: string): Promise<Va
   return response.data
 }
 
+// Session cache helpers
+
+export const mergeMessageResponse = (session: Session, response: LLMResponse): Session => ({
+  ...session,
+  ...response,
+  overrideStep: response.overrideStep,
+})
+
+export const mergeConfidenceResponse = (session: Session, response: ConfidenceChangeResponse): Session => ({
+  ...session,
+  context: {
+    ...session.context,
+    confidence: response.confidence,
+  },
+  dividers: response.dividers,
+  newConversation: response.newConversation,
+  overrideStep: response.overrideStep,
+})
+
 // Polling
 
-const POLL_INTERVAL_MS = 2_000
+const POLL_INTERVAL_MS = Number(process.env.NEXT_PUBLIC_POLL_INTERVAL_MS) || 2_000
 
 export const isStillLoading = (loadingTimeout?: number): boolean =>
   loadingTimeout !== undefined && loadingTimeout > Date.now()
