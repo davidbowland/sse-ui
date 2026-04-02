@@ -7,7 +7,7 @@ import { ConfidenceLevel } from '@types'
 
 export const NavBar = ({ children }: { children: React.ReactNode }): React.ReactNode => (
   <nav
-    className="px-4 py-3"
+    className="sticky top-0 z-50 px-4 py-3"
     style={{
       backgroundColor: 'var(--color-surface)',
       borderBottom: '1px solid var(--color-border)',
@@ -17,8 +17,18 @@ export const NavBar = ({ children }: { children: React.ReactNode }): React.React
   </nav>
 )
 
-export const BrandSection = ({ children }: { children: React.ReactNode }): React.ReactNode => (
-  <div className="col-span-12 flex flex-col justify-center sm:col-span-6 lg:col-span-2">{children}</div>
+export const BrandSection = ({
+  children,
+  isHidden,
+}: {
+  children: React.ReactNode
+  isHidden?: boolean
+}): React.ReactNode => (
+  <div
+    className={`flex flex-col justify-center col-span-12 sm:col-span-6 lg:col-span-2 ${isHidden ? 'hidden lg:flex' : 'flex'}`}
+  >
+    {children}
+  </div>
 )
 
 export const BrandTitle = (): React.ReactNode => (
@@ -45,8 +55,16 @@ export const ConfidenceSection = ({ children }: { children: React.ReactNode }): 
   </div>
 )
 
-export const NewClaimSection = ({ children }: { children: React.ReactNode }): React.ReactNode => (
-  <div className="order-2 col-span-12 flex flex-col justify-center sm:col-span-6 sm:pr-2 lg:order-3 lg:col-span-2">
+export const NewClaimSection = ({
+  children,
+  isHidden,
+}: {
+  children: React.ReactNode
+  isHidden?: boolean
+}): React.ReactNode => (
+  <div
+    className={`order-2 col-span-12 sm:col-span-6 sm:pr-2 lg:order-3 lg:col-span-2 ${isHidden ? 'hidden lg:flex' : 'flex'} flex-col justify-center`}
+  >
     {children}
   </div>
 )
@@ -69,7 +87,7 @@ export const ConfidenceSelect = ({
 }): React.ReactNode => (
   <Select
     aria-label="Confidence"
-    className="mx-auto min-w-full sm:min-w-[600px]"
+    className="w-full"
     onSelectionChange={(key) => onChange(String(key))}
     selectedKey={value}
   >

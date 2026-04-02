@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import {
   BrandSection,
@@ -27,7 +27,14 @@ const ChatContainer = ({
   onConfidenceChange,
 }: ChatContainerProps): React.ReactNode => {
   const [confidence, setConfidence] = useState<string | undefined>(initialConfidence)
+  const [isScrolled, setIsScrolled] = useState(false)
   const router = useRouter()
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 60)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const onChangeOptionList = (value: string) => {
     setConfidence(value)
@@ -37,7 +44,7 @@ const ChatContainer = ({
   return (
     <div>
       <NavBar>
-        <BrandSection>
+        <BrandSection isHidden={isScrolled}>
           <BrandTitle />
         </BrandSection>
         <ConfidenceSection>
@@ -45,7 +52,7 @@ const ChatContainer = ({
             <ConfidenceSelect confidenceLevels={confidenceLevels} onChange={onChangeOptionList} value={confidence} />
           )}
         </ConfidenceSection>
-        <NewClaimSection>
+        <NewClaimSection isHidden={isScrolled}>
           <NewClaimButton onPress={() => router.push('/')} />
         </NewClaimSection>
       </NavBar>

@@ -1,4 +1,3 @@
-import { Input } from '@heroui/react'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
@@ -29,11 +28,25 @@ const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: 
 
   const messageBubbleRef = useRef<HTMLDivElement>(null)
   const messageRef = useRef<HTMLParagraphElement>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  const resizeTextarea = useCallback(() => {
+    const el = textareaRef.current
+    if (el) {
+      el.style.height = 'auto'
+      const capped = Math.min(el.scrollHeight, 200)
+      el.style.height = capped + 'px'
+      el.style.overflowY = el.scrollHeight > 200 ? 'auto' : 'hidden'
+    }
+  }, [])
 
   const sendMessage = useCallback(() => {
     if (!isTyping && message.trim().length) {
       sendChatMessage(message)
       setMessage('')
+      if (textareaRef.current) {
+        textareaRef.current.style.height = 'auto'
+      }
     }
   }, [sendChatMessage, message, isTyping])
 
@@ -71,17 +84,36 @@ const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: 
       {finished ? (
         <NewClaimButton onPress={() => router.push('/')} />
       ) : (
-        <div className="grid grid-cols-12">
-          <div className="col-span-12 p-2 sm:col-span-9">
-            <Input
+        <div className="grid grid-cols-12 gap-2">
+          <div className="col-span-12 sm:col-span-9">
+            <textarea
               aria-label="Message"
-              className="w-full"
-              onChange={(e) => setMessage(e.target.value.replace(/\n/g, '').slice(0, MAX_CHAT_LENGTH))}
-              onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && sendMessage()}
+              className="w-full resize-none rounded-lg border px-4 py-3 text-sm outline-none transition-colors"
+              onChange={(e) => {
+                setMessage(e.target.value.replace(/\n/g, '').slice(0, MAX_CHAT_LENGTH))
+                resizeTextarea()
+              }}
+              onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault()
+                  sendMessage()
+                }
+              }}
+              ref={textareaRef}
+              rows={1}
+              style={{
+                backgroundColor: 'var(--color-surface)',
+                borderColor: 'var(--color-border)',
+                color: 'var(--color-text)',
+                fontFamily: 'var(--font-ui)',
+                caretColor: 'var(--color-brand)',
+                minHeight: '46px',
+                maxHeight: '200px',
+              }}
               value={message}
             />
           </div>
-          <div className="col-span-12 p-2 sm:col-span-3">
+          <div className="col-span-12 sm:col-span-3">
             <SendButton isDisabled={finished || isTyping || !message.length} onPress={sendMessage} />
           </div>
         </div>
