@@ -43,6 +43,7 @@ describe('Session page', () => {
     await waitFor(() =>
       expect(ChatContainer).toHaveBeenCalledWith(
         expect.objectContaining({
+          claim: useSessionResults.claim,
           confidenceLevels,
           initialConfidence: useSessionResults.confidence,
           onConfidenceChange: onChangeConfidence,
@@ -55,7 +56,12 @@ describe('Session page', () => {
   it('renders claim + breadcrumbs', async () => {
     render(<SessionPage />)
 
-    expect(await screen.findByText(useSessionResults.claim)).toBeInTheDocument()
+    await waitFor(() =>
+      expect(ChatContainer).toHaveBeenCalledWith(
+        expect.objectContaining({ claim: useSessionResults.claim }),
+        undefined,
+      ),
+    )
     expect(screen.getByText('Introduction')).toBeInTheDocument()
     expect(screen.getByText('Confidence')).toBeInTheDocument()
     expect(screen.getByText('Reasons')).toBeInTheDocument()
@@ -92,7 +98,12 @@ describe('Session page', () => {
       .mockReturnValue({ ...useSessionResults, errorMessage: 'A big fat error', onChangeConfidence, sendChatMessage })
     render(<SessionPage />)
 
-    expect(await screen.findByText(/A big fat error/)).toBeInTheDocument()
+    await waitFor(() =>
+      expect(ChatContainer).toHaveBeenCalledWith(
+        expect.objectContaining({ errorMessage: 'A big fat error' }),
+        undefined,
+      ),
+    )
   })
 
   it('renders nothing when sessionId is undefined', () => {

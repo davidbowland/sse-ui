@@ -1,43 +1,139 @@
-import { AlertContent, AlertDescription, AlertRoot, Button } from '@heroui/react'
+import { Button } from '@heroui/react'
 import React from 'react'
+
+// ─── Premium loader ──────────────────────────────────────────
+
+export const PremiumLoader = (): React.ReactNode => (
+  <div
+    aria-label="Loading"
+    role="status"
+    style={{ position: 'relative', width: '72px', height: '72px', flexShrink: 0 }}
+  >
+    {/* Ambient glow */}
+    <div
+      style={{
+        position: 'absolute',
+        inset: '-20px',
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, color-mix(in srgb, var(--accent) 16%, transparent) 0%, transparent 65%)',
+        animation: 'loader-glow 2.8s ease-in-out infinite',
+        pointerEvents: 'none',
+      }}
+    />
+    {/* Conic gradient ring (comet trail) */}
+    <div
+      style={{
+        position: 'absolute',
+        inset: 0,
+        borderRadius: '50%',
+        background:
+          'conic-gradient(from 0deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 50%, transparent) 22%, color-mix(in srgb, var(--accent) 15%, transparent) 55%, transparent 72%, transparent 100%)',
+        WebkitMask: 'radial-gradient(circle at center, transparent 40%, black 41%)',
+        mask: 'radial-gradient(circle at center, transparent 40%, black 41%)',
+        animation: 'loader-spin 1.6s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      }}
+    />
+    {/* Orbiting head dot */}
+    <div
+      style={{
+        position: 'absolute',
+        inset: 0,
+        animation: 'loader-spin 1.6s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      }}
+    >
+      <div
+        style={{
+          position: 'absolute',
+          top: '4px',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '7px',
+          height: '7px',
+          borderRadius: '50%',
+          background: 'var(--accent)',
+          boxShadow: '0 0 10px 4px color-mix(in srgb, var(--accent) 55%, transparent)',
+        }}
+      />
+    </div>
+    <span className="sr-only">Loading…</span>
+  </div>
+)
 
 // ─── Alert ───────────────────────────────────────────────────
 
 export const ErrorAlert = ({ children }: { children: React.ReactNode }): React.ReactNode => (
-  <AlertRoot className="mx-auto max-w-[600px]" status="danger">
-    <AlertContent>
-      <AlertDescription>{children}</AlertDescription>
-    </AlertContent>
-  </AlertRoot>
+  <div
+    className="mx-auto max-w-[600px]"
+    style={{
+      background: 'rgba(239,68,68,0.08)',
+      border: '1px solid rgba(239,68,68,0.15)',
+      borderRadius: '28px',
+      padding: '7px',
+    }}
+  >
+    <div
+      style={{
+        background: 'var(--surface)',
+        borderRadius: '23px',
+        padding: '16px 20px',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04)',
+      }}
+    >
+      <p style={{ fontSize: '14px', color: 'var(--error)', fontFamily: 'var(--font)', lineHeight: 1.5 }}>{children}</p>
+    </div>
+  </div>
 )
 
-// ─── Claim card ──────────────────────────────────────────────
+// ─── Claim card (confidence stage) ───────────────────────────
 
 export const ClaimCard = ({ children }: { children: React.ReactNode }): React.ReactNode => (
   <div
-    className="mx-auto max-w-[800px] rounded-xl px-6 py-5 text-center text-white"
+    className="mx-auto max-w-[800px]"
     style={{
-      background: 'linear-gradient(135deg, var(--color-brand) 0%, #4a5de8 100%)',
-      boxShadow: '0 4px 24px rgba(99, 115, 250, 0.3)',
+      background: 'color-mix(in srgb, var(--accent) 2.5%, transparent)',
+      border: '1px solid var(--border)',
+      borderRadius: '28px',
+      padding: '7px',
     }}
   >
-    {children}
+    <div
+      style={{
+        background:
+          'linear-gradient(135deg, color-mix(in srgb, var(--accent) 10%, transparent) 0%, rgba(0,80,180,0.13) 100%)',
+        borderRadius: '23px',
+        padding: '18px 22px',
+        textAlign: 'center',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05)',
+      }}
+    >
+      {children}
+    </div>
   </div>
 )
 
 export const ClaimCardLabel = ({ children }: { children: React.ReactNode }): React.ReactNode => (
-  <p className="mb-1 text-xs font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.6)' }}>
+  <p
+    style={{
+      fontSize: '10px',
+      fontWeight: 700,
+      letterSpacing: '0.2em',
+      textTransform: 'uppercase',
+      color: 'var(--accent-55)',
+      marginBottom: '8px',
+      fontFamily: 'var(--font)',
+    }}
+  >
     {children}
   </p>
 )
 
-// ─── Step indicator (replaces breadcrumbs) ───────────────────
+// ─── Step indicator ──────────────────────────────────────────
 
 const STEP_LABELS = ['Enter claim', 'Choose claim', 'Set confidence']
 
 export const StepIndicator = React.forwardRef<HTMLElement, { currentStep: number }>(({ currentStep }, ref) => (
   <nav aria-label="Progress" className="flex w-full justify-center" ref={ref}>
-    <ol className="flex items-center">
+    <ol className="flex items-center" style={{ listStyle: 'none', padding: 0 }}>
       {STEP_LABELS.map((label, i) => {
         const stepNum = i + 1
         const isActive = stepNum === currentStep
@@ -47,32 +143,53 @@ export const StepIndicator = React.forwardRef<HTMLElement, { currentStep: number
             {i > 0 && (
               <li
                 aria-hidden="true"
-                className="h-px w-6 flex-shrink-0 sm:w-10"
-                style={{ backgroundColor: 'var(--color-border)' }}
+                style={{
+                  height: '1px',
+                  width: '44px',
+                  flexShrink: 0,
+                  marginBottom: '22px',
+                  background: isDone ? 'var(--accent)' : 'var(--border)',
+                  opacity: isDone ? 0.5 : 1,
+                }}
               />
             )}
-            <li className="flex w-[80px] flex-col items-center gap-1.5 sm:w-[100px]">
+            <li style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '7px', width: '88px' }}>
               <span
-                className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold transition-all duration-200"
-                style={
-                  isActive
-                    ? { backgroundColor: 'var(--color-brand)', color: '#fff' }
+                style={{
+                  display: 'flex',
+                  width: '34px',
+                  height: '34px',
+                  borderRadius: '50%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '13px',
+                  fontWeight: 700,
+                  fontFamily: 'var(--font)',
+                  transition: 'transform 0.16s cubic-bezier(0.32,0.72,0,1)',
+                  ...(isActive
+                    ? {
+                        background: 'var(--accent)',
+                        color: 'var(--bg)',
+                        boxShadow: '0 0 0 3px var(--accent-dim)',
+                      }
                     : isDone
-                      ? { backgroundColor: 'var(--color-brand-dim)', color: 'var(--color-brand)' }
+                      ? { background: 'var(--accent)', color: 'var(--bg)' }
                       : {
-                          backgroundColor: 'rgba(128,128,128,0.12)',
-                          color: 'var(--color-text-muted)',
-                        }
-                }
+                          background: 'var(--accent-dim)',
+                          border: '1px solid var(--accent-14)',
+                          color: 'var(--text-muted)',
+                        }),
+                }}
               >
                 {isDone ? '✓' : stepNum}
               </span>
               <span
-                className="hidden text-center text-xs sm:block"
+                className="hidden text-center sm:block"
                 style={{
-                  color: isActive ? 'var(--color-text)' : 'var(--color-text-muted)',
-                  fontWeight: isActive ? '500' : '400',
-                  fontFamily: 'var(--font-ui)',
+                  fontSize: '11px',
+                  fontFamily: 'var(--font)',
+                  fontWeight: isActive ? 500 : 400,
+                  color: isActive ? 'var(--text)' : 'var(--text-muted)',
                 }}
               >
                 {label}
@@ -89,7 +206,12 @@ StepIndicator.displayName = 'StepIndicator'
 // ─── Selection list ──────────────────────────────────────────
 
 export const SelectionList = ({ children }: { children: React.ReactNode }): React.ReactNode => (
-  <ul className="mx-auto flex max-w-[800px] list-none flex-col gap-2 p-0">{children}</ul>
+  <ul
+    className="mx-auto max-w-[800px]"
+    style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px', padding: 0 }}
+  >
+    {children}
+  </ul>
 )
 
 export const SelectionListItem = ({
@@ -103,20 +225,29 @@ export const SelectionListItem = ({
 }): React.ReactNode => (
   <li>
     <button
-      className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm transition-all duration-150"
+      className="flex w-full items-center gap-3 text-left text-sm"
       onClick={onClick}
       style={{
-        backgroundColor: isSelected ? 'var(--color-brand-dim)' : 'transparent',
-        border: `1.5px solid ${isSelected ? 'var(--color-brand)' : 'var(--color-border)'}`,
-        color: 'var(--color-text)',
-        fontFamily: 'var(--font-ui)',
+        borderRadius: '10px',
+        padding: '13px 16px',
+        cursor: 'pointer',
+        fontFamily: 'var(--font)',
+        fontSize: '14px',
+        color: 'var(--text)',
+        background: isSelected ? 'var(--accent-dim)' : 'transparent',
+        border: `1px solid ${isSelected ? 'var(--accent)' : 'var(--border)'}`,
+        transition: 'all 0.16s cubic-bezier(0.32,0.72,0,1)',
       }}
     >
       <span
-        className="h-3 w-3 flex-shrink-0 rounded-full transition-all duration-150"
         style={{
-          backgroundColor: isSelected ? 'var(--color-brand)' : 'transparent',
-          border: `2px solid ${isSelected ? 'var(--color-brand)' : 'var(--color-text-muted)'}`,
+          width: '12px',
+          height: '12px',
+          borderRadius: '50%',
+          flexShrink: 0,
+          background: isSelected ? 'var(--accent)' : 'transparent',
+          border: `2px solid ${isSelected ? 'var(--accent)' : 'var(--text-muted)'}`,
+          transition: 'all 0.16s cubic-bezier(0.32,0.72,0,1)',
         }}
       />
       <span className="flex-1">{children}</span>
@@ -135,8 +266,44 @@ export const PrimaryButton = ({
   disabled?: boolean
   onPress: () => void
 }): React.ReactNode => (
-  <Button className="w-full" isDisabled={disabled} onPress={onPress} variant="primary">
-    {children}
+  <Button
+    className="w-full"
+    isDisabled={disabled}
+    onPress={onPress}
+    style={{
+      background: disabled ? 'var(--accent-dim)' : 'var(--accent)',
+      color: 'var(--bg)',
+      fontWeight: 700,
+      borderRadius: '12px',
+      fontFamily: 'var(--font)',
+      border: 'none',
+      fontSize: '14px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '9px',
+      padding: '12px 16px',
+      transition: 'transform 0.12s cubic-bezier(0.32,0.72,0,1)',
+      opacity: disabled ? 0.6 : 1,
+    }}
+  >
+    <span>{children}</span>
+    <span
+      aria-hidden="true"
+      style={{
+        width: '26px',
+        height: '26px',
+        borderRadius: '50%',
+        flexShrink: 0,
+        background: 'rgba(4,10,18,0.15)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '12px',
+      }}
+    >
+      ↗
+    </span>
   </Button>
 )
 
@@ -147,7 +314,20 @@ export const SecondaryButton = ({
   children: React.ReactNode
   onPress: () => void
 }): React.ReactNode => (
-  <Button className="w-full" onPress={onPress} variant="outline">
+  <Button
+    className="w-full"
+    onPress={onPress}
+    style={{
+      background: 'transparent',
+      border: '1px solid var(--accent-16)',
+      color: 'var(--accent)',
+      fontWeight: 500,
+      borderRadius: '12px',
+      fontFamily: 'var(--font)',
+      fontSize: '14px',
+      transition: 'all 0.16s cubic-bezier(0.32,0.72,0,1)',
+    }}
+  >
     {children}
   </Button>
 )

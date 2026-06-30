@@ -99,16 +99,18 @@ const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: 
                   sendMessage()
                 }
               }}
+              placeholder="Type your response..."
               ref={textareaRef}
               rows={1}
               style={{
-                backgroundColor: 'var(--color-surface)',
-                borderColor: 'var(--color-border)',
-                color: 'var(--color-text)',
-                fontFamily: 'var(--font-ui)',
-                caretColor: 'var(--color-brand)',
+                backgroundColor: 'var(--surface-alt)',
+                borderColor: 'var(--border)',
+                color: 'var(--text)',
+                fontFamily: 'var(--font)',
+                caretColor: 'var(--accent)',
                 minHeight: '46px',
                 maxHeight: '200px',
+                borderRadius: '12px',
               }}
               value={message}
             />

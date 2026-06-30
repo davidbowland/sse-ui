@@ -9,11 +9,7 @@ const PrivacyPage = (): React.ReactNode => {
       <Head>
         <title>StreetLogic AI | Privacy Policy</title>
       </Head>
-      <main>
-        <div className="mx-auto max-w-[900px] shadow-md">
-          <PrivacyPolicy />
-        </div>
-      </main>
+      <PrivacyPolicy />
     </>
   )
 }

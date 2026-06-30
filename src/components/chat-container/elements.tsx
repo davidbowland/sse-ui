@@ -1,5 +1,5 @@
 import { Button, ListBoxItem, Select, SelectIndicator, SelectPopover, SelectTrigger, SelectValue } from '@heroui/react'
-import { MessageCircle, MessageSquarePlus } from 'lucide-react'
+import { MessageSquarePlus } from 'lucide-react'
 import React from 'react'
 import { ListBox } from 'react-aria-components'
 
@@ -7,13 +7,15 @@ import { ConfidenceLevel } from '@types'
 
 export const NavBar = ({ children }: { children: React.ReactNode }): React.ReactNode => (
   <nav
-    className="sticky top-0 z-50 px-4 py-3"
+    className="sticky top-0 z-50 w-full"
     style={{
-      backgroundColor: 'var(--color-surface)',
-      borderBottom: '1px solid var(--color-border)',
+      background: 'var(--nav-bg)',
+      backdropFilter: 'blur(24px)',
+      WebkitBackdropFilter: 'blur(24px)',
+      borderBottom: '1px solid var(--border)',
     }}
   >
-    <div className="grid grid-cols-12 items-center gap-2 p-1 text-center">{children}</div>
+    <div className="mx-auto w-full max-w-[1200px] px-[10px] sm:px-[28px]">{children}</div>
   </nav>
 )
 
@@ -33,21 +35,34 @@ export const BrandSection = ({
 
 export const BrandTitle = (): React.ReactNode => (
   <div className="flex items-center justify-center gap-2">
-    <MessageCircle size={18} style={{ color: 'var(--color-brand)' }} />
     <span
-      className="text-sm font-semibold tracking-widest"
-      style={{ fontVariant: 'small-caps', color: 'var(--color-text)', fontFamily: 'var(--font-ui)' }}
+      style={{
+        fontFamily: 'var(--font)',
+        fontSize: '14px',
+        fontWeight: 600,
+        letterSpacing: '-0.01em',
+        color: 'var(--text)',
+      }}
     >
-      StreetLogic AI
+      StreetLogic <span style={{ color: 'var(--accent)' }}>AI</span>
     </span>
   </div>
 )
 
 export const ConfidenceSection = ({ children }: { children: React.ReactNode }): React.ReactNode => (
-  <div className="order-3 col-span-12 lg:order-2 lg:col-span-8">
+  <div className="order-3 col-span-12 lg:order-2 lg:col-span-8 lg:relative flex flex-col items-center justify-center">
     <p
-      className="mb-1 text-center text-xs font-medium uppercase tracking-widest"
-      style={{ color: 'var(--color-text-muted)' }}
+      className="lg:absolute lg:bottom-full lg:left-0 lg:right-0"
+      style={{
+        marginBottom: '4px',
+        textAlign: 'center',
+        fontFamily: 'var(--font)',
+        fontSize: '9px',
+        fontWeight: 700,
+        letterSpacing: '0.18em',
+        textTransform: 'uppercase',
+        color: 'var(--accent-38)',
+      }}
     >
       Your current stance
     </p>
@@ -70,8 +85,23 @@ export const NewClaimSection = ({
 )
 
 export const NewClaimButton = ({ onPress }: { onPress: () => void }): React.ReactNode => (
-  <Button className="mx-auto w-full max-w-[250px]" onPress={onPress} variant="secondary">
-    <MessageSquarePlus className="mr-2" size={16} />
+  <Button
+    className="mx-auto w-full max-w-[250px]"
+    onPress={onPress}
+    style={{
+      background: 'var(--accent-07)',
+      border: '1px solid var(--accent-14)',
+      color: 'var(--accent)',
+      fontWeight: 600,
+      borderRadius: '10px',
+      fontFamily: 'var(--font)',
+      fontSize: '12px',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '6px',
+    }}
+  >
+    <MessageSquarePlus size={14} />
     New claim
   </Button>
 )
@@ -105,4 +135,58 @@ export const ConfidenceSelect = ({
       </ListBox>
     </SelectPopover>
   </Select>
+)
+
+/**
+ * Compact claim strip — always occupies height: 36px to prevent layout-shift jitter.
+ * Visibility is controlled via opacity only; height never changes.
+ */
+export const CompactClaimStrip = ({
+  claim,
+  isVisible,
+  'data-testid': dataTestId,
+}: {
+  claim: string | undefined
+  isVisible: boolean
+  'data-testid'?: string
+}): React.ReactNode => (
+  <div
+    aria-hidden={!isVisible}
+    data-testid={dataTestId}
+    style={{
+      height: '36px',
+      display: 'flex',
+      alignItems: 'center',
+      paddingLeft: '10px',
+      paddingRight: '10px',
+      opacity: isVisible ? 1 : 0,
+      pointerEvents: isVisible ? 'auto' : 'none',
+      borderTop: `1px solid ${isVisible ? 'var(--accent-07)' : 'transparent'}`,
+      transition: 'opacity 0.22s ease, border-top-color 0.22s ease',
+    }}
+  >
+    <div
+      style={{
+        width: '2px',
+        height: '16px',
+        borderRadius: '1px',
+        background: 'var(--accent)',
+        flexShrink: 0,
+        marginRight: '10px',
+      }}
+    />
+    <span
+      style={{
+        fontFamily: 'var(--font)',
+        fontSize: '12px',
+        fontStyle: 'italic',
+        color: 'var(--text-muted)',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+      }}
+    >
+      {isVisible ? claim : null}
+    </span>
+  </div>
 )

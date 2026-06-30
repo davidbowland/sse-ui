@@ -17,8 +17,7 @@ const NotFound = (): React.ReactNode => {
       </Head>
       {display404 && (
         <ServerErrorMessage title="404: Not Found">
-          The resource you requested is unavailable. If you feel you have reached this page in error, please contact the
-          webmaster.
+          We can&apos;t find this page. If you think something&apos;s wrong, please let us know.
         </ServerErrorMessage>
       )}
     </>

@@ -1,16 +1,16 @@
-import '@fontsource/cormorant-garamond/400-italic.css'
-import '@fontsource/cormorant-garamond/400.css'
-import '@fontsource/cormorant-garamond/600-italic.css'
-import '@fontsource/cormorant-garamond/600.css'
-import '@fontsource/dm-sans/400.css'
-import '@fontsource/dm-sans/500.css'
-import '@fontsource/dm-sans/600.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { AppProps } from 'next/app'
+import { Plus_Jakarta_Sans } from 'next/font/google'
 import React, { useEffect } from 'react'
 
 import '../styles/global.css'
-import Disclaimer from '@components/disclaimer'
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800'],
+  variable: '--font',
+  display: 'swap',
+})
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,8 +32,9 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Component {...pageProps} />
-      <Disclaimer />
+      <div className={plusJakartaSans.variable} style={{ minHeight: '100dvh' }}>
+        <Component {...pageProps} />
+      </div>
     </QueryClientProvider>
   )
 }

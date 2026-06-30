@@ -11,10 +11,10 @@ export interface HomePageProps {
 
 const HomePage = ({ initialClaim, onClaimSelect }: HomePageProps): React.ReactNode => (
   <PageMain>
-    <div className="flex min-h-[80vh] flex-col gap-8 text-center">
-      <HeroSection />
-      <HeroDivider />
-      <div style={{ minHeight: '70vh' }}>
+    <div className="flex flex-col gap-8 text-center sm:min-h-[80vh] sm:justify-between">
+      <div className="flex flex-col gap-8">
+        <HeroSection />
+        <HeroDivider />
         <ClaimPrompt initialClaim={initialClaim} onClaimSelect={onClaimSelect} skipFirstScroll />
       </div>
       <PrivacyNote />

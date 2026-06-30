@@ -29,7 +29,15 @@ const SelectingStage = ({
   return (
     <div className="mx-auto flex w-full flex-col gap-4 text-center">
       <div>
-        <h4 className="text-3xl font-normal" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>
+        <h4
+          style={{
+            fontFamily: 'var(--font)',
+            fontSize: '24px',
+            fontWeight: 600,
+            letterSpacing: '-0.018em',
+            color: 'var(--text)',
+          }}
+        >
           Select a claim
         </h4>
       </div>

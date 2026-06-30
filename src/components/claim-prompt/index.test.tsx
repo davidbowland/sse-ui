@@ -44,18 +44,18 @@ describe('claim-prompt', () => {
   it('generates and selects a claim', async () => {
     render(<ClaimPrompt onClaimSelect={mockOnClaimSelect} />)
 
-    const suggestClaimsButton = await screen.findByText(/Suggest claims/, { selector: 'button' })
+    const suggestClaimsButton = await screen.findByRole('button', { name: /Suggest claims/ })
     await act(() => userEvent.click(suggestClaimsButton))
 
     const claimToSelect = await screen.findByText(/The US should only intervene militarily when directly attacked\./)
     await act(() => userEvent.click(claimToSelect))
-    const claimConfirmButton = screen.getByText(/Select/, { selector: 'button' })
+    const claimConfirmButton = screen.getByRole('button', { name: /Select/ })
     await act(() => userEvent.click(claimConfirmButton))
 
     const confidenceToSelect = await screen.findByText(/Strongly agree/)
     await act(() => userEvent.click(confidenceToSelect))
     await screen.findByText(/The US should only intervene militarily when directly attacked\./)
-    const confidenceConfirmButton = screen.getByText(/Select/, { selector: 'button' })
+    const confidenceConfirmButton = screen.getByRole('button', { name: /Select/ })
     await act(() => userEvent.click(confidenceConfirmButton))
 
     await screen.findByText(/Creating chat session/)
@@ -80,18 +80,18 @@ describe('claim-prompt', () => {
 
     const claimInput = await screen.findByLabelText(/Truth claim/)
     await act(() => userEvent.type(claimInput, 'An awesome claim'))
-    const submitClaimButton = screen.getByText(/Submit/, { selector: 'button' })
+    const submitClaimButton = screen.getByRole('button', { name: /Submit/ })
     await act(() => userEvent.click(submitClaimButton))
 
     const claimToSelect = await screen.findByText(/A super claim/)
     await act(() => userEvent.click(claimToSelect))
-    const claimConfirmButton = screen.getByText(/Select/, { selector: 'button' })
+    const claimConfirmButton = screen.getByRole('button', { name: /Select/ })
     await act(() => userEvent.click(claimConfirmButton))
 
     const confidenceToSelect = await screen.findByText(/Strongly disagree/)
     await act(() => userEvent.click(confidenceToSelect))
     await screen.findByText(/A super claim/)
-    const confidenceConfirmButton = screen.getByText(/Select/, { selector: 'button' })
+    const confidenceConfirmButton = screen.getByRole('button', { name: /Select/ })
     await act(() => userEvent.click(confidenceConfirmButton))
 
     await screen.findByText(/Creating chat session/)
@@ -137,18 +137,18 @@ describe('claim-prompt', () => {
     const chatLanguageSwitch = await screen.findByRole('checkbox')
     await act(() => userEvent.click(chatLanguageSwitch))
 
-    const suggestClaimsButton = screen.getByText(/Suggest claims/, { selector: 'button' })
+    const suggestClaimsButton = screen.getByRole('button', { name: /Suggest claims/ })
     await act(() => userEvent.click(suggestClaimsButton))
 
     const claimToSelect = await screen.findByText(/Military intervention causes more harm than good\./)
     await act(() => userEvent.click(claimToSelect))
-    const claimConfirmButton = screen.getByText(/Select/, { selector: 'button' })
+    const claimConfirmButton = screen.getByRole('button', { name: /Select/ })
     await act(() => userEvent.click(claimConfirmButton))
 
     const confidenceToSelect = await screen.findByText(/Slightly agree/)
     await act(() => userEvent.click(confidenceToSelect))
     await screen.findByText(/Military intervention causes more harm than good\./)
-    const confidenceConfirmButton = screen.getByText(/Select/, { selector: 'button' })
+    const confidenceConfirmButton = screen.getByRole('button', { name: /Select/ })
     await act(() => userEvent.click(confidenceConfirmButton))
 
     await screen.findByText(/Creating chat session/)
@@ -169,7 +169,7 @@ describe('claim-prompt', () => {
     await act(() => userEvent.click(chatLanguageSwitch))
     await act(() => userEvent.click(chatLanguageSwitch))
 
-    const suggestClaimsButton = screen.getByText(/Suggest claims/, { selector: 'button' })
+    const suggestClaimsButton = screen.getByRole('button', { name: /Suggest claims/ })
     await act(() => userEvent.click(suggestClaimsButton))
 
     expect(mockFetchSuggestedClaims).toHaveBeenCalledWith('en-US')
@@ -191,18 +191,18 @@ describe('claim-prompt', () => {
 
     const claimInput = await screen.findByLabelText(/Truth claim/)
     await act(() => userEvent.type(claimInput, 'A cool claim'))
-    const submitClaimButton = screen.getByText(/Submit/, { selector: 'button' })
+    const submitClaimButton = screen.getByRole('button', { name: /Submit/ })
     await act(() => userEvent.click(submitClaimButton))
 
     const claimToSelect = await screen.findByText(/An okay claim/)
     await act(() => userEvent.click(claimToSelect))
-    const claimConfirmButton = screen.getByText(/Select/, { selector: 'button' })
+    const claimConfirmButton = screen.getByRole('button', { name: /Select/ })
     await act(() => userEvent.click(claimConfirmButton))
 
     const confidenceToSelect = await screen.findByText(/Strongly disagree/)
     await act(() => userEvent.click(confidenceToSelect))
     await screen.findByText(/An okay claim/)
-    const confidenceConfirmButton = screen.getByText(/Select/, { selector: 'button' })
+    const confidenceConfirmButton = screen.getByRole('button', { name: /Select/ })
     await act(() => userEvent.click(confidenceConfirmButton))
 
     await screen.findByText(/Creating chat session/)
@@ -223,16 +223,16 @@ describe('claim-prompt', () => {
 
     const claimInput = await screen.findByLabelText(/Truth claim/)
     await act(() => userEvent.type(claimInput, 'An awesome claim'))
-    const submitClaimButton = screen.getByText(/Submit/, { selector: 'button' })
+    const submitClaimButton = screen.getByRole('button', { name: /Submit/ })
     await act(() => userEvent.click(submitClaimButton))
 
-    const claimConfirmButton = await screen.findByText(/Select/, { selector: 'button' })
+    const claimConfirmButton = await screen.findByRole('button', { name: /Select/ })
     await act(() => userEvent.click(claimConfirmButton))
 
     const confidenceToSelect = await screen.findByText(/Slightly disagree/)
     await act(() => userEvent.click(confidenceToSelect))
     await screen.findByText(/An awesome claim/)
-    const confidenceConfirmButton = screen.getByText(/Select/, { selector: 'button' })
+    const confidenceConfirmButton = screen.getByRole('button', { name: /Select/ })
     await act(() => userEvent.click(confidenceConfirmButton))
 
     await screen.findByText(/Creating chat session/)
@@ -247,7 +247,7 @@ describe('claim-prompt', () => {
 
     const claimInput = await screen.findByLabelText(/Truth claim/)
     await act(() => userEvent.type(claimInput, 'An inappropriate claim'))
-    const submitClaimButton = screen.getByText(/Submit/, { selector: 'button' })
+    const submitClaimButton = screen.getByRole('button', { name: /Submit/ })
     await act(() => userEvent.click(submitClaimButton))
 
     expect(
@@ -260,39 +260,39 @@ describe('claim-prompt', () => {
   it('allows backwards navigation', async () => {
     render(<ClaimPrompt onClaimSelect={mockOnClaimSelect} />)
 
-    const suggestClaimsButton = screen.getByText(/Suggest claims/, { selector: 'button' })
+    const suggestClaimsButton = screen.getByRole('button', { name: /Suggest claims/ })
     await act(() => userEvent.click(suggestClaimsButton))
 
     const claimToSelect = await screen.findByText(
       /US foreign policy should focus on diplomacy rather than military action./,
     )
     await act(() => userEvent.click(claimToSelect))
-    const claimConfirmButton = screen.getByText(/Select/, { selector: 'button' })
+    const claimConfirmButton = screen.getByRole('button', { name: /Select/ })
     await act(() => userEvent.click(claimConfirmButton))
 
     const confidenceToSelect = await screen.findByText(/Slightly agree/)
     await act(() => userEvent.click(confidenceToSelect))
     await screen.findByText(/US foreign policy should focus on diplomacy rather than military action\./)
-    const confidenceBackButton = screen.getByText(/Back/, { selector: 'button' })
+    const confidenceBackButton = screen.getByRole('button', { name: /Back/ })
     await act(() => userEvent.click(confidenceBackButton))
 
     await screen.findByText(/Select a claim/)
-    const claimBackButton = screen.getByText(/Back/, { selector: 'button' })
+    const claimBackButton = screen.getByRole('button', { name: /Back/ })
     await act(() => userEvent.click(claimBackButton))
 
-    expect(await screen.findByText(/Suggest claims/, { selector: 'button' })).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: /Suggest claims/ })).toBeInTheDocument()
   })
 
   it('shows error on confidence screen when confidence levels fail to load', async () => {
     jest.mocked(useConfidenceLevels).mockReturnValue({ confidenceLevels: [] })
     render(<ClaimPrompt onClaimSelect={mockOnClaimSelect} />)
 
-    const suggestClaimsButton = screen.getByText(/Suggest claims/, { selector: 'button' })
+    const suggestClaimsButton = screen.getByRole('button', { name: /Suggest claims/ })
     await act(() => userEvent.click(suggestClaimsButton))
 
     const claimToSelect = await screen.findByText(/US military spending should be reduced\./)
     await act(() => userEvent.click(claimToSelect))
-    const claimConfirmButton = screen.getByText(/Select/, { selector: 'button' })
+    const claimConfirmButton = screen.getByRole('button', { name: /Select/ })
     await act(() => userEvent.click(claimConfirmButton))
 
     expect(
@@ -303,7 +303,7 @@ describe('claim-prompt', () => {
   it('skips first scroll when prompted', async () => {
     render(<ClaimPrompt onClaimSelect={mockOnClaimSelect} skipFirstScroll={true} />)
 
-    const suggestClaimsButton = screen.getByText(/Suggest claims/, { selector: 'button' })
+    const suggestClaimsButton = screen.getByRole('button', { name: /Suggest claims/ })
     await act(() => userEvent.click(suggestClaimsButton))
 
     expect(mockScrollIntoView).not.toHaveBeenCalled()
@@ -318,7 +318,7 @@ describe('claim-prompt', () => {
     })
     render(<ClaimPrompt onClaimSelect={mockOnClaimSelect} />)
 
-    const suggestClaimsButton = await screen.findByText(/Suggest claims/, { selector: 'button' })
+    const suggestClaimsButton = await screen.findByRole('button', { name: /Suggest claims/ })
     await act(() => userEvent.click(suggestClaimsButton))
 
     expect(await screen.findByText(/Error generating suggested claims\. Please try again later\./)).toBeInTheDocument()
@@ -340,7 +340,7 @@ describe('claim-prompt', () => {
     })
     render(<ClaimPrompt onClaimSelect={mockOnClaimSelect} />)
 
-    const suggestClaimsButton = screen.getByText(/Suggest claims/, { selector: 'button' })
+    const suggestClaimsButton = screen.getByRole('button', { name: /Suggest claims/ })
     await act(() => userEvent.click(suggestClaimsButton))
 
     expect(await screen.findByText(/An unwelcome error\./)).toBeInTheDocument()
@@ -356,7 +356,7 @@ describe('claim-prompt', () => {
     })
     render(<ClaimPrompt onClaimSelect={mockOnClaimSelect} />)
 
-    const suggestClaimsButton = screen.getByText(/Suggest claims/, { selector: 'button' })
+    const suggestClaimsButton = screen.getByRole('button', { name: /Suggest claims/ })
     await act(() => userEvent.click(suggestClaimsButton))
 
     expect(await screen.findByText(/The worst error\. How many errors\?/)).toBeInTheDocument()
@@ -366,17 +366,17 @@ describe('claim-prompt', () => {
     const mockOnClaimSelectWithError = jest.fn().mockRejectedValue(new Error('Session creation failed'))
     render(<ClaimPrompt onClaimSelect={mockOnClaimSelectWithError} />)
 
-    const suggestClaimsButton = await screen.findByText(/Suggest claims/, { selector: 'button' })
+    const suggestClaimsButton = await screen.findByRole('button', { name: /Suggest claims/ })
     await act(() => userEvent.click(suggestClaimsButton))
 
     const claimToSelect = await screen.findByText(/The US should only intervene militarily when directly attacked\./)
     await act(() => userEvent.click(claimToSelect))
-    const claimConfirmButton = screen.getByText(/Select/, { selector: 'button' })
+    const claimConfirmButton = screen.getByRole('button', { name: /Select/ })
     await act(() => userEvent.click(claimConfirmButton))
 
     const confidenceToSelect = await screen.findByText(/Strongly agree/)
     await act(() => userEvent.click(confidenceToSelect))
-    const confidenceConfirmButton = screen.getByText(/Select/, { selector: 'button' })
+    const confidenceConfirmButton = screen.getByRole('button', { name: /Select/ })
     await act(() => userEvent.click(confidenceConfirmButton))
 
     // Should show error message and return to confidence stage
@@ -396,17 +396,17 @@ describe('claim-prompt', () => {
 
     render(<ClaimPrompt onClaimSelect={mockOnClaimSelectSuccess} />)
 
-    const suggestClaimsButton = await screen.findByText(/Suggest claims/, { selector: 'button' })
+    const suggestClaimsButton = await screen.findByRole('button', { name: /Suggest claims/ })
     await act(() => userEvent.click(suggestClaimsButton))
 
     const claimToSelect = await screen.findByText(/The US should only intervene militarily when directly attacked\./)
     await act(() => userEvent.click(claimToSelect))
-    const claimConfirmButton = screen.getByText(/Select/, { selector: 'button' })
+    const claimConfirmButton = screen.getByRole('button', { name: /Select/ })
     await act(() => userEvent.click(claimConfirmButton))
 
     const confidenceToSelect = await screen.findByText(/Strongly agree/)
     await act(() => userEvent.click(confidenceToSelect))
-    const confidenceConfirmButton = screen.getByText(/Select/, { selector: 'button' })
+    const confidenceConfirmButton = screen.getByRole('button', { name: /Select/ })
     await act(() => userEvent.click(confidenceConfirmButton))
 
     // Should proceed to submitted stage after successful call

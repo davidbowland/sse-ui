@@ -80,35 +80,51 @@ const InputStage = ({
     <div className="mx-auto flex w-full flex-col items-center gap-0 px-2 text-center">
       <div className="pb-6">
         <h4
-          className="text-3xl font-normal italic"
-          style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}
+          style={{
+            fontFamily: 'var(--font)',
+            fontSize: '24px',
+            fontWeight: 600,
+            letterSpacing: '-0.018em',
+            color: 'var(--text)',
+          }}
         >
           What do you believe?
         </h4>
       </div>
 
-      {/* Custom input with animated placeholder */}
       <div className="mb-6 w-full text-left">
         <label
-          className="mb-1.5 block text-sm font-medium"
           htmlFor="truth-claim"
-          style={{ color: 'var(--color-text-muted)', fontFamily: 'var(--font-ui)' }}
+          style={{
+            display: 'block',
+            fontFamily: 'var(--font)',
+            fontSize: '10px',
+            fontWeight: 700,
+            letterSpacing: '0.2em',
+            textTransform: 'uppercase',
+            color: 'var(--accent-42)',
+            marginBottom: '9px',
+          }}
         >
           Truth claim
         </label>
-        <div className="relative">
+        <div style={{ position: 'relative' }}>
           <input
             autoComplete="off"
-            className="w-full rounded-lg border px-4 py-3 text-sm outline-none transition-colors"
+            className="w-full outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
             id="truth-claim"
             onChange={(e) => setClaimInput(e.target.value)}
             onKeyUp={handleKeyUp}
             style={{
-              backgroundColor: 'var(--color-surface)',
-              borderColor: errorMessage ? '#ef4444' : 'var(--color-border)',
-              color: 'var(--color-text)',
-              fontFamily: 'var(--font-ui)',
-              caretColor: 'var(--color-brand)',
+              fontFamily: 'var(--font)',
+              fontSize: '14px',
+              color: 'var(--text)',
+              background: 'var(--surface-alt)',
+              borderRadius: '12px',
+              border: `1px solid ${errorMessage ? 'var(--error)' : 'var(--border)'}`,
+              padding: '14px 16px',
+              caretColor: 'var(--accent)',
+              transition: 'border-color 0.15s, box-shadow 0.15s',
             }}
             value={claimInput}
           />
@@ -116,15 +132,16 @@ const InputStage = ({
             <span
               className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm italic"
               style={{
-                color: 'var(--color-text-muted)',
+                color: 'var(--text-muted)',
+                fontFamily: 'var(--font)',
                 opacity: exampleVisible ? 0.65 : 0,
                 transition: `opacity ${FADE_MS}ms ease`,
-                fontFamily: 'var(--font-ui)',
+                display: 'block',
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 maxWidth: 'calc(100% - 2rem)',
-                paddingRight: '0.25rem',
+                paddingRight: '8px',
               }}
             >
               {EXAMPLE_CLAIMS[exampleIndex]}
@@ -132,7 +149,7 @@ const InputStage = ({
           )}
         </div>
         {errorMessage && (
-          <p className="mt-1.5 text-sm" style={{ color: '#ef4444', fontFamily: 'var(--font-ui)' }}>
+          <p style={{ marginTop: '6px', fontSize: '13px', color: 'var(--error)', fontFamily: 'var(--font)' }}>
             {errorMessage}
           </p>
         )}
@@ -142,13 +159,15 @@ const InputStage = ({
         button1={<SecondaryButton onPress={onSuggestionsRequested}>Suggest claims</SecondaryButton>}
         button2={<PrimaryButton onPress={submitClaim}>Submit</PrimaryButton>}
       />
-      <p className="pb-8 pt-8 text-sm" style={{ color: 'var(--color-text-muted)' }}>
+      <p style={{ padding: '32px 0', fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font)' }}>
         Suggested claims are only updated a few times per day
       </p>
       {browserLanguage !== 'en-US' && browserLanguage && (
         <div>
-          <h5 className="text-2xl font-normal">Chat language</h5>
-          <div className="text-sm">
+          <h5 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text)', fontFamily: 'var(--font)' }}>
+            Chat language
+          </h5>
+          <div style={{ fontSize: '13px', color: 'var(--text-muted)', fontFamily: 'var(--font)' }}>
             en-US
             <Switch
               aria-label="Chat language switch"

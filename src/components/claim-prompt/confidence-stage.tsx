@@ -36,7 +36,15 @@ const ConfidenceStage = ({
   return (
     <div className="mx-auto flex w-full flex-col gap-8 text-center">
       <div>
-        <h4 className="text-3xl font-normal" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-text)' }}>
+        <h4
+          style={{
+            fontFamily: 'var(--font)',
+            fontSize: '24px',
+            fontWeight: 600,
+            letterSpacing: '-0.018em',
+            color: 'var(--text)',
+          }}
+        >
           Select your stance
         </h4>
       </div>
@@ -44,14 +52,26 @@ const ConfidenceStage = ({
       <div>
         <ClaimCard>
           <ClaimCardLabel>Claim:</ClaimCardLabel>
-          <h5 className="text-2xl font-normal italic" style={{ fontFamily: 'var(--font-display)' }}>
+          <h5
+            style={{
+              fontFamily: 'var(--font)',
+              fontSize: '17px',
+              fontWeight: 600,
+              letterSpacing: '-0.015em',
+              color: 'var(--text)',
+              fontStyle: 'italic',
+              lineHeight: 1.4,
+            }}
+          >
             {claim}
           </h5>
         </ClaimCard>
       </div>
       <div>
         {confidenceLevels.length === 0 ? (
-          <p>Error loading confidence levels. Please refresh to try again.</p>
+          <p style={{ color: 'var(--text-muted)', fontFamily: 'var(--font)' }}>
+            Error loading confidence levels. Please refresh to try again.
+          </p>
         ) : (
           <SelectionList>
             {confidenceLevels.map((level, index) => (

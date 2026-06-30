@@ -1,5 +1,6 @@
-import { Spinner } from '@heroui/react'
 import React, { useMemo } from 'react'
+
+import { PremiumLoader } from './elements'
 
 const SUBTITLE_OPTIONS = [
   'This oughta be fun',
@@ -32,13 +33,19 @@ const SUBTITLE_OPTIONS = [
 const getRandomSubtitle = () => SUBTITLE_OPTIONS[Math.floor(Math.random() * SUBTITLE_OPTIONS.length)]
 
 const SubmittedStage = (): React.ReactNode => {
-  const subtitle = useMemo(() => getRandomSubtitle(), [SUBTITLE_OPTIONS])
+  const subtitle = useMemo(() => getRandomSubtitle(), [])
 
   return (
-    <div className="mx-auto flex w-full max-w-xl flex-col items-center gap-8 px-3 py-6 text-center">
-      <h4 className="text-3xl font-normal">Creating chat session</h4>
-      <p className="text-sm italic">{subtitle}</p>
-      <Spinner />
+    <div className="mx-auto flex w-full max-w-xl flex-col items-center gap-8 px-3 py-8 text-center">
+      <PremiumLoader />
+      <div className="flex flex-col items-center gap-2">
+        <h4 style={{ fontFamily: 'var(--font)', fontSize: '22px', fontWeight: 600, color: 'var(--text)' }}>
+          Creating chat session
+        </h4>
+        <p style={{ fontFamily: 'var(--font)', fontSize: '13px', fontStyle: 'italic', color: 'var(--text-muted)' }}>
+          {subtitle}
+        </p>
+      </div>
     </div>
   )
 }

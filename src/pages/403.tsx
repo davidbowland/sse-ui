@@ -17,8 +17,7 @@ const Forbidden = (): React.ReactNode => {
       </Head>
       {display403 && (
         <ServerErrorMessage title="403: Forbidden">
-          You are not allowed to access the resource you requested. If you feel you have reached this page in error,
-          please contact the webmaster.
+          You don&apos;t have permission to view this page. If you think that&apos;s wrong, please let us know.
         </ServerErrorMessage>
       )}
     </>
