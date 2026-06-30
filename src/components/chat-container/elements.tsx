@@ -185,6 +185,7 @@ export const CompactClaimStrip = ({
         overflow: 'hidden',
         textOverflow: 'ellipsis',
       }}
+      title={isVisible ? claim : undefined}
     >
       {isVisible ? claim : null}
     </span>

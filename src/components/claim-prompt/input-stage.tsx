@@ -155,10 +155,12 @@ const InputStage = ({
         )}
       </div>
 
-      <TwoButtons
-        button1={<SecondaryButton onPress={onSuggestionsRequested}>Suggest claims</SecondaryButton>}
-        button2={<PrimaryButton onPress={submitClaim}>Submit</PrimaryButton>}
-      />
+      <div className="w-full self-stretch">
+        <TwoButtons
+          button1={<SecondaryButton onPress={onSuggestionsRequested}>Suggest claims</SecondaryButton>}
+          button2={<PrimaryButton onPress={submitClaim}>Submit</PrimaryButton>}
+        />
+      </div>
       <p style={{ padding: '32px 0', fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font)' }}>
         Suggested claims are only updated a few times per day
       </p>

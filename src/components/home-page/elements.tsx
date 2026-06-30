@@ -41,7 +41,7 @@ export const PageMain = ({ children }: { children: React.ReactNode }): React.Rea
 )
 
 export const HeroSection = (): React.ReactNode => (
-  <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+  <div className="mb-6 sm:mb-12" style={{ textAlign: 'center' }}>
     {/* Eyebrow tag */}
     <div
       style={{
@@ -101,7 +101,10 @@ export const HeroSection = (): React.ReactNode => (
 )
 
 export const HeroDivider = (): React.ReactNode => (
-  <div style={{ width: '40px', height: '1px', background: 'var(--accent)', opacity: 0.35, margin: '0 auto 28px' }} />
+  <div
+    className="mx-auto mb-4 sm:mb-7"
+    style={{ width: '40px', height: '1px', background: 'var(--accent)', opacity: 0.35 }}
+  />
 )
 
 export const PrivacyNote = (): React.ReactNode => (

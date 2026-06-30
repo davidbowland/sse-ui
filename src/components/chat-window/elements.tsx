@@ -104,9 +104,9 @@ export const MessageLine = ({
   innerRef?: React.RefObject<HTMLParagraphElement | null>
 }): React.ReactNode => (
   <p
-    className="py-[0.1rem] text-sm sm:text-base"
+    className="py-[0.1rem] text-xs sm:text-sm md:text-base"
     ref={isLast ? innerRef : undefined}
-    style={{ fontFamily: 'var(--font)', color: 'var(--text)', lineHeight: 1.67 }}
+    style={{ fontFamily: 'var(--font)', color: 'var(--text)', lineHeight: 1.5 }}
   >
     {children}
   </p>
