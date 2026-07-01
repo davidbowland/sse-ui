@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { validateClaim as postValidateClaim, suggestClaims } from '@services/sse'
 import { ValidatedClaim } from '@types'
@@ -17,11 +17,41 @@ interface ValidatedClaimsCache {
   }
 }
 
+const RECAPTCHA_SCRIPT_ID = 'recaptcha-v3-script'
+const RECAPTCHA_TIMEOUT_MS = 10_000
+
+/** Polls for the reCAPTCHA global then waits for it to be ready. Handles the case where
+    the script tag hasn't finished loading yet when this is called. */
+const waitForRecaptcha = (): Promise<void> =>
+  new Promise((resolve, reject) => {
+    const deadline = Date.now() + RECAPTCHA_TIMEOUT_MS
+    const check = () => {
+      if (typeof grecaptcha !== 'undefined' && grecaptcha.ready) {
+        grecaptcha.ready(resolve)
+      } else if (Date.now() > deadline) {
+        reject(new Error('reCAPTCHA failed to load'))
+      } else {
+        setTimeout(check, 100)
+      }
+    }
+    check()
+  })
+
 export const useSuggestedClaims = () => {
   const [aiClaims, setAiClaims] = useState<string[] | undefined>(undefined)
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
   const [suggestedClaims, setSuggestedClaims] = useState<string[]>([])
   const [validatedClaims, setValidatedClaims] = useState<ValidatedClaimsCache>({})
+
+  useEffect(() => {
+    if (!document.getElementById(RECAPTCHA_SCRIPT_ID)) {
+      const script = document.createElement('script')
+      script.id = RECAPTCHA_SCRIPT_ID
+      script.src = `https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}`
+      script.async = true
+      document.body.appendChild(script)
+    }
+  }, [])
 
   const fetchSuggestedClaims = useCallback(
     async (language: string): Promise<void> => {
@@ -29,7 +59,11 @@ export const useSuggestedClaims = () => {
         setSuggestedClaims(aiClaims)
       } else {
         try {
-          const { claims } = await suggestClaims(language)
+          await waitForRecaptcha()
+          const token = await grecaptcha.execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY, {
+            action: 'SUGGEST_CLAIMS',
+          })
+          const { claims } = await suggestClaims(language, token)
           setSuggestedClaims(claims)
           setAiClaims(claims)
         } catch (error: unknown) {
@@ -50,7 +84,11 @@ export const useSuggestedClaims = () => {
       }
 
       try {
-        const { inappropriate, suggestions } = await postValidateClaim(claim, language)
+        await waitForRecaptcha()
+        const token = await grecaptcha.execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY, {
+          action: 'VALIDATE_CLAIM',
+        })
+        const { inappropriate, suggestions } = await postValidateClaim(claim, language, token)
         setSuggestedClaims(suggestions)
         setValidatedClaims((prevValue: ValidatedClaimsCache) => ({
           ...prevValue,
