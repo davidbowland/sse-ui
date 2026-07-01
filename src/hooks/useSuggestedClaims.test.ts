@@ -1,7 +1,7 @@
 import { recaptchaToken, suggestedClaims, validationResult } from '@test/__mocks__'
 import { renderHook, waitFor } from '@testing-library/react'
 
-import { useSuggestedClaims } from './useSuggestedClaims'
+import { RECAPTCHA_TIMEOUT_MS, useSuggestedClaims } from './useSuggestedClaims'
 import * as sse from '@services/sse'
 
 jest.mock('@services/sse')
@@ -86,6 +86,34 @@ describe('useSuggestedClaims', () => {
       expect(result.current.errorMessage).toEqual(
         'We apologize, but we encountered an error compiling suggested claims.',
       )
+    })
+  })
+
+  describe('when grecaptcha.ready never invokes its callback', () => {
+    beforeAll(() => {
+      jest.useFakeTimers()
+    })
+
+    afterAll(() => {
+      jest.useRealTimers()
+    })
+
+    it('returns nothing once the overall recaptcha timeout elapses', async () => {
+      grecaptchaReady.mockImplementationOnce(() => {
+        // Simulate a hang: never invoke the resolve callback passed to it
+      })
+      const { result } = renderHook(() => useSuggestedClaims())
+
+      const fetchPromise = result.current.fetchSuggestedClaims(language)
+      await jest.advanceTimersByTimeAsync(RECAPTCHA_TIMEOUT_MS)
+      await fetchPromise
+
+      expect(sse.suggestClaims).not.toHaveBeenCalled()
+      await waitFor(() => {
+        expect(result.current.errorMessage).toEqual(
+          'We apologize, but we encountered an error compiling suggested claims.',
+        )
+      })
     })
   })
 

@@ -57,15 +57,27 @@ export const fetchSession = async (sessionId: SessionId): Promise<Session> => {
 
 // Suggest claims
 
+// reCAPTCHA tokens are single-use, so the automatic retry (which would resend the identical
+// token) is disabled for this request; a retried request is guaranteed to fail verification.
 export const suggestClaims = async (language: string, token: string): Promise<SuggestedClaims> => {
-  const response = await api.post('/suggest-claims', { language }, { headers: { 'x-recaptcha-token': token } })
+  const response = await api.post(
+    '/suggest-claims',
+    { language },
+    { headers: { 'x-recaptcha-token': token }, 'axios-retry': { retries: 0 } },
+  )
   return response.data
 }
 
 // Validate claim
 
+// reCAPTCHA tokens are single-use, so the automatic retry (which would resend the identical
+// token) is disabled for this request; a retried request is guaranteed to fail verification.
 export const validateClaim = async (claim: string, language: string, token: string): Promise<ValidationResult> => {
-  const response = await api.post('/validate-claim', { claim, language }, { headers: { 'x-recaptcha-token': token } })
+  const response = await api.post(
+    '/validate-claim',
+    { claim, language },
+    { headers: { 'x-recaptcha-token': token }, 'axios-retry': { retries: 0 } },
+  )
   return response.data
 }
 

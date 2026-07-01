@@ -18,7 +18,7 @@ interface ValidatedClaimsCache {
 }
 
 const RECAPTCHA_SCRIPT_ID = 'recaptcha-v3-script'
-const RECAPTCHA_TIMEOUT_MS = 10_000
+export const RECAPTCHA_TIMEOUT_MS = 10_000
 
 /** Polls for the reCAPTCHA global then waits for it to be ready. Handles the case where
     the script tag hasn't finished loading yet when this is called. */
@@ -36,6 +36,19 @@ const waitForRecaptcha = (): Promise<void> =>
     }
     check()
   })
+
+/** Resolves the given action's reCAPTCHA token, bounding the entire "wait for ready, then
+    execute" sequence with a single timeout so a hung grecaptcha.ready/execute callback can't
+    stall the caller forever. */
+const getRecaptchaToken = (action: string): Promise<string> => {
+  const timeout = new Promise<never>((_, reject) => {
+    setTimeout(() => reject(new Error('reCAPTCHA failed to load')), RECAPTCHA_TIMEOUT_MS)
+  })
+  const token = waitForRecaptcha().then(() =>
+    grecaptcha.execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY, { action }),
+  )
+  return Promise.race([token, timeout])
+}
 
 export const useSuggestedClaims = () => {
   const [aiClaims, setAiClaims] = useState<string[] | undefined>(undefined)
@@ -59,10 +72,7 @@ export const useSuggestedClaims = () => {
         setSuggestedClaims(aiClaims)
       } else {
         try {
-          await waitForRecaptcha()
-          const token = await grecaptcha.execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY, {
-            action: 'SUGGEST_CLAIMS',
-          })
+          const token = await getRecaptchaToken('SUGGEST_CLAIMS')
           const { claims } = await suggestClaims(language, token)
           setSuggestedClaims(claims)
           setAiClaims(claims)
@@ -84,10 +94,7 @@ export const useSuggestedClaims = () => {
       }
 
       try {
-        await waitForRecaptcha()
-        const token = await grecaptcha.execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY, {
-          action: 'VALIDATE_CLAIM',
-        })
+        const token = await getRecaptchaToken('VALIDATE_CLAIM')
         const { inappropriate, suggestions } = await postValidateClaim(claim, language, token)
         setSuggestedClaims(suggestions)
         setValidatedClaims((prevValue: ValidatedClaimsCache) => ({

@@ -96,7 +96,7 @@ describe('sse', () => {
       expect(mockPost).toHaveBeenCalledWith(
         '/suggest-claims',
         { language },
-        { headers: { 'x-recaptcha-token': recaptchaToken } },
+        { headers: { 'x-recaptcha-token': recaptchaToken }, 'axios-retry': { retries: 0 } },
       )
       expect(result).toEqual({ claims: suggestedClaims })
     })
@@ -110,7 +110,7 @@ describe('sse', () => {
       expect(mockPost).toHaveBeenCalledWith(
         '/validate-claim',
         { claim, language },
-        { headers: { 'x-recaptcha-token': recaptchaToken } },
+        { headers: { 'x-recaptcha-token': recaptchaToken }, 'axios-retry': { retries: 0 } },
       )
       expect(result).toEqual(validationResult)
     })
