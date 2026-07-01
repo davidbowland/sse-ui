@@ -57,15 +57,15 @@ export const fetchSession = async (sessionId: SessionId): Promise<Session> => {
 
 // Suggest claims
 
-export const suggestClaims = async (language: string): Promise<SuggestedClaims> => {
-  const response = await api.post('/suggest-claims', { language })
+export const suggestClaims = async (language: string, token: string): Promise<SuggestedClaims> => {
+  const response = await api.post('/suggest-claims', { language }, { headers: { 'x-recaptcha-token': token } })
   return response.data
 }
 
 // Validate claim
 
-export const validateClaim = async (claim: string, language: string): Promise<ValidationResult> => {
-  const response = await api.post('/validate-claim', { claim, language })
+export const validateClaim = async (claim: string, language: string, token: string): Promise<ValidationResult> => {
+  const response = await api.post('/validate-claim', { claim, language }, { headers: { 'x-recaptcha-token': token } })
   return response.data
 }
 

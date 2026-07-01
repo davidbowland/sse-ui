@@ -3,6 +3,7 @@ import {
   confidenceLevels,
   llmRequest,
   llmResponse,
+  recaptchaToken,
   session,
   sessionContext,
   sessionId,
@@ -90,9 +91,13 @@ describe('sse', () => {
   describe('suggestClaims', () => {
     it('suggests claims', async () => {
       mockPost.mockResolvedValueOnce({ data: { claims: suggestedClaims } })
-      const result = await suggestClaims(language)
+      const result = await suggestClaims(language, recaptchaToken)
 
-      expect(mockPost).toHaveBeenCalledWith('/suggest-claims', { language })
+      expect(mockPost).toHaveBeenCalledWith(
+        '/suggest-claims',
+        { language },
+        { headers: { 'x-recaptcha-token': recaptchaToken } },
+      )
       expect(result).toEqual({ claims: suggestedClaims })
     })
   })
@@ -100,9 +105,13 @@ describe('sse', () => {
   describe('validateClaim', () => {
     it('validates a claim', async () => {
       mockPost.mockResolvedValueOnce({ data: validationResult })
-      const result = await validateClaim(claim, language)
+      const result = await validateClaim(claim, language, recaptchaToken)
 
-      expect(mockPost).toHaveBeenCalledWith('/validate-claim', { claim, language })
+      expect(mockPost).toHaveBeenCalledWith(
+        '/validate-claim',
+        { claim, language },
+        { headers: { 'x-recaptcha-token': recaptchaToken } },
+      )
       expect(result).toEqual(validationResult)
     })
   })
