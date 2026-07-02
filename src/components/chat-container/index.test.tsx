@@ -57,7 +57,7 @@ describe('chat-container', () => {
   it('compact claim strip is hidden initially', () => {
     setup({ claim: 'Free will is an illusion' })
     const strip = screen.getByTestId('compact-claim-strip')
-    expect(strip).toHaveStyle({ opacity: '0' })
+    expect(strip).toHaveAttribute('aria-hidden', 'true')
   })
 
   it('compact claim strip becomes visible when claim card exits viewport', async () => {
@@ -68,7 +68,7 @@ describe('chat-container', () => {
       intersectionCallback([{ isIntersecting: false } as IntersectionObserverEntry], {} as IntersectionObserver)
     })
 
-    expect(strip).toHaveStyle({ opacity: '1' })
+    expect(strip).toHaveAttribute('aria-hidden', 'false')
   })
 
   it('compact claim strip hides again when claim card re-enters viewport', async () => {
@@ -82,7 +82,7 @@ describe('chat-container', () => {
       intersectionCallback([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver)
     })
 
-    expect(strip).toHaveStyle({ opacity: '0' })
+    expect(strip).toHaveAttribute('aria-hidden', 'true')
   })
 
   it.each([0])('invokes onConfidenceChange on confidence change', async (index: number) => {

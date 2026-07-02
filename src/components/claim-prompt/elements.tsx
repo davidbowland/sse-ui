@@ -118,7 +118,7 @@ export const ClaimCardLabel = ({ children }: { children: React.ReactNode }): Rea
       fontWeight: 700,
       letterSpacing: '0.2em',
       textTransform: 'uppercase',
-      color: 'var(--accent-55)',
+      color: 'var(--accent-text)',
       marginBottom: '8px',
       fontFamily: 'var(--font)',
     }}
@@ -153,7 +153,10 @@ export const StepIndicator = React.forwardRef<HTMLElement, { currentStep: number
                 }}
               />
             )}
-            <li style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '7px', width: '88px' }}>
+            <li
+              aria-current={isActive ? 'step' : undefined}
+              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '7px', width: '88px' }}
+            >
               <span
                 style={{
                   display: 'flex',
@@ -225,6 +228,7 @@ export const SelectionListItem = ({
 }): React.ReactNode => (
   <li>
     <button
+      aria-pressed={isSelected}
       className="flex w-full items-center gap-3 text-left text-sm"
       onClick={onClick}
       style={{
@@ -320,7 +324,7 @@ export const SecondaryButton = ({
     style={{
       background: 'transparent',
       border: '1px solid var(--accent-16)',
-      color: 'var(--accent)',
+      color: 'var(--accent-text)',
       fontWeight: 500,
       borderRadius: '12px',
       fontFamily: 'var(--font)',

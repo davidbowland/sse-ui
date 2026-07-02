@@ -23,10 +23,10 @@ describe('Session page', () => {
   beforeAll(() => {
     jest.mocked(ChatContainer).mockImplementation(({ children }) => children)
     jest.mocked(ChatWindow).mockReturnValue(<>ChatWindow</>)
+    window.HTMLElement.prototype.scrollIntoView = jest.fn()
   })
 
-  beforeEach(() => {
-    jest.clearAllMocks()
+  const setup = () => {
     document.title = ''
     jest.mocked(useSession).mockReturnValue({ ...useSessionResults, onChangeConfidence, sendChatMessage })
     jest.mocked(useRouter).mockReturnValue({ asPath: `/c/${sessionId}` } as any)
@@ -34,10 +34,10 @@ describe('Session page', () => {
       value: { pathname: `/c/${sessionId}` },
       writable: true,
     })
-    window.HTMLElement.prototype.scrollIntoView = jest.fn()
-  })
+  }
 
   it('renders chat container', async () => {
+    setup()
     render(<SessionPage />)
 
     await waitFor(() =>
@@ -54,6 +54,7 @@ describe('Session page', () => {
   })
 
   it('renders claim + breadcrumbs', async () => {
+    setup()
     render(<SessionPage />)
 
     await waitFor(() =>
@@ -70,6 +71,7 @@ describe('Session page', () => {
   })
 
   it('renders chat window', async () => {
+    setup()
     render(<SessionPage />)
 
     await waitFor(() =>
@@ -87,12 +89,14 @@ describe('Session page', () => {
   })
 
   it('renders title', () => {
+    setup()
     render(<SessionPage />)
 
     expect(document.title).toEqual('StreetLogic AI | Chat')
   })
 
   it('shows error message', async () => {
+    setup()
     jest
       .mocked(useSession)
       .mockReturnValue({ ...useSessionResults, errorMessage: 'A big fat error', onChangeConfidence, sendChatMessage })
@@ -107,6 +111,7 @@ describe('Session page', () => {
   })
 
   it('renders nothing when sessionId is undefined', () => {
+    setup()
     jest.mocked(useRouter).mockReturnValue({ asPath: '/c/' } as any)
     Object.defineProperty(window, 'location', {
       value: { pathname: '/c/' },

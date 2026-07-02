@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 
 import ServerErrorMessage from '@components/server-error-message'
@@ -17,7 +18,11 @@ const Forbidden = (): React.ReactNode => {
       </Head>
       {display403 && (
         <ServerErrorMessage title="403: Forbidden">
-          You don&apos;t have permission to view this page. If you think that&apos;s wrong, please let us know.
+          You don&apos;t have permission to view this page. If that&apos;s wrong, email us at{' '}
+          <Link className="underline" href="mailto:privacy@dbowland.com">
+            privacy@dbowland.com
+          </Link>
+          .
         </ServerErrorMessage>
       )}
     </>

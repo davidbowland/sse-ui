@@ -12,18 +12,19 @@ describe('Privacy page', () => {
     jest.mocked(PrivacyPolicy).mockReturnValue(<>PrivacyPolicy</>)
   })
 
-  beforeEach(() => {
-    jest.clearAllMocks()
+  const setup = () => {
     document.title = ''
-  })
+  }
 
   it('renderes PrivacyPolicy', () => {
+    setup()
     render(<PrivacyPage />)
 
     expect(PrivacyPolicy).toHaveBeenCalledTimes(1)
   })
 
   it('renders title', () => {
+    setup()
     render(<PrivacyPage />)
 
     expect(document.title).toEqual('StreetLogic AI | Privacy Policy')

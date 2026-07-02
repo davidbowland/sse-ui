@@ -32,12 +32,10 @@ describe('useSession', () => {
   const llmRequest: LLMRequest = {
     content: `I ${sessionContext.confidence} with the claim: ${sessionContext.claim}`,
   }
+  const futureTimeout = new Date('2999-01-01T00:00:00Z').getTime()
 
   beforeAll(() => {
     console.error = jest.fn()
-  })
-
-  beforeEach(() => {
     jest.mocked(sse.fetchSession).mockResolvedValue(session)
     jest.mocked(sse.changeConfidence).mockResolvedValue(confidenceChangeResponse)
     jest.mocked(sse.sendLlmMessage).mockResolvedValue(llmResponse)
@@ -151,9 +149,7 @@ describe('useSession', () => {
     jest.mocked(sse.fetchSession).mockRejectedValueOnce(new Error('Network error'))
     const { result } = renderHook(() => useSession(sessionId), { wrapper: createWrapper() })
 
-    await waitFor(() =>
-      expect(result.current.errorMessage).toEqual('We apologize, but we were unable to load your chat session.'),
-    )
+    await waitFor(() => expect(result.current.errorMessage).toEqual("We couldn't load your chat session."))
   })
 
   it('returns an error message when error changing confidence', async () => {
@@ -162,20 +158,14 @@ describe('useSession', () => {
 
     await waitFor(() => expect(result.current.confidence).toEqual('strongly agree'))
     result.current.onChangeConfidence('agree')
-    await waitFor(() =>
-      expect(result.current.errorMessage).toEqual(
-        'We apologize, but there was an error changing your confidence level.',
-      ),
-    )
+    await waitFor(() => expect(result.current.errorMessage).toEqual("We couldn't update your confidence level."))
   })
 
   it('returns an error message when error sending chat message', async () => {
     jest.mocked(sse.sendLlmMessage).mockRejectedValueOnce(new Error('fail'))
     const { result } = renderHook(() => useSession(sessionId), { wrapper: createWrapper() })
 
-    await waitFor(() =>
-      expect(result.current.errorMessage).toEqual('We apologize, but there was an error sending your chat message.'),
-    )
+    await waitFor(() => expect(result.current.errorMessage).toEqual("We couldn't send your message."))
   })
 
   it('does not change confidence when same confidence is selected', async () => {
@@ -201,7 +191,6 @@ describe('useSession', () => {
   })
 
   it('starts polling when sendLlmMessage returns loadingTimeout', async () => {
-    const futureTimeout = Date.now() + 60_000
     jest.mocked(sse.sendLlmMessage).mockResolvedValueOnce({ ...llmResponse, loadingTimeout: futureTimeout })
     const { result } = renderHook(() => useSession(sessionId), { wrapper: createWrapper() })
 
@@ -211,7 +200,6 @@ describe('useSession', () => {
   })
 
   it('keeps pending user message visible during polling', async () => {
-    const futureTimeout = Date.now() + 60_000
     // POST returns loadingTimeout — server hasn't processed the message yet
     jest.mocked(sse.sendLlmMessage).mockResolvedValueOnce({
       ...llmResponse,
@@ -231,7 +219,6 @@ describe('useSession', () => {
   })
 
   it('starts polling when changeConfidence returns loadingTimeout', async () => {
-    const futureTimeout = Date.now() + 60_000
     jest
       .mocked(sse)
       .changeConfidence.mockResolvedValueOnce({ ...confidenceChangeResponse, loadingTimeout: futureTimeout })

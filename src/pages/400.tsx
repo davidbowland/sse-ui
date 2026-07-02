@@ -10,8 +10,7 @@ const BadRequest = (): React.ReactNode => {
         <title>StreetLogic AI | 400: Bad Request</title>
       </Head>
       <ServerErrorMessage title="400: Bad Request">
-        Your request was malformed or otherwise could not be understood by the server. Please modify your request before
-        retrying.
+        We couldn&apos;t understand your request. Check it and try again.
       </ServerErrorMessage>
     </>
   )

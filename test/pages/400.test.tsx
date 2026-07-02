@@ -12,12 +12,12 @@ describe('400 error page', () => {
     jest.mocked(ServerErrorMessage).mockReturnValue(<>ServerErrorMessage</>)
   })
 
-  beforeEach(() => {
-    jest.clearAllMocks()
+  const setup = () => {
     document.title = ''
-  })
+  }
 
   it('renders ServerErrorMessage', () => {
+    setup()
     const expectedTitle = '400: Bad Request'
     render(<BadRequest />)
 
@@ -26,6 +26,7 @@ describe('400 error page', () => {
   })
 
   it('renders title', () => {
+    setup()
     render(<BadRequest />)
 
     expect(document.title).toEqual('StreetLogic AI | 400: Bad Request')

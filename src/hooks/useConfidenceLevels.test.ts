@@ -27,9 +27,7 @@ describe('useConfidenceLevels', () => {
     const { result } = renderHook(() => useConfidenceLevels())
 
     await waitFor(() => {
-      expect(result.current.errorMessage).toEqual(
-        'We apologize, but we encountered an error retrieving confidence levels.',
-      )
+      expect(result.current.errorMessage).toEqual("We couldn't load confidence levels.")
     })
     expect(result.current.confidenceLevels).toEqual([])
   })

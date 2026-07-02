@@ -3,6 +3,7 @@ import {
   confidenceLevels,
   llmRequest,
   llmResponse,
+  recaptchaToken,
   session,
   sessionContext,
   sessionId,
@@ -90,9 +91,13 @@ describe('sse', () => {
   describe('suggestClaims', () => {
     it('suggests claims', async () => {
       mockPost.mockResolvedValueOnce({ data: { claims: suggestedClaims } })
-      const result = await suggestClaims(language)
+      const result = await suggestClaims(language, recaptchaToken)
 
-      expect(mockPost).toHaveBeenCalledWith('/suggest-claims', { language })
+      expect(mockPost).toHaveBeenCalledWith(
+        '/suggest-claims',
+        { language },
+        { headers: { 'x-recaptcha-token': recaptchaToken }, 'axios-retry': { retries: 0 } },
+      )
       expect(result).toEqual({ claims: suggestedClaims })
     })
   })
@@ -100,9 +105,13 @@ describe('sse', () => {
   describe('validateClaim', () => {
     it('validates a claim', async () => {
       mockPost.mockResolvedValueOnce({ data: validationResult })
-      const result = await validateClaim(claim, language)
+      const result = await validateClaim(claim, language, recaptchaToken)
 
-      expect(mockPost).toHaveBeenCalledWith('/validate-claim', { claim, language })
+      expect(mockPost).toHaveBeenCalledWith(
+        '/validate-claim',
+        { claim, language },
+        { headers: { 'x-recaptcha-token': recaptchaToken }, 'axios-retry': { retries: 0 } },
+      )
       expect(result).toEqual(validationResult)
     })
   })
@@ -156,15 +165,15 @@ describe('sse', () => {
 
   describe('isStillLoading', () => {
     it('returns true when loadingTimeout is in the future', () => {
-      expect(isStillLoading(Date.now() + 60_000)).toBe(true)
+      expect(isStillLoading(2_000, () => 1_000)).toBe(true)
     })
 
     it('returns false when loadingTimeout is in the past', () => {
-      expect(isStillLoading(Date.now() - 1_000)).toBe(false)
+      expect(isStillLoading(1_000, () => 2_000)).toBe(false)
     })
 
     it('returns false when loadingTimeout is undefined', () => {
-      expect(isStillLoading(undefined)).toBe(false)
+      expect(isStillLoading(undefined, () => 1_000)).toBe(false)
     })
   })
 

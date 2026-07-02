@@ -27,28 +27,30 @@ describe('Index page', () => {
     jest.mocked(sse).createSession.mockResolvedValue({ sessionId })
   })
 
-  beforeEach(() => {
-    jest.clearAllMocks()
+  const setup = () => {
     document.title = ''
     Object.defineProperty(window, 'location', {
       configurable: true,
       value: { search: '' },
     })
-  })
+  }
 
   it('renders PrivacyLink', () => {
+    setup()
     render(<Index />)
 
     expect(PrivacyLink).toHaveBeenCalledTimes(1)
   })
 
   it('renders ClaimPrompt', () => {
+    setup()
     render(<Index />)
 
     expect(ClaimPrompt).toHaveBeenCalledTimes(1)
   })
 
   it('sends passed claim to ClaimPrompt', () => {
+    setup()
     Object.defineProperty(window, 'location', {
       configurable: true,
       value: { search: '?claim=Pickles%20are%20lazy%20cucumbers' },
@@ -63,6 +65,7 @@ describe('Index page', () => {
   })
 
   it('invokes createSession on new session', async () => {
+    setup()
     const claim = 'mah claim'
     const confidence = 'strongly agree'
     const language = 'es-PA'
@@ -73,6 +76,7 @@ describe('Index page', () => {
   })
 
   it('renders title', () => {
+    setup()
     render(<Index />)
 
     expect(document.title).toEqual('StreetLogic AI')

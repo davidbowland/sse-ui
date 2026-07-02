@@ -57,15 +57,27 @@ export const fetchSession = async (sessionId: SessionId): Promise<Session> => {
 
 // Suggest claims
 
-export const suggestClaims = async (language: string): Promise<SuggestedClaims> => {
-  const response = await api.post('/suggest-claims', { language })
+// reCAPTCHA tokens are single-use, so the automatic retry (which would resend the identical
+// token) is disabled for this request; a retried request is guaranteed to fail verification.
+export const suggestClaims = async (language: string, token: string): Promise<SuggestedClaims> => {
+  const response = await api.post(
+    '/suggest-claims',
+    { language },
+    { headers: { 'x-recaptcha-token': token }, 'axios-retry': { retries: 0 } },
+  )
   return response.data
 }
 
 // Validate claim
 
-export const validateClaim = async (claim: string, language: string): Promise<ValidationResult> => {
-  const response = await api.post('/validate-claim', { claim, language })
+// reCAPTCHA tokens are single-use, so the automatic retry (which would resend the identical
+// token) is disabled for this request; a retried request is guaranteed to fail verification.
+export const validateClaim = async (claim: string, language: string, token: string): Promise<ValidationResult> => {
+  const response = await api.post(
+    '/validate-claim',
+    { claim, language },
+    { headers: { 'x-recaptcha-token': token }, 'axios-retry': { retries: 0 } },
+  )
   return response.data
 }
 
@@ -92,8 +104,8 @@ export const mergeConfidenceResponse = (session: Session, response: ConfidenceCh
 
 const POLL_INTERVAL_MS = Number(process.env.NEXT_PUBLIC_POLL_INTERVAL_MS) || 2_000
 
-export const isStillLoading = (loadingTimeout?: number): boolean =>
-  loadingTimeout !== undefined && loadingTimeout > Date.now()
+export const isStillLoading = (loadingTimeout?: number, now = Date.now): boolean =>
+  loadingTimeout !== undefined && loadingTimeout > now()
 
 export { POLL_INTERVAL_MS }
 

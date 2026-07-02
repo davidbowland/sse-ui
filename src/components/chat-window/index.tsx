@@ -88,7 +88,7 @@ const ChatWindow = ({ dividers, finished, history, isTyping, sendChatMessage }: 
           <div className="col-span-12 sm:col-span-9">
             <textarea
               aria-label="Message"
-              className="w-full resize-none rounded-lg border px-4 py-3 text-sm outline-none transition-colors"
+              className="w-full resize-none rounded-lg border px-4 py-3 text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
               onChange={(e) => {
                 setMessage(e.target.value.replace(/\n/g, '').slice(0, MAX_CHAT_LENGTH))
                 resizeTextarea()

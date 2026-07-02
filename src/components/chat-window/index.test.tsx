@@ -21,6 +21,11 @@ describe('chat-window', () => {
 
   beforeAll(() => {
     window.HTMLElement.prototype.scrollIntoView = mockScrollIntoView
+    jest.useFakeTimers({ advanceTimers: true })
+  })
+
+  afterAll(() => {
+    jest.useRealTimers()
   })
 
   it('renders history in chat window', () => {

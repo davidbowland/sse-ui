@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 
 import ServerErrorMessage from '@components/server-error-message'
@@ -17,7 +18,11 @@ const NotFound = (): React.ReactNode => {
       </Head>
       {display404 && (
         <ServerErrorMessage title="404: Not Found">
-          We can&apos;t find this page. If you think something&apos;s wrong, please let us know.
+          We can&apos;t find this page. If that&apos;s wrong, email us at{' '}
+          <Link className="underline" href="mailto:privacy@dbowland.com">
+            privacy@dbowland.com
+          </Link>
+          .
         </ServerErrorMessage>
       )}
     </>

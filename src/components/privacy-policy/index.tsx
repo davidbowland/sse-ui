@@ -18,7 +18,7 @@ const PrivacyPolicy = (): React.ReactNode => (
     <PolicyTitle>Privacy Policy</PolicyTitle>
     <PolicyIntro>
       This policy describes how{' '}
-      <Link href="https://sse.dbowland.com/" style={{ color: 'var(--accent)' }}>
+      <Link href="https://sse.dbowland.com/" style={{ color: 'var(--accent-text)' }}>
         sse.dbowland.com
       </Link>{' '}
       handles your data. The short version: we collect very little, we keep it briefly, and we never sell it.
@@ -70,7 +70,7 @@ const PrivacyPolicy = (): React.ReactNode => (
       <PolicySectionBody>
         Depending on where you live, you may have legal rights over your personal data — such as the right to access,
         correct, or delete it. To exercise any such rights, contact us at{' '}
-        <Link href="mailto:privacy@dbowland.com" style={{ color: 'var(--accent)' }}>
+        <Link href="mailto:privacy@dbowland.com" style={{ color: 'var(--accent-text)' }}>
           privacy@dbowland.com
         </Link>
         .
@@ -102,7 +102,7 @@ const PrivacyPolicy = (): React.ReactNode => (
       <PolicySectionLabel>Contact</PolicySectionLabel>
       <PolicySectionBody>
         Questions about this policy? Email{' '}
-        <Link href="mailto:privacy@dbowland.com" style={{ color: 'var(--accent)' }}>
+        <Link href="mailto:privacy@dbowland.com" style={{ color: 'var(--accent-text)' }}>
           privacy@dbowland.com
         </Link>{' '}
         or write to: StreetLogic AI Privacy, P.O. Box 81226, Seattle, WA 98108-1226.

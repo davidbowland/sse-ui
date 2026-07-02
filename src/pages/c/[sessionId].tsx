@@ -70,7 +70,10 @@ const SessionPage = (): React.ReactNode => {
                             }}
                           />
                         )}
-                        <li className="flex w-auto flex-col items-center gap-1.5 steps-labels:w-[100px]">
+                        <li
+                          aria-current={isActive ? 'step' : undefined}
+                          className="flex w-auto flex-col items-center gap-1.5 steps-labels:w-[100px]"
+                        >
                           <span
                             className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold"
                             style={{

@@ -132,7 +132,7 @@ const ChatContainer = ({
                         fontWeight: 700,
                         letterSpacing: '0.2em',
                         textTransform: 'uppercase',
-                        color: 'var(--accent-55)',
+                        color: 'var(--accent-text)',
                         marginBottom: '8px',
                         fontFamily: 'var(--font)',
                       }}

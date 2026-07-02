@@ -21,6 +21,14 @@ const EXAMPLE_CLAIMS = [
 const CYCLE_MS = 6_000
 const FADE_MS = 350
 
+const languageDisplayName = (code: string): string => {
+  try {
+    return new Intl.DisplayNames(['en'], { type: 'language' }).of(code) ?? code
+  } catch {
+    return code
+  }
+}
+
 export interface InputStageProps {
   errorMessage?: string
   initialClaim: string
@@ -102,7 +110,7 @@ const InputStage = ({
             fontWeight: 700,
             letterSpacing: '0.2em',
             textTransform: 'uppercase',
-            color: 'var(--accent-42)',
+            color: 'var(--accent-text)',
             marginBottom: '9px',
           }}
         >
@@ -134,7 +142,7 @@ const InputStage = ({
               style={{
                 color: 'var(--text-muted)',
                 fontFamily: 'var(--font)',
-                opacity: exampleVisible ? 0.65 : 0,
+                opacity: exampleVisible ? 1 : 0,
                 transition: `opacity ${FADE_MS}ms ease`,
                 display: 'block',
                 whiteSpace: 'nowrap',
@@ -162,7 +170,7 @@ const InputStage = ({
         />
       </div>
       <p style={{ padding: '32px 0', fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font)' }}>
-        Suggested claims are only updated a few times per day
+        Suggested claims update periodically
       </p>
       {browserLanguage !== 'en-US' && browserLanguage && (
         <div>
@@ -170,13 +178,13 @@ const InputStage = ({
             Chat language
           </h5>
           <div style={{ fontSize: '13px', color: 'var(--text-muted)', fontFamily: 'var(--font)' }}>
-            en-US
+            {languageDisplayName('en-US')}
             <Switch
               aria-label="Chat language switch"
               isSelected={language === browserLanguage}
               onChange={handleLanguageChange}
             />
-            {browserLanguage}
+            {languageDisplayName(browserLanguage)}
           </div>
         </div>
       )}

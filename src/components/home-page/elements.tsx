@@ -7,14 +7,14 @@ export const PageMain = ({ children }: { children: React.ReactNode }): React.Rea
       aria-hidden="true"
       style={{
         position: 'fixed',
-        top: '-120px',
-        right: '-120px',
+        top: '-90px',
+        right: '-90px',
         zIndex: 0,
         width: '600px',
         height: '600px',
         borderRadius: '50%',
         pointerEvents: 'none',
-        background: 'radial-gradient(circle, color-mix(in srgb, var(--accent) 5%, transparent) 0%, transparent 68%)',
+        background: 'radial-gradient(circle, color-mix(in srgb, var(--accent) 10%, transparent) 0%, transparent 68%)',
       }}
     />
     {/* Navy orb — bottom left */}
@@ -22,14 +22,14 @@ export const PageMain = ({ children }: { children: React.ReactNode }): React.Rea
       aria-hidden="true"
       style={{
         position: 'fixed',
-        bottom: '-80px',
-        left: '-80px',
+        bottom: '-60px',
+        left: '-60px',
         zIndex: 0,
         width: '400px',
         height: '400px',
         borderRadius: '50%',
         pointerEvents: 'none',
-        background: 'radial-gradient(circle, rgba(0,80,180,0.05) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(0,80,180,0.09) 0%, transparent 70%)',
       }}
     />
     <div style={{ position: 'relative', zIndex: 1 }}>
@@ -41,7 +41,7 @@ export const PageMain = ({ children }: { children: React.ReactNode }): React.Rea
 )
 
 export const HeroSection = (): React.ReactNode => (
-  <div className="mb-6 sm:mb-12" style={{ textAlign: 'center' }}>
+  <div style={{ textAlign: 'center' }}>
     {/* Eyebrow tag */}
     <div
       style={{
@@ -63,7 +63,7 @@ export const HeroSection = (): React.ReactNode => (
           fontWeight: 700,
           letterSpacing: '0.2em',
           textTransform: 'uppercase',
-          color: 'var(--accent)',
+          color: 'var(--accent-text)',
         }}
       >
         Belief Exploration
@@ -81,7 +81,7 @@ export const HeroSection = (): React.ReactNode => (
         marginBottom: '20px',
       }}
     >
-      StreetLogic <span style={{ color: 'var(--accent)' }}>AI</span>
+      StreetLogic <span style={{ color: 'var(--accent-text)' }}>AI</span>
     </h1>
 
     <p
@@ -102,8 +102,15 @@ export const HeroSection = (): React.ReactNode => (
 
 export const HeroDivider = (): React.ReactNode => (
   <div
-    className="mx-auto mb-4 sm:mb-7"
-    style={{ width: '40px', height: '1px', background: 'var(--accent)', opacity: 0.35 }}
+    aria-hidden="true"
+    className="mx-auto"
+    style={{
+      width: '100%',
+      maxWidth: '220px',
+      height: '1px',
+      background: 'linear-gradient(90deg, transparent, var(--accent), transparent)',
+      opacity: 0.4,
+    }}
   />
 )
 

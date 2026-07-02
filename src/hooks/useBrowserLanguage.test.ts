@@ -3,7 +3,7 @@ import { renderHook, waitFor } from '@testing-library/react'
 import { useBrowserLanguage } from './useBrowserLanguage'
 
 describe('useBrowserLanguage', () => {
-  beforeEach(() => {
+  beforeAll(() => {
     Object.defineProperty(window, 'navigator', {
       configurable: true,
       value: { language: 'en-US' },

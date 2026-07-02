@@ -20,7 +20,8 @@ const SUBTITLE_OPTIONS = [
   'Preparing food for thought',
 ]
 
-const getRandomSubtitle = () => SUBTITLE_OPTIONS[Math.floor(Math.random() * SUBTITLE_OPTIONS.length)]
+export const getRandomSubtitle = (random = Math.random) =>
+  SUBTITLE_OPTIONS[Math.floor(random() * SUBTITLE_OPTIONS.length)]
 
 const GeneratingStage = (): React.ReactNode => {
   const subtitle = useMemo(() => getRandomSubtitle(), [])

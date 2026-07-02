@@ -42,6 +42,8 @@ export const validationResult = {
   suggestions: suggestedClaims,
 }
 
+export const recaptchaToken = 'qwertyuiokjhgffgh'
+
 // Confidence levels
 
 export const confidenceLevels = [

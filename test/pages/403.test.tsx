@@ -16,13 +16,13 @@ describe('403 error page', () => {
     })
   })
 
-  beforeEach(() => {
-    jest.clearAllMocks()
+  const setup = (pathname = '/an-invalid-page') => {
     document.title = ''
-    window.location.pathname = '/an-invalid-page'
-  })
+    window.location.pathname = pathname
+  }
 
   it('renders ServerErrorMessage', async () => {
+    setup()
     render(<Forbidden />)
 
     await waitFor(() => expect(ServerErrorMessage).toHaveBeenCalledTimes(1))
@@ -30,7 +30,7 @@ describe('403 error page', () => {
   })
 
   it('renders nothing for session paths', async () => {
-    window.location.pathname = '/c/aeiou'
+    setup('/c/aeiou')
     render(<Forbidden />)
 
     await waitFor(() => expect(screen.queryByText('ServerErrorMessage')).not.toBeInTheDocument())
@@ -38,13 +38,14 @@ describe('403 error page', () => {
   })
 
   it('renders ServerErrorMessage when the path name extends beyond sessionId', async () => {
-    window.location.pathname = '/c/aeiou/y'
+    setup('/c/aeiou/y')
     render(<Forbidden />)
 
     await waitFor(() => expect(ServerErrorMessage).toHaveBeenCalledTimes(1))
   })
 
   it('renders title', () => {
+    setup()
     render(<Forbidden />)
 
     expect(document.title).toEqual('StreetLogic AI | 403: Forbidden')

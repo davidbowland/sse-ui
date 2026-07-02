@@ -25,10 +25,6 @@ describe('useSessionQuery', () => {
     console.error = jest.fn()
   })
 
-  beforeEach(() => {
-    jest.mocked(sse.fetchSession).mockReset()
-  })
-
   it('fetches session on mount when sessionId is provided', async () => {
     jest.mocked(sse.fetchSession).mockResolvedValueOnce(session)
     const { result } = renderHook(() => useSessionQuery(sessionId), { wrapper: createWrapper() })
@@ -61,7 +57,7 @@ describe('useSessionQuery', () => {
   })
 
   it('stops refetching when loadingTimeout is in the past', async () => {
-    const expiredSession = { ...session, loadingTimeout: Date.now() - 1_000 }
+    const expiredSession = { ...session, loadingTimeout: 1_000 }
     jest.mocked(sse.fetchSession).mockResolvedValue(expiredSession)
 
     renderHook(() => useSessionQuery(sessionId), { wrapper: createWrapper() })

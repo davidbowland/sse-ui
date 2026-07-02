@@ -56,9 +56,7 @@ const ClaimPrompt = ({ initialClaim, onClaimSelect, skipFirstScroll }: ClaimProm
       setInputErrorMessage(undefined)
       const { inappropriate } = await validateClaim(claim, language)
       if (inappropriate) {
-        setInputErrorMessage(
-          'Error validating claim. It may be invalid or inappropriate. Please input a new claim to try again.',
-        )
+        setInputErrorMessage("We couldn't validate that claim. Try rephrasing it.")
         setPromptStage('input')
       } else {
         setPromptStage('selecting')
@@ -91,7 +89,7 @@ const ClaimPrompt = ({ initialClaim, onClaimSelect, skipFirstScroll }: ClaimProm
     (confidence: string) => {
       setPromptStage('submitted')
       onClaimSelect(claimInput, confidence, language).catch((error: unknown) => {
-        setInputErrorMessage('Error creating chat session. Please try again later.')
+        setInputErrorMessage("We couldn't start your chat. Try again in a moment.")
         setPromptStage('confidence')
         console.error('Error creating session', { error })
       })
@@ -117,7 +115,7 @@ const ClaimPrompt = ({ initialClaim, onClaimSelect, skipFirstScroll }: ClaimProm
 
   useEffect(() => {
     if (promptStage === 'selecting' && suggestedClaims.length === 0 && inputErrorMessage === undefined) {
-      setInputErrorMessage('Error generating suggested claims. Please try again later.')
+      setInputErrorMessage("We couldn't generate suggestions. Try again in a moment.")
       setPromptStage('input')
     }
   }, [inputErrorMessage, promptStage, suggestedClaims])

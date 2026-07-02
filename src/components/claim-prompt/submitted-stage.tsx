@@ -30,7 +30,8 @@ const SUBTITLE_OPTIONS = [
   'Warming up my circuits',
 ]
 
-const getRandomSubtitle = () => SUBTITLE_OPTIONS[Math.floor(Math.random() * SUBTITLE_OPTIONS.length)]
+export const getRandomSubtitle = (random = Math.random) =>
+  SUBTITLE_OPTIONS[Math.floor(random() * SUBTITLE_OPTIONS.length)]
 
 const SubmittedStage = (): React.ReactNode => {
   const subtitle = useMemo(() => getRandomSubtitle(), [])

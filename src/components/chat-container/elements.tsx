@@ -44,7 +44,7 @@ export const BrandTitle = (): React.ReactNode => (
         color: 'var(--text)',
       }}
     >
-      StreetLogic <span style={{ color: 'var(--accent)' }}>AI</span>
+      StreetLogic <span style={{ color: 'var(--accent-text)' }}>AI</span>
     </span>
   </div>
 )
@@ -61,7 +61,7 @@ export const ConfidenceSection = ({ children }: { children: React.ReactNode }): 
         fontWeight: 700,
         letterSpacing: '0.18em',
         textTransform: 'uppercase',
-        color: 'var(--accent-38)',
+        color: 'var(--accent-text)',
       }}
     >
       Your current stance
@@ -91,7 +91,7 @@ export const NewClaimButton = ({ onPress }: { onPress: () => void }): React.Reac
     style={{
       background: 'var(--accent-07)',
       border: '1px solid var(--accent-14)',
-      color: 'var(--accent)',
+      color: 'var(--accent-text)',
       fontWeight: 600,
       borderRadius: '10px',
       fontFamily: 'var(--font)',
@@ -101,7 +101,7 @@ export const NewClaimButton = ({ onPress }: { onPress: () => void }): React.Reac
       gap: '6px',
     }}
   >
-    <MessageSquarePlus size={14} />
+    <MessageSquarePlus aria-hidden="true" size={14} />
     New claim
   </Button>
 )

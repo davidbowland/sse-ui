@@ -97,9 +97,9 @@ export const useSession = (sessionId: string | undefined): UseSessionResults => 
   }, [session, sessionId, messageMutation.isPending, confidenceMutation.isPending])
 
   const errorMessage = useMemo(() => {
-    if (fetchError) return 'We apologize, but we were unable to load your chat session.'
-    if (messageMutation.error) return 'We apologize, but there was an error sending your chat message.'
-    if (confidenceMutation.error) return 'We apologize, but there was an error changing your confidence level.'
+    if (fetchError) return "We couldn't load your chat session."
+    if (messageMutation.error) return "We couldn't send your message."
+    if (confidenceMutation.error) return "We couldn't update your confidence level."
     return undefined
   }, [fetchError, messageMutation.error, confidenceMutation.error])
 

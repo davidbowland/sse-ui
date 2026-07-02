@@ -14,7 +14,7 @@ export const PolicyEyebrow = (): React.ReactNode => (
       fontWeight: 700,
       letterSpacing: '0.2em',
       textTransform: 'uppercase',
-      color: 'var(--accent)',
+      color: 'var(--accent-text)',
       marginBottom: '14px',
     }}
   >
@@ -64,7 +64,7 @@ export const PolicySectionLabel = ({ children }: { children: React.ReactNode }):
       fontWeight: 700,
       letterSpacing: '0.18em',
       textTransform: 'uppercase',
-      color: 'var(--accent)',
+      color: 'var(--accent-text)',
       marginBottom: '8px',
     }}
   >

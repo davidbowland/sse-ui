@@ -25,9 +25,14 @@ describe('claim-prompt', () => {
   beforeAll(() => {
     console.error = jest.fn()
     window.HTMLElement.prototype.scrollIntoView = mockScrollIntoView
+    jest.useFakeTimers({ advanceTimers: true })
   })
 
-  beforeEach(() => {
+  afterAll(() => {
+    jest.useRealTimers()
+  })
+
+  const setup = () => {
     jest.mocked(useConfidenceLevels).mockReturnValue({ confidenceLevels })
     jest.mocked(useSuggestedClaims).mockReturnValue({
       errorMessage,
@@ -39,9 +44,10 @@ describe('claim-prompt', () => {
 
     mockOnClaimSelect.mockResolvedValue(undefined)
     mockValidateClaim.mockReturnValue({ inappropriate: false, isTruthClaim: true, suggestions: validatedClaims })
-  })
+  }
 
   it('generates and selects a claim', async () => {
+    setup()
     render(<ClaimPrompt onClaimSelect={mockOnClaimSelect} />)
 
     const suggestClaimsButton = await screen.findByRole('button', { name: /Suggest claims/ })
@@ -69,6 +75,7 @@ describe('claim-prompt', () => {
   })
 
   it('validates and selects a claim', async () => {
+    setup()
     jest.mocked(useSuggestedClaims).mockReturnValue({
       errorMessage,
       fetchSuggestedClaims: mockFetchSuggestedClaims,
@@ -101,6 +108,7 @@ describe('claim-prompt', () => {
   })
 
   it('validates a claim on enter being pressed', async () => {
+    setup()
     jest.mocked(useSuggestedClaims).mockReturnValue({
       errorMessage,
       fetchSuggestedClaims: mockFetchSuggestedClaims,
@@ -117,20 +125,23 @@ describe('claim-prompt', () => {
   })
 
   it("doesn't show language option when browser language is en-US", async () => {
+    setup()
     render(<ClaimPrompt onClaimSelect={mockOnClaimSelect} />)
 
     expect(screen.queryByText(/en-US/)).not.toBeInTheDocument()
   })
 
   it('renders language option when browser language is NOT en-US', async () => {
+    setup()
     jest.mocked(useBrowserLanguage).mockReturnValue({ browserLanguage: 'es-PA' })
     render(<ClaimPrompt onClaimSelect={mockOnClaimSelect} />)
 
     expect(screen.getByText(/Chat language/)).toBeInTheDocument()
-    expect(screen.getByText(/es-PA/)).toBeInTheDocument()
+    expect(screen.getByText(/Spanish \(Panama\)/)).toBeInTheDocument()
   })
 
   it('uses selected language for generated claims', async () => {
+    setup()
     jest.mocked(useBrowserLanguage).mockReturnValue({ browserLanguage: 'es-PA' })
     render(<ClaimPrompt onClaimSelect={mockOnClaimSelect} />)
 
@@ -162,6 +173,7 @@ describe('claim-prompt', () => {
   })
 
   it('allows deselecting language for generated claims', async () => {
+    setup()
     jest.mocked(useBrowserLanguage).mockReturnValue({ browserLanguage: 'fr-FR' })
     render(<ClaimPrompt onClaimSelect={mockOnClaimSelect} />)
 
@@ -176,6 +188,7 @@ describe('claim-prompt', () => {
   })
 
   it('uses selected language for validated claims', async () => {
+    setup()
     jest.mocked(useBrowserLanguage).mockReturnValue({ browserLanguage: 'es-SP' })
     jest.mocked(useSuggestedClaims).mockReturnValue({
       errorMessage,
@@ -212,6 +225,7 @@ describe('claim-prompt', () => {
   })
 
   it('pre-selects valid input claim', async () => {
+    setup()
     jest.mocked(useSuggestedClaims).mockReturnValue({
       errorMessage,
       fetchSuggestedClaims: mockFetchSuggestedClaims,
@@ -242,6 +256,7 @@ describe('claim-prompt', () => {
   })
 
   it('rejects inappropraite claims', async () => {
+    setup()
     mockValidateClaim.mockResolvedValueOnce({ inappropriate: true, isTruthClaim: true, suggestions: validatedClaims })
     render(<ClaimPrompt onClaimSelect={mockOnClaimSelect} />)
 
@@ -250,14 +265,11 @@ describe('claim-prompt', () => {
     const submitClaimButton = screen.getByRole('button', { name: /Submit/ })
     await act(() => userEvent.click(submitClaimButton))
 
-    expect(
-      await screen.findByText(
-        /Error validating claim\. It may be invalid or inappropriate\. Please input a new claim to try again\./,
-      ),
-    ).toBeInTheDocument()
+    expect(await screen.findByText(/We couldn't validate that claim\. Try rephrasing it\./)).toBeInTheDocument()
   })
 
   it('allows backwards navigation', async () => {
+    setup()
     render(<ClaimPrompt onClaimSelect={mockOnClaimSelect} />)
 
     const suggestClaimsButton = screen.getByRole('button', { name: /Suggest claims/ })
@@ -284,6 +296,7 @@ describe('claim-prompt', () => {
   })
 
   it('shows error on confidence screen when confidence levels fail to load', async () => {
+    setup()
     jest.mocked(useConfidenceLevels).mockReturnValue({ confidenceLevels: [] })
     render(<ClaimPrompt onClaimSelect={mockOnClaimSelect} />)
 
@@ -301,15 +314,21 @@ describe('claim-prompt', () => {
   })
 
   it('skips first scroll when prompted', async () => {
+    setup()
     render(<ClaimPrompt onClaimSelect={mockOnClaimSelect} skipFirstScroll={true} />)
+    // Cancel the mount's pending scroll-into-view timer immediately so the file-wide
+    // auto-advancing fake timers can't race-fire it (and consume the skip) before the click below.
+    act(() => jest.clearAllTimers())
 
     const suggestClaimsButton = screen.getByRole('button', { name: /Suggest claims/ })
     await act(() => userEvent.click(suggestClaimsButton))
+    act(() => jest.clearAllTimers())
 
     expect(mockScrollIntoView).not.toHaveBeenCalled()
   })
 
   it('displays error message when no claims returned', async () => {
+    setup()
     jest.mocked(useSuggestedClaims).mockReturnValue({
       errorMessage,
       fetchSuggestedClaims: mockFetchSuggestedClaims,
@@ -321,10 +340,11 @@ describe('claim-prompt', () => {
     const suggestClaimsButton = await screen.findByRole('button', { name: /Suggest claims/ })
     await act(() => userEvent.click(suggestClaimsButton))
 
-    expect(await screen.findByText(/Error generating suggested claims\. Please try again later\./)).toBeInTheDocument()
+    expect(await screen.findByText(/We couldn't generate suggestions\. Try again in a moment\./)).toBeInTheDocument()
   })
 
   it('shows error alert when confidence levels fail to load', async () => {
+    setup()
     jest.mocked(useConfidenceLevels).mockReturnValue({ confidenceLevels, errorMessage: 'A nasty error.' })
     render(<ClaimPrompt onClaimSelect={mockOnClaimSelect} />)
 
@@ -332,6 +352,7 @@ describe('claim-prompt', () => {
   })
 
   it('shows error alert when suggestions fail to load', async () => {
+    setup()
     jest.mocked(useSuggestedClaims).mockReturnValue({
       errorMessage: 'An unwelcome error.',
       fetchSuggestedClaims: mockFetchSuggestedClaims,
@@ -347,6 +368,7 @@ describe('claim-prompt', () => {
   })
 
   it('shows both error alerts when confidence levels and suggestsions fail to load', async () => {
+    setup()
     jest.mocked(useConfidenceLevels).mockReturnValue({ confidenceLevels, errorMessage: 'The worst error.' })
     jest.mocked(useSuggestedClaims).mockReturnValue({
       errorMessage: 'How many errors?',
@@ -363,6 +385,7 @@ describe('claim-prompt', () => {
   })
 
   it('handles onClaimSelect errors and returns to confidence stage', async () => {
+    setup()
     const mockOnClaimSelectWithError = jest.fn().mockRejectedValue(new Error('Session creation failed'))
     render(<ClaimPrompt onClaimSelect={mockOnClaimSelectWithError} />)
 
@@ -380,7 +403,7 @@ describe('claim-prompt', () => {
     await act(() => userEvent.click(confidenceConfirmButton))
 
     // Should show error message and return to confidence stage
-    expect(await screen.findByText(/Error creating chat session\. Please try again later\./)).toBeInTheDocument()
+    expect(await screen.findByText(/We couldn't start your chat\. Try again in a moment\./)).toBeInTheDocument()
     expect(await screen.findByText(/Select your stance/)).toBeInTheDocument()
 
     expect(mockOnClaimSelectWithError).toHaveBeenCalledTimes(1)
@@ -392,6 +415,7 @@ describe('claim-prompt', () => {
   })
 
   it('succeeds on onClaimSelect success', async () => {
+    setup()
     const mockOnClaimSelectSuccess = jest.fn().mockResolvedValueOnce(undefined)
 
     render(<ClaimPrompt onClaimSelect={mockOnClaimSelectSuccess} />)

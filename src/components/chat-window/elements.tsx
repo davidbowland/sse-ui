@@ -129,7 +129,7 @@ export const NewClaimButton = ({ onPress }: { onPress: () => void }): React.Reac
         gap: '8px',
       }}
     >
-      <MessageSquarePlus size={16} />
+      <MessageSquarePlus aria-hidden="true" size={16} />
       New claim
     </Button>
   </div>
@@ -151,7 +151,7 @@ export const SendButton = ({ isDisabled, onPress }: { isDisabled: boolean; onPre
       transition: 'background 0.15s, color 0.15s, transform 0.12s cubic-bezier(0.32,0.72,0,1)',
     }}
   >
-    <Send size={16} />
+    <Send aria-hidden="true" size={16} />
     Send
   </Button>
 )
