@@ -1,4 +1,5 @@
 import { Button } from '@heroui/react'
+import { ArrowUpRight } from 'lucide-react'
 import React from 'react'
 
 // ─── Premium loader ──────────────────────────────────────────
@@ -303,10 +304,9 @@ export const PrimaryButton = ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontSize: '12px',
       }}
     >
-      ↗
+      <ArrowUpRight size={15} strokeWidth={2.5} />
     </span>
   </Button>
 )
