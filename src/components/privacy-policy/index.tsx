@@ -1,3 +1,4 @@
+import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
 
@@ -110,8 +111,19 @@ const PrivacyPolicy = (): React.ReactNode => (
     </PolicySection>
 
     <PolicyFooter>
-      <Link href="/" style={{ fontSize: '13px', color: 'var(--text-muted)', fontFamily: 'var(--font)' }}>
-        ← Back to StreetLogic AI
+      <Link
+        href="/"
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '4px',
+          fontSize: '13px',
+          color: 'var(--text-muted)',
+          fontFamily: 'var(--font)',
+        }}
+      >
+        <ArrowLeft aria-hidden="true" size={13} strokeWidth={2.5} />
+        Back to StreetLogic AI
       </Link>
       <span style={{ fontSize: '13px', color: 'var(--text-muted)', fontFamily: 'var(--font)' }}>
         Last updated June 2026
