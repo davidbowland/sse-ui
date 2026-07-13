@@ -1,8 +1,8 @@
-import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import HomePage from '@components/home-page'
+import SiteHead from '@components/site-head'
 import { createSession } from '@services/sse'
 
 const Index = (): React.ReactNode => {
@@ -24,9 +24,7 @@ const Index = (): React.ReactNode => {
 
   return (
     <>
-      <Head>
-        <title>StreetLogic AI</title>
-      </Head>
+      <SiteHead title="StreetLogic AI" />
       <HomePage initialClaim={initialClaim} onClaimSelect={onClaimSelect} />
     </>
   )

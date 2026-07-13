@@ -1,8 +1,8 @@
-import Head from 'next/head'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 
 import ServerErrorMessage from '@components/server-error-message'
+import SiteHead from '@components/site-head'
 
 const NotFound = (): React.ReactNode => {
   const [display404, setDisplay404] = useState(false)
@@ -13,9 +13,7 @@ const NotFound = (): React.ReactNode => {
 
   return (
     <>
-      <Head>
-        <title>StreetLogic AI | 404: Not Found</title>
-      </Head>
+      <SiteHead title="StreetLogic AI | 404: Not Found" />
       {display404 && (
         <ServerErrorMessage title="404: Not Found">
           We can&apos;t find this page. If that&apos;s wrong, email us at{' '}

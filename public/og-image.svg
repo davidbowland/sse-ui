@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <radialGradient id="orbTeal" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00e5c8" stop-opacity="0.20" />
+      <stop offset="68%" stop-color="#00e5c8" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="orbNavy" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#0050b4" stop-opacity="0.20" />
+      <stop offset="70%" stop-color="#0050b4" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="#040a12" />
+  <circle cx="1110" cy="-30" r="360" fill="url(#orbTeal)" />
+  <circle cx="-40" cy="600" r="260" fill="url(#orbNavy)" />
+
+  <!-- logo lockup -->
+  <g transform="translate(80,64)">
+    <rect width="56" height="56" rx="14" fill="#0d1720" />
+    <path d="M 19.25 43.15 A 17.5 17.5 0 1 1 36.75 43.15" fill="none" stroke="rgba(0,229,200,0.4)" stroke-width="6" stroke-linecap="round" />
+    <circle cx="43.15" cy="19.25" r="5.4" fill="#00e5c8" />
+    <text x="76" y="36" font-family="'Plus Jakarta Sans', Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#f5f9f9" letter-spacing="-0.5">
+      StreetLogic <tspan fill="#00e5c8">AI</tspan>
+    </text>
+  </g>
+
+  <!-- headline -->
+  <text x="80" y="320" font-family="'Plus Jakarta Sans', Arial, Helvetica, sans-serif" font-size="62" font-weight="700" fill="#f5f9f9" letter-spacing="-1">
+    <tspan x="80" dy="0">Explore your confidence</tspan>
+    <tspan x="80" dy="74">in what you <tspan fill="#00e5c8">believe</tspan>.</tspan>
+  </text>
+
+  <!-- eyebrow pill -->
+  <g transform="translate(80,462)">
+    <rect width="252" height="38" rx="19" fill="rgba(0,229,200,0.07)" stroke="rgba(0,229,200,0.16)" />
+    <circle cx="22" cy="19" r="4" fill="#00e5c8" />
+    <text x="38" y="24" font-family="'Plus Jakarta Sans', Arial, Helvetica, sans-serif" font-size="14" font-weight="700" letter-spacing="2.4" fill="#6fe6d6">BELIEF EXPLORATION</text>
+  </g>
+</svg>

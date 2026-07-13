@@ -1,10 +1,10 @@
 import type { GetStaticPaths, GetStaticProps } from 'next'
-import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 
 import ChatContainer from '@components/chat-container'
 import ChatWindow from '@components/chat-window'
+import SiteHead from '@components/site-head'
 import { useSession } from '@hooks/useSession'
 
 const SessionPage = (): React.ReactNode => {
@@ -37,9 +37,7 @@ const SessionPage = (): React.ReactNode => {
 
   return (
     <>
-      <Head>
-        <title>StreetLogic AI | Chat</title>
-      </Head>
+      <SiteHead title="StreetLogic AI | Chat" />
       <main style={{ minHeight: '100dvh', backgroundColor: 'var(--bg)' }}>
         <ChatContainer
           claim={claim}

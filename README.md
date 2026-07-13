@@ -1,6 +1,10 @@
-# Spectrum Street Epistemology UI
+# StreetLogic AI
 
-Gatsby and Amplify implementation of sse-api and sse-infrastructure. Example: <https://sse.dbowland.com/>
+![StreetLogic AI](public/og-image.png)
+
+StreetLogic AI is a guided AI conversation tool that helps you explore your confidence in what you believe, built on Street Epistemology techniques. Live at <https://sse.dbowland.com/>.
+
+Next.js and Amplify implementation of sse-api and sse-infrastructure.
 
 ## Static Site
 
@@ -11,7 +15,7 @@ Gatsby and Amplify implementation of sse-api and sse-infrastructure. Example: <h
 
 ### Local Development
 
-The Gatsby development server automatically rerenders in the browser when the source code changes. Start the local development server with:
+The Next.js development server automatically rerenders in the browser when the source code changes. Start the local development server with:
 
 ```bash
 npm run start
@@ -72,20 +76,6 @@ npm run workflow
 ```
 
 ## Additional Documentation
-
-### Additional Gatsby Documentation
-
-- [Documentation](https://www.gatsbyjs.com/docs/)
-
-- [Tutorials](https://www.gatsbyjs.com/tutorial/)
-
-- [Guides](https://www.gatsbyjs.com/docs/guides/)
-
-- [API Reference](https://www.gatsbyjs.com/docs/api-reference/)
-
-- [Plugin Library](https://www.gatsbyjs.com/plugins)
-
-- [Cheat Sheet](https://www.gatsbyjs.com/docs/cheat-sheet/)
 
 ### Additional Deploy Documentation
 
